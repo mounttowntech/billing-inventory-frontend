@@ -1,0 +1,239 @@
+/* ===== SIDEBAR VARIABLES ===== */
+:root {
+  --sidebar-width: 260px;
+  --sidebar-bg: #0f172a;
+  --sidebar-bg-hover: #1e293b;
+  --sidebar-border: #1e293b;
+  --sidebar-text: #94a3b8;
+  --sidebar-text-active: #ffffff;
+  --accent: #2563eb;
+  --accent-light: #3b82f6;
+  --radius: 10px;
+  --transition: all 0.25s ease;
+}
+
+/* ===== SIDEBAR CONTAINER ===== */
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--sidebar-bg) 0%, #0b1220 100%);
+  color: var(--sidebar-text);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+/* Scrollbar styling (optional, but looks polished) */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 10px;
+}
+
+/* ===== BRAND / LOGO AREA ===== */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px 20px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--sidebar-border);
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.sidebar-brand img,
+.sidebar-brand svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* ===== SECTION LABELS (optional grouping) ===== */
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #475569;
+  padding: 16px 14px 6px;
+}
+
+/* ===== NAV LINKS ===== */
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  margin-bottom: 4px;
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: var(--transition);
+  position: relative;
+  white-space: nowrap;
+}
+
+.sidebar a svg,
+.sidebar a i {
+  width: 18px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.sidebar a:hover {
+  background: var(--sidebar-bg-hover);
+  color: #fff;
+  transform: translateX(2px);
+}
+
+.sidebar a.active {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  color: var(--sidebar-text-active);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.sidebar a.active::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  background: #fff;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Badge (e.g. notification count) */
+.sidebar a .badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+/* ===== FOOTER / USER AREA ===== */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--sidebar-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 12px;
+}
+
+.sidebar-footer img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sidebar-footer .user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.sidebar-footer .user-info strong {
+  color: #fff;
+  font-size: 13.5px;
+}
+
+.sidebar-footer .user-info span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* ===== MOBILE TOGGLE BUTTON ===== */
+.sidebar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 20px;
+}
+
+.sidebar-toggle:hover {
+  background: #f1f5f9;
+}
+
+/* ===== OVERLAY (mobile only) ===== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 90;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* ===================================
+   RESPONSIVE / MOBILE
+=================================== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 230px;
+  }
+}
+
+/* Mobile & small tablets */
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    transform: translateX(-100%);
+    z-index: 200;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+  .sidebar {
+    width: 85%;
+    max-width: 280px;
+    padding: 20px 14px;
+  }
+}

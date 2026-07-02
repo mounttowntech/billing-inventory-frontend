@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-
+import "./Sidebar.css";
 const Sidebar = () => {
   return (
     <aside className="sidebar">
@@ -11,6 +11,7 @@ const Sidebar = () => {
         <NavLink to="/products">Products</NavLink>
         <NavLink to="/customers">Customers</NavLink>
         <NavLink to="/purchases">Purchases</NavLink>
+        <NavLink to="/categories">Category</NavLink>
         <NavLink to="/invoices">Invoices</NavLink>
         <NavLink to="/reports">Reports</NavLink>
       </nav>

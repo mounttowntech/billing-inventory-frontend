@@ -13,6 +13,7 @@ import InvoiceList from "../pages/invoices/InvoiceList";
 import PurchaseList from "../pages/purchases/PurchaseList";
 import Reports from "../pages/reports/Reports";
 import NotFound from "../pages/NotFound";
+import CategoryOptions from "../pages/Category/CategoryOptions";
 
 const AppRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const AppRoutes = () => {
         <Route path="invoices" element={<InvoiceList />} />
         <Route path="purchases" element={<PurchaseList />} />
         <Route path="reports" element={<Reports />} />
+        <Route path="categories" element={<CategoryOptions />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

@@ -36,7 +36,11 @@ const Login = () => {
         <input placeholder="Email" {...register("email")} />
         <p className="error">{errors.email?.message}</p>
 
-        <input type="password" placeholder="Password" {...register("password")} />
+        <input
+          type="password"
+          placeholder="Password"
+          {...register("password")}
+        />
         <p className="error">{errors.password?.message}</p>
 
         <button disabled={loading}>
