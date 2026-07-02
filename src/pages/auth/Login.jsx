@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidation } from "../../validations/loginValidation";
 import { loginUser } from "../../features/auth/authSlice";
 import Input from "../../components/common/Input";
+import "./Login.css"
 
 const Login = () => {
   const dispatch = useDispatch();

@@ -1,3 +1,32 @@
 .register-link {
   text-decoration: none;
 }
+@media (max-width:1024px){
+
+    .login-page{
+        background-image:url("../../assets//LOGINBG.png");
+        background-position:center;
+    }
+
+}
+@media (max-width:768px){
+
+    .login-page{
+
+        justify-content:center;
+        padding:20px;
+
+        background-image:url("../../assets//LOGINBG.png");
+        background-position:center top;
+    }
+
+}
+@media (max-width:480px){
+
+    .login-page{
+
+        background-image:url("../../assets//LOGINBG.png");
+        padding:16px;
+    }
+
+}

@@ -7,6 +7,7 @@ import { registerValidation } from "../../validations/registerValidation";
 import { registerUser } from "../../features/auth/authSlice";
 import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
+import "./Register.css";
 
 const businessTypeOptions = [
   { label: "Restaurant", value: "restaurant" },
@@ -37,78 +38,99 @@ const Register = () => {
   };
 
   return (
-    <div className="login-page">
-      <form onSubmit={handleSubmit(onSubmit)} className="login-card">
+    <div className="login-page1">
+      <form onSubmit={handleSubmit(onSubmit)} className="login-card1">
         <h2>Register Company</h2>
 
         {error && <p className="error">{error}</p>}
 
-        <Input
-  label="Company Name"
-  name="companyName"
-  placeholder="Enter Company Name"
-  register={register}
-  error={errors.companyName?.message}
-/>
+        <div className="register-grid">
+          <div className="form-item">
+            <Input
+              label="Company Name"
+              name="companyName"
+              placeholder="Enter Company Name"
+              register={register}
+              error={errors.companyName?.message}
+            />
+          </div>
 
-                        <Input
-  label="First Name"
-  name="firstName"
-  placeholder="Enter First Name"
-  register={register}
-  error={errors.firstName?.message}
-/>
+          <div className="form-item">
+            <Input
+              label="First Name"
+              name="firstName"
+              placeholder="Enter First Name"
+              register={register}
+              error={errors.firstName?.message}
+            />
+          </div>
 
-<Input
-  label="Last Name"
-  name="lastName"
-  placeholder="Enter Last Name"
-  register={register}
-/>
+          <div className="form-item">
+            <Input
+              label="Last Name"
+              name="lastName"
+              placeholder="Enter Last Name"
+              register={register}
+              error={errors.lastName?.message}
+            />
+          </div>
 
-        <Input
-  label="Email"
-  name="email"
-  type="email"
-  placeholder="Enter Email"
-  register={register}
-  error={errors.email?.message}
-/>
+          <div className="form-item">
+            <Input
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="Enter Email"
+              register={register}
+              error={errors.email?.message}
+            />
+          </div>
 
-        <Input
-  label="Phone"
-  name="phone"
-  type="tel"
-  placeholder="Enter Phone"
-  register={register}
-  error={errors.phone?.message}
-/>
+          <div className="form-item">
+            <Input
+              label="Phone"
+              name="phone"
+              type="tel"
+              placeholder="Enter Phone"
+              register={register}
+              error={errors.phone?.message}
+            />
+          </div>
 
-        <Select
-  label="Business Type"
-  name="businessType"
-  register={register}
-  error={errors.businessType?.message}
-  options={businessTypeOptions}
-  placeholder="Select Business Type"
-/>
+          <div className="form-item">
+            <Select
+              label="Business Type"
+              name="businessType"
+              register={register}
+              error={errors.businessType?.message}
+              options={businessTypeOptions}
+              placeholder="Select Business Type"
+            />
+          </div>
 
-        <Input
-  label="Password"
-  name="password"
-  type="password"
-  placeholder="Enter Password"
-  register={register}
-  error={errors.password?.message}
-/>
+          <div className="form-item full-width">
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Enter Password"
+              register={register}
+              error={errors.password?.message}
+            />
+          </div>
 
-        <button disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
+          <div className="full-width">
+            <button disabled={loading}>
+              {loading ? "Registering..." : "Register"}
+            </button>
+          </div>
 
-        <Link to="/login" className="register-link">
-          <p>Already have an account? Login</p>
-        </Link>
+          <div className="full-width">
+            <Link to="/login" className="register-link">
+              Already have an account? Login
+            </Link>
+          </div>
+        </div>
       </form>
     </div>
   );
