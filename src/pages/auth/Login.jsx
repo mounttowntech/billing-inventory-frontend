@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidation } from "../../validations/loginValidation";
 import { loginUser } from "../../features/auth/authSlice";
+import Input from "../../components/common/Input";
+import "./Login.css";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -42,6 +44,11 @@ const Login = () => {
         <button disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
+        {/* new to register */}
+        <Link to="/register" className="register-link1">
+          <p>New to Register? Click here</p>
+        </Link>
+
       </form>
     </div>
   );
