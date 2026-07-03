@@ -4,23 +4,10 @@ import { createProduct } from "../../features/product/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CategoryOptions from "../Category/CategoryOptions";
 import { fetchCategories } from "../../features/Category/categorySlice";
+import { fetchBrands } from "../../features/Brand/brandSlice";
+import { getFabrics } from "../../features/Fabric/fabricSlice";
 import { useEffect } from "react";
 
-const BRAND_OPTIONS = [
-  "Zylo",
-  "Urban Thread",
-  "Nova Fit",
-  "Kasva",
-  "Metro Basics",
-];
-const FABRIC_OPTIONS = [
-  "Cotton",
-  "Polyester",
-  "Denim",
-  "Linen",
-  "Rayon",
-  "Blended",
-];
 const SEASON_OPTIONS = ["Summer", "Winter", "Monsoon", "All Season"];
 const STYLE_OPTIONS = [
   "Casual",
@@ -62,6 +49,12 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
   const [submitting, setSubmitting] = useState(false);
   const [category, setCategory] = useState("");
   const { categories = [], loading } = useSelector((state) => state.category);
+  const { brands = [], loading: brandsLoading } = useSelector(
+    (state) => state.brand,
+  );
+  const { fabrics = [], loading: fabricsLoading } = useSelector(
+    (state) => state.fabric,
+  );
 
   useEffect(() => {
     dispatch(fetchCategories())
@@ -72,7 +65,24 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
           setCategory(fetchedCategories[0]._id);
         }
       });
+    dispatch(fetchBrands())
+      .unwrap()
+      .then((fetchBrands) => {
+        console.log("Fetched brands are the :", fetchBrands);
+        if (fetchBrands.length > 0) {
+          setCategory(fetchBrands[0]._id);
+        }
+      });
+    dispatch(getFabrics())
+      .unwrap()
+      .then((getFabrics) => {
+        console.log("Fetched fabrics are the :", getFabrics);
+        if (getFabrics.length > 0) {
+          setCategory(getFabrics[0]._id);
+        }
+      });
   }, [dispatch]);
+
   /* ---------- field handlers ---------- */
   if (!isOpen) return null;
 
@@ -240,11 +250,11 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                   onChange={(e) => updateField("brand", e.target.value)}
                 >
                   <option value="">Select brand</option>
-                  {BRAND_OPTIONS.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
+                  {brands.map((brand) => (
+                    <option key={brand._id} value={brand._id}>
+                      {brand.brandName}
                     </option>
-                  ))}
+                  ))}{" "}
                 </select>
                 {errors.brand && <span className="error">{errors.brand}</span>}
               </div>
@@ -256,11 +266,11 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                   onChange={(e) => updateField("fabric", e.target.value)}
                 >
                   <option value="">Select fabric</option>
-                  {FABRIC_OPTIONS.map((f) => (
-                    <option key={f} value={f}>
-                      {f}
+                  {fabrics.map((fabric) => (
+                    <option key={fabric._id} value={fabric._id}>
+                      {fabric.fabricName}
                     </option>
-                  ))}
+                  ))}{" "}
                 </select>
               </div>
 
