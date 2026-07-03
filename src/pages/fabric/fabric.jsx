@@ -24,7 +24,7 @@ const Fabric = () => {
   const [fabricCode, setFabricCode] = useState("");
 
   const [editId, setEditId] = useState("");
-
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     dispatch(getFabrics());
   }, [dispatch]);
@@ -38,6 +38,7 @@ const Fabric = () => {
     }
   }, [fabrics, currentPage]);
   // Create & Update
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -52,7 +53,13 @@ const Fabric = () => {
           id: editId,
           fabricData,
         }),
-      );
+      ).then(() => {
+        dispatch(getFabrics());
+        setEditId("");
+        setFabricName("");
+        setFabricCode("");
+        setShowModal(false);
+      });
 
       setEditId("");
     } else {
@@ -68,6 +75,7 @@ const Fabric = () => {
     setEditId(fabric._id);
     setFabricName(fabric.fabricName);
     setFabricCode(fabric.fabricCode);
+    setShowModal(true);
   };
 
   // Delete
@@ -84,23 +92,60 @@ const Fabric = () => {
     <div className="fabric-container">
       <h2 className="fabric-title">Fabric </h2>
 
-      <form className="fabric-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Fabric Name"
-          value={fabricName}
-          onChange={(e) => setFabricName(e.target.value)}
-        />
+      <button
+        className="create-btn"
+        onClick={() => {
+          setEditId("");
+          setFabricName("");
+          setFabricCode("");
+          setShowModal(true);
+        }}
+      >
+        Add Fabric
+      </button>
 
-        <input
-          type="text"
-          placeholder="Fabric Code"
-          value={fabricCode}
-          onChange={(e) => setFabricCode(e.target.value)}
-        />
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>{editId ? "Update Fabric" : "Add Fabric"}</h2>
 
-        <button type="submit">{editId ? "Update" : "Create"}</button>
-      </form>
+            <form className="fabric-form" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                placeholder="Fabric Name"
+                value={fabricName}
+                onChange={(e) => setFabricName(e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Fabric Code"
+                value={fabricCode}
+                onChange={(e) => setFabricCode(e.target.value)}
+              />
+
+              <div className="modal-buttons">
+                <button type="submit" className="create-btn">
+                  {editId ? "Update" : "Create"}
+                </button>
+
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => {
+                    setShowModal(false);
+                    setEditId("");
+                    setFabricName("");
+                    setFabricCode("");
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="fabric-card">
         {fabrics.length === 0 ? (

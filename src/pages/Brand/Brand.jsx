@@ -31,6 +31,7 @@ const Brand = () => {
   const filteredBrands = currentBrands.filter((brand) =>
     brand.brandName.toLowerCase().includes(search.toLowerCase()),
   );
+  const [showModal, setShowModal] = useState(false);
 
   const {
     register,
@@ -65,11 +66,13 @@ const Brand = () => {
         dispatch(fetchBrands());
         reset();
         setEditId(null);
+        setShowModal(false);
       });
     } else {
       dispatch(createBrand(data)).then(() => {
         dispatch(fetchBrands());
         reset();
+        setShowModal(false);
       });
     }
   };
@@ -81,6 +84,7 @@ const Brand = () => {
     setValue("brandName", brand.brandName);
     setValue("description", brand.description);
     setValue("logo", brand.logo);
+    setShowModal(true);
   };
 
   const handleDelete = (id) => {
@@ -95,55 +99,72 @@ const Brand = () => {
     <div className="brand-container">
       <h2 className="brand-title">Brand Management</h2>
 
-      <div className="brand-form">
-        <input
-          type="text"
-          placeholder="Brand Code"
-          {...register("brandCode")}
-        />
-        <p className="error">{errors.brandCode?.message}</p>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>{editId ? "Update Brand" : "Add Brand"}</h2>
 
-        <input
-          type="text"
-          placeholder="Brand Name"
-          {...register("brandName")}
-        />
-        <p className="error">{errors.brandName?.message}</p>
+            <div className="brand-form">
+              <input
+                type="text"
+                placeholder="Brand Code"
+                {...register("brandCode")}
+              />
+              <p className="error">{errors.brandCode?.message}</p>
 
-        <input type="text" placeholder="Logo URL" {...register("logo")} />
-        <p className="error">{errors.logo?.message}</p>
+              <input
+                type="text"
+                placeholder="Brand Name"
+                {...register("brandName")}
+              />
+              <p className="error">{errors.brandName?.message}</p>
 
-        <textarea
-          placeholder="Description"
-          rows="3"
-          {...register("description")}
-        />
-        <p className="error">{errors.description?.message}</p>
+              <input type="text" placeholder="Logo URL" {...register("logo")} />
+              <p className="error">{errors.logo?.message}</p>
 
-        <div className="form-buttons">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleSubmit(onSubmit)}
-          >
-            {editId ? "Update Brand" : "Add Brand"}
-          </button>
+              <textarea
+                placeholder="Description"
+                rows="3"
+                {...register("description")}
+              />
+              <p className="error">{errors.description?.message}</p>
 
-          {editId && (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => {
-                reset();
-                setEditId(null);
-              }}
-            >
-              Cancel
-            </button>
-          )}
+              <div className="form-buttons">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleSubmit(onSubmit)}
+                >
+                  {editId ? "Update Brand" : "Add Brand"}
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    reset();
+                    setEditId(null);
+                    setShowModal(false);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
+      )}
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => {
+          reset();
+          setEditId(null);
+          setShowModal(true);
+        }}
+      >
+        Add Brand
+      </button>
       <div className="search-box">
         <input
           type="text"

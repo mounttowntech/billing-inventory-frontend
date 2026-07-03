@@ -17,6 +17,8 @@ import NotFound from "../pages/NotFound";
 import CategoryOptions from "../pages/Category/CategoryOptions";
 import Brand from "../pages/Brand/Brand";
 import Fabric from "../pages/fabric/fabric";
+import Season from "../pages/season/Season";
+import Style from "../pages/Style/Style";
 
 const AppRoutes = () => {
   return (
@@ -44,6 +46,8 @@ const AppRoutes = () => {
         <Route path="categories" element={<CategoryOptions />} />
         <Route path="brands" element={<Brand />} />
         <Route path="fabrics" element={<Fabric />} />
+        <Route path="seasons" element={<Season />} />
+        <Route path="styles" element={<Style />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

@@ -21,6 +21,7 @@ const CategoryOptions = ({ value, onChange }) => {
   const currentCategories = categories.slice(indexOfFirst, indexOfLast);
   const totalPages =
     categories.length > 0 ? Math.ceil(categories.length / itemsPerPage) : 1;
+  const [showModal, setShowModal] = useState(false);
   const {
     register,
     handleSubmit,
@@ -35,6 +36,16 @@ const CategoryOptions = ({ value, onChange }) => {
   });
   const [editId, setEditId] = useState(null);
 
+  const handleEdit = (category) => {
+    setEditId(category._id);
+
+    reset({
+      categoryName: category.categoryName,
+    });
+    setValue("categoryName", category.categoryName);
+    setShowModal(true);
+  };
+
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
@@ -47,6 +58,7 @@ const CategoryOptions = ({ value, onChange }) => {
       setCurrentPage(currentPage - 1);
     }
   }, [categories, currentPage]);
+
   const onSubmit = (data) => {
     if (editId) {
       dispatch(
@@ -58,18 +70,15 @@ const CategoryOptions = ({ value, onChange }) => {
         dispatch(fetchCategories());
         reset();
         setEditId(null);
+        setShowModal(false);
       });
     } else {
       dispatch(createCategory(data)).then(() => {
         dispatch(fetchCategories());
         reset();
+        setShowModal(false);
       });
     }
-  };
-
-  const handleEdit = (category) => {
-    setEditId(category._id);
-    setValue("categoryName", category.categoryName);
   };
 
   const handleDelete = (id) => {
@@ -84,39 +93,56 @@ const CategoryOptions = ({ value, onChange }) => {
     <div className="category-container">
       <h2>Category Management</h2>
 
-      <div>
-        <input
-          type="text"
-          placeholder="Enter Category"
-          {...register("categoryName")}
-        />
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>{editId ? "Update Category" : "Add Category"}</h2>
 
-        <p style={{ color: "red" }}>{errors.categoryName?.message}</p>
+            <input
+              type="text"
+              placeholder="Enter Category"
+              {...register("categoryName")}
+              className="category-input"
+            />
 
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={handleSubmit(onSubmit)}
-        >
-          {editId ? "Update" : "Add"}
-        </button>
+            <p className="error-text">{errors.categoryName?.message}</p>
 
-        {editId && (
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => {
-              reset();
-              setEditId(null);
-            }}
-          >
-            Cancel
-          </button>
-        )}
-      </div>
+            <div className="modal-buttons">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit((data) => {
+                  onSubmit(data);
+                })}
+              >
+                {editId ? "Update" : "Add"}
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  reset();
+                  setEditId(null);
+                  setShowModal(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <br />
-
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => {
+          setShowModal(true);
+        }}
+      >
+        Add Category
+      </button>
       {loading && <p>Loading...</p>}
 
       <table border="1" cellPadding="8" width="100%" className="category-table">

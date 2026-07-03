@@ -6,16 +6,9 @@ import CategoryOptions from "../Category/CategoryOptions";
 import { fetchCategories } from "../../features/Category/categorySlice";
 import { fetchBrands } from "../../features/Brand/brandSlice";
 import { getFabrics } from "../../features/Fabric/fabricSlice";
+import { getSeasons } from "../../features/season/seasonSlice";
+import { getStyles } from "../../features/style/styleSlice";
 import { useEffect } from "react";
-
-const SEASON_OPTIONS = ["Summer", "Winter", "Monsoon", "All Season"];
-const STYLE_OPTIONS = [
-  "Casual",
-  "Formal",
-  "Party Wear",
-  "Sports",
-  "Traditional",
-];
 
 const GENDER_OPTIONS = ["Men", "Women", "Unisex", "Kids"];
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -55,6 +48,12 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
   const { fabrics = [], loading: fabricsLoading } = useSelector(
     (state) => state.fabric,
   );
+  const { seasons = [], loading: seasonsLoading } = useSelector(
+    (state) => state.season,
+  );
+  const { styles = [], loading: stylesLoading } = useSelector(
+    (state) => state.style,
+  );
 
   useEffect(() => {
     dispatch(fetchCategories())
@@ -79,6 +78,22 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
         console.log("Fetched fabrics are the :", getFabrics);
         if (getFabrics.length > 0) {
           setCategory(getFabrics[0]._id);
+        }
+      });
+    dispatch(getSeasons())
+      .unwrap()
+      .then((getSeasons) => {
+        console.log("Fetched seasons are the :", getSeasons);
+        if (getSeasons.length > 0) {
+          setCategory(getSeasons[0]._id);
+        }
+      });
+    dispatch(getStyles())
+      .unwrap()
+      .then((getStyles) => {
+        console.log("Fetched styles are the :", getStyles);
+        if (getStyles.length > 0) {
+          setCategory(getStyles[0]._id);
         }
       });
   }, [dispatch]);
@@ -281,9 +296,9 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                   onChange={(e) => updateField("season", e.target.value)}
                 >
                   <option value="">Select season</option>
-                  {SEASON_OPTIONS.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
+                  {seasons.map((season) => (
+                    <option key={season._id} value={season._id}>
+                      {season.seasonName}
                     </option>
                   ))}
                 </select>
@@ -296,9 +311,9 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                   onChange={(e) => updateField("style", e.target.value)}
                 >
                   <option value="">Select style</option>
-                  {STYLE_OPTIONS.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
+                  {styles.map((style) => (
+                    <option key={style._id} value={style._id}>
+                      {style.styleName}
                     </option>
                   ))}
                 </select>

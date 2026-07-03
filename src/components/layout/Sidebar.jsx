@@ -11,11 +11,17 @@ const Sidebar = () => {
         <NavLink to="/products">Products</NavLink>
         <NavLink to="/customers">Customers</NavLink>
         <NavLink to="/purchases">Purchases</NavLink>
-        <NavLink to="/categories">Category</NavLink>
-        <NavLink to="/brands">Brands</NavLink>
-        <NavLink to="/fabrics">Fabrics</NavLink>
         <NavLink to="/invoices">Invoices</NavLink>
         <NavLink to="/reports">Reports</NavLink>
+        <details>
+          <summary>Settings</summary>
+
+          <NavLink to="/categories">Category</NavLink>
+          <NavLink to="/brands">Brand</NavLink>
+          <NavLink to="/styles">Style</NavLink>
+          <NavLink to="/fabrics">Fabric</NavLink>
+          <NavLink to="/seasons">Season</NavLink>
+        </details>
       </nav>
     </aside>
   );

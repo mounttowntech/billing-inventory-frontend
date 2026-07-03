@@ -40,6 +40,36 @@
   border-radius: 10px;
 }
 
+details summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 11px;
+  display: flex;
+  margin-bottom: 8px;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  font-weight: 500;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details summary::after {
+  content: "▸";
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+details[open] summary::after {
+  transform: rotate(90deg);
+}
+
+details a {
+  display: block;
+  padding: 10px 16px 10px 32px;
+}
 /* ===== BRAND / LOGO AREA ===== */
 .sidebar-brand {
   display: flex;
