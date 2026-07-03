@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidation } from "../../validations/loginValidation";
@@ -35,22 +35,12 @@ const Login = () => {
 
         {error && <p className="error">{error}</p>}
 
-        <Input
-          label="Email"
-          name="email"
-          type="email"
-          placeholder="Email"
-          register={register}
-          error={errors.email?.message}
-        />
-        <Input
-          label="Password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          register={register}
-          error={errors.password?.message}
-        />
+        <input placeholder="Email" {...register("email")} />
+        <p className="error">{errors.email?.message}</p>
+
+        <input type="password" placeholder="Password" {...register("password")} />
+        <p className="error">{errors.password?.message}</p>
+
         <button disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
