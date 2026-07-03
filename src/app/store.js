@@ -3,12 +3,21 @@ import authReducer from "../features/auth/authSlice";
 import productReducer from "../features/product/productSlice";
 import customerReducer from "../features/customer/customerSlice";
 import invoiceReducer from "../features/invoice/invoiceSlice";
-
+import categoryReducer from "../features/Category/categorySlice";
+import brandReducer from "../features/Brand/brandSlice";
+import fabricReducer from "../features/fabric/fabricSlice";
+import seasonReducer from "../features/season/seasonSlice";
+import styleReducer from "../features/style/styleSlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     product: productReducer,
     customer: customerReducer,
     invoice: invoiceReducer,
+    category: categoryReducer,
+    brand: brandReducer,
+    fabric: fabricReducer,
+    season: seasonReducer,
+    style: styleReducer,
   },
 });

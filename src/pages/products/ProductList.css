@@ -1,0 +1,20 @@
+
+/* ===== HEADING ===== */
+.dash-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.dash-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dash-actions button {
+  width: auto;
+  white-space: nowrap;
+}
