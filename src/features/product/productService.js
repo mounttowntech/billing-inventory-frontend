@@ -1,7 +1,7 @@
 import API from "../../services/api";
 
 export const getProductsApi = async () => {
-  const response = await API.get("/products");
+  const response = await API.get("products/all");
   return response.data;
 };
 

@@ -6,10 +6,11 @@ import {
   updateSeason,
   deleteSeason,
 } from "../../features/season/seasonSlice";
+import seasonValidation from "../../validations/seasonValidation";
 
 const Season = () => {
   const dispatch = useDispatch();
-
+  const [errors, setErrors] = useState({});
   const { seasons, loading, error } = useSelector((state) => state.season);
 
   const [seasonName, setSeasonName] = useState("");
@@ -38,7 +39,17 @@ const Season = () => {
   }, [seasons, currentPage]);
   const handleSubmit = (e) => {
     e.preventDefault();
+    const validationErrors = seasonValidation({
+      seasonName,
+      seasonCode,
+    });
 
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
     const seasonData = {
       seasonName,
       seasonCode,
@@ -87,20 +98,21 @@ const Season = () => {
 
   return (
     <div>
-      <h2>Season Management</h2>
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() => {
-          setEditId("");
-          setSeasonName("");
-          setSeasonCode("");
-          setShowModal(true);
-        }}
-      >
-        Add Season
-      </button>
-
+      <div className="season-header">
+        <h2>Season Management</h2>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => {
+            setEditId("");
+            setSeasonName("");
+            setSeasonCode("");
+            setShowModal(true);
+          }}
+        >
+          Add Season
+        </button>
+      </div>
       <br />
       <br />
       {showModal && (
@@ -115,14 +127,22 @@ const Season = () => {
                 value={seasonName}
                 onChange={(e) => setSeasonName(e.target.value)}
               />
-
+              {errors.seasonName && (
+                <p style={{ color: "red", marginTop: "5px" }}>
+                  {errors.seasonName}
+                </p>
+              )}
               <input
                 type="text"
                 placeholder="Season Code"
                 value={seasonCode}
                 onChange={(e) => setSeasonCode(e.target.value)}
               />
-
+              {errors.seasonCode && (
+                <p style={{ color: "red", marginTop: "5px" }}>
+                  {errors.seasonCode}
+                </p>
+              )}
               <div className="modal-buttons">
                 <button type="submit" className="btn btn-primary">
                   {editId ? "Update" : "Create"}

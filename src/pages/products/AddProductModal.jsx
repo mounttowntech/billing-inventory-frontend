@@ -1,6 +1,9 @@
 import { useState } from "react";
 import "./AddProductModal.css";
-import { createProduct } from "../../features/product/productSlice";
+import {
+  createProduct,
+  updateProduct,
+} from "../../features/product/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CategoryOptions from "../Category/CategoryOptions";
 import { fetchCategories } from "../../features/Category/categorySlice";
@@ -9,6 +12,11 @@ import { getFabrics } from "../../features/Fabric/fabricSlice";
 import { getSeasons } from "../../features/season/seasonSlice";
 import { getStyles } from "../../features/style/styleSlice";
 import { useEffect } from "react";
+import seasonValidation from "../../validations/seasonValidation";
+import { brandValidation } from "../../validations/brandValidation";
+import { categoryValidation } from "../../validations/categoryValidation";
+import { styleValidation } from "../../validations/styleValidation";
+import fabricValidation from "../../validations/fabricValidation";
 
 const GENDER_OPTIONS = ["Men", "Women", "Unisex", "Kids"];
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -17,6 +25,8 @@ const emptyVariant = () => ({
   color: "",
   size: "",
   price: "",
+  mrp: "",
+  sellingPrice: "",
   currentStock: "",
   skuCode: "",
   barcode: "",
@@ -35,10 +45,16 @@ const emptyForm = () => ({
   variants: [emptyVariant()],
 });
 
-const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
+const AddProductModal = ({
+  isOpen,
+  onClose,
+  onProductAdded,
+  fetchProducts,
+  product,
+  isEdit,
+}) => {
   const dispatch = useDispatch();
   const [form, setForm] = useState(emptyForm());
-  const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [category, setCategory] = useState("");
   const { categories = [], loading } = useSelector((state) => state.category);
@@ -54,7 +70,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
   const { styles = [], loading: stylesLoading } = useSelector(
     (state) => state.style,
   );
-
   useEffect(() => {
     dispatch(fetchCategories())
       .unwrap()
@@ -98,12 +113,37 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
       });
   }, [dispatch]);
 
+  useEffect(() => {
+    if (product && isEdit) {
+      setForm({
+        productCode: product.productCode || "",
+        productName: product.productName || "",
+        category: product.category?._id || "",
+        brand: product.brand?._id || "",
+        fabric: product.fabric?._id || "",
+        season: product.season?._id || "",
+        style: product.style?._id || "",
+        gender: product.gender || "",
+        description: product.description || "",
+        variants: product.variants?.map((v) => ({
+          color: v.color || "",
+          size: v.size || "",
+          price: v.price || "",
+          mrp: v.mrp || "",
+          sellingPrice: v.sellingPrice || "",
+          currentStock: v.currentStock || "",
+          skuCode: v.skuCode || "",
+          barcode: v.barcode || "",
+        })) || [emptyVariant()],
+      });
+    }
+  }, [product, isEdit]);
+
   /* ---------- field handlers ---------- */
   if (!isOpen) return null;
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
   const updateVariant = (index, field, value) => {
@@ -128,40 +168,10 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
     }));
   };
 
-  /* ---------- validation ---------- */
-
-  const validate = () => {
-    const newErrors = {};
-    if (!form.productCode.trim())
-      newErrors.productCode = "Product code is required";
-    if (!form.productName.trim())
-      newErrors.productName = "Product name is required";
-    if (!form.category) newErrors.category = "Select a category";
-    if (!form.brand) newErrors.brand = "Select a brand";
-    if (!form.gender) newErrors.gender = "Select a gender";
-
-    form.variants.forEach((v, i) => {
-      if (
-        !v.color.trim() ||
-        !v.size ||
-        v.price === "" ||
-        v.currentStock === ""
-      ) {
-        newErrors[`variant-${i}`] = "Color, size, price and stock are required";
-      }
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   /* ---------- submit ---------- */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validate()) return;
-
     setSubmitting(true);
 
     try {
@@ -170,11 +180,23 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
         variants: form.variants.map((v) => ({
           ...v,
           price: Number(v.price),
+          mrp: Number(v.mrp),
+          sellingPrice: Number(v.sellingPrice),
           currentStock: Number(v.currentStock),
         })),
       };
 
-      const response = await dispatch(createProduct(payload));
+      let response;
+      if (isEdit) {
+        response = await dispatch(
+          updateProduct({
+            id: product._id,
+            data: payload,
+          }),
+        ).unwrap();
+      } else {
+        response = await dispatch(createProduct(payload)).unwrap();
+      }
 
       console.log(response);
 
@@ -182,6 +204,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
 
       setForm(emptyForm());
       onClose();
+      fetchProducts();
     } catch (error) {
       console.error("Failed to create product:", error);
     } finally {
@@ -191,7 +214,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
 
   const handleClose = () => {
     setForm(emptyForm());
-    setErrors({});
     onClose();
   };
 
@@ -222,9 +244,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                   value={form.productCode}
                   onChange={(e) => updateField("productCode", e.target.value)}
                 />
-                {errors.productCode && (
-                  <span className="error">{errors.productCode}</span>
-                )}
               </div>
 
               <div className="form-group">
@@ -235,16 +254,13 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                   value={form.productName}
                   onChange={(e) => updateField("productName", e.target.value)}
                 />
-                {errors.productName && (
-                  <span className="error">{errors.productName}</span>
-                )}
               </div>
 
               <div className="form-group">
                 <label>Category *</label>
                 <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  value={form.category}
+                  onChange={(e) => updateField("category", e.target.value)}
                 >
                   <option value="">Select Category</option>
                   {categories.map((category) => (
@@ -253,9 +269,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                     </option>
                   ))}{" "}
                 </select>
-                {errors.category && (
-                  <span className="error">{errors.category}</span>
-                )}
               </div>
 
               <div className="form-group">
@@ -271,7 +284,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                     </option>
                   ))}{" "}
                 </select>
-                {errors.brand && <span className="error">{errors.brand}</span>}
               </div>
 
               <div className="form-group">
@@ -332,9 +344,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                     </option>
                   ))}
                 </select>
-                {errors.gender && (
-                  <span className="error">{errors.gender}</span>
-                )}
               </div>
             </div>
 
@@ -400,13 +409,37 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                       type="number"
                       min="0"
                       placeholder="0"
-                      value={variant.price}
+                      value={variant.sellingPrice}
                       onChange={(e) =>
-                        updateVariant(index, "price", e.target.value)
+                        updateVariant(index, "sellingPrice", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>MRP (₹)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={variant.mrp}
+                      onChange={(e) =>
+                        updateVariant(index, "mrp", e.target.value)
                       }
                     />
                   </div>
 
+                  <div className="form-group">
+                    <label>Selling Price (₹)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={variant.sellingPrice}
+                      onChange={(e) =>
+                        updateVariant(index, "sellingPrice", e.target.value)
+                      }
+                    />
+                  </div>
                   <div className="form-group">
                     <label>Stock Qty</label>
                     <input
@@ -454,10 +487,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                   >
                     Remove
                   </button>
-                )}
-
-                {errors[`variant-${index}`] && (
-                  <span className="error">{errors[`variant-${index}`]}</span>
                 )}
               </div>
             ))}

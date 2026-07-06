@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./fabric.css";
+import fabricValidation from "../../validations/fabricValidation";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getFabrics,
@@ -10,6 +11,7 @@ import {
 
 const Fabric = () => {
   const dispatch = useDispatch();
+  const [errors, setErrors] = useState({});
   const { fabrics, loading, error } = useSelector((state) => state.fabric);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -41,7 +43,17 @@ const Fabric = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const validationErrors = fabricValidation({
+      fabricName,
+      fabricCode,
+    });
 
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
     const fabricData = {
       fabricName,
       fabricCode,
@@ -116,14 +128,22 @@ const Fabric = () => {
                 value={fabricName}
                 onChange={(e) => setFabricName(e.target.value)}
               />
-
+              {errors.fabricName && (
+                <p style={{ color: "red", marginTop: "5px" }}>
+                  {errors.fabricName}
+                </p>
+              )}
               <input
                 type="text"
                 placeholder="Fabric Code"
                 value={fabricCode}
                 onChange={(e) => setFabricCode(e.target.value)}
               />
-
+              {errors.fabricCode && (
+                <p style={{ color: "red", marginTop: "5px" }}>
+                  {errors.fabricCode}
+                </p>
+              )}
               <div className="modal-buttons">
                 <button type="submit" className="create-btn">
                   {editId ? "Update" : "Create"}

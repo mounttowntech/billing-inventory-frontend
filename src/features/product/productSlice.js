@@ -11,7 +11,7 @@ import {
 } from "./productService";
 
 export const getProducts = createAsyncThunk(
-  "product/getProducts",
+  "all/getProducts",
   async (_, thunkAPI) => {
     try {
       return await getProductsApi();
@@ -24,7 +24,7 @@ export const getProducts = createAsyncThunk(
 );
 
 export const getProductById = createAsyncThunk(
-  "product/getProductById",
+  "products/getProductById",
   async (id, thunkAPI) => {
     try {
       return await getProductByIdApi(id);
@@ -37,7 +37,7 @@ export const getProductById = createAsyncThunk(
 );
 
 export const createProduct = createAsyncThunk(
-  "product/createProduct",
+  "products/createProduct",
   async (data, thunkAPI) => {
     try {
       return await createProductApi(data);
@@ -50,7 +50,7 @@ export const createProduct = createAsyncThunk(
 );
 
 export const updateProduct = createAsyncThunk(
-  "product/updateProduct",
+  "products/updateProduct",
   async ({ id, data }, thunkAPI) => {
     try {
       return await updateProductApi(id, data);
@@ -63,7 +63,7 @@ export const updateProduct = createAsyncThunk(
 );
 
 export const deleteProduct = createAsyncThunk(
-  "product/deleteProduct",
+  "products/deleteProduct",
   async (id, thunkAPI) => {
     try {
       await deleteProductApi(id);
@@ -77,7 +77,7 @@ export const deleteProduct = createAsyncThunk(
 );
 
 export const searchBySKU = createAsyncThunk(
-  "product/searchBySKU",
+  "products/searchBySKU",
   async (sku, thunkAPI) => {
     try {
       return await searchBySKUApi(sku);
@@ -90,7 +90,7 @@ export const searchBySKU = createAsyncThunk(
 );
 
 export const searchByBarcode = createAsyncThunk(
-  "product/searchByBarcode",
+  "products/searchByBarcode",
   async (barcode, thunkAPI) => {
     try {
       return await searchByBarcodeApi(barcode);
@@ -103,7 +103,7 @@ export const searchByBarcode = createAsyncThunk(
 );
 
 export const getStockSummary = createAsyncThunk(
-  "product/getStockSummary",
+  "products/getStockSummary",
   async (_, thunkAPI) => {
     try {
       return await getStockSummaryApi();
