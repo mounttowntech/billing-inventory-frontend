@@ -1,29 +1,141 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
+import {
+  DashboardIcon,
+  POSIcon,
+  ProductsIcon,
+  CustomersIcon,
+  PurchaseIcon,
+  InvoiceIcon,
+  ReportsIcon,
+  SettingsIcon,
+  DotIcon,
+  BrandLogoIcon,
+  MenuIcon,
+} from "./SidebarIcons";
+
 const Sidebar = () => {
+  const [open, setOpen] = useState(false);
+
+  const closeSidebar = () => setOpen(false);
+
   return (
-    <aside className="sidebar">
-      <h2>BI System</h2>
+    <>
+      {/* Mobile toggle button — place this in your top navbar/header */}
+      <button
+        className="sidebar-toggle"
+        onClick={() => setOpen(true)}
+        aria-label="Open menu"
+      >
+        <MenuIcon />
+      </button>
 
-      <nav>
-        <NavLink to="/">Dashboard</NavLink>
-        <NavLink to="/billing">POS Billing</NavLink>
-        <NavLink to="/products">Products</NavLink>
-        <NavLink to="/customers">Customers</NavLink>
-        <NavLink to="/purchases">Purchases</NavLink>
-        <NavLink to="/invoices">Invoices</NavLink>
-        <NavLink to="/reports">Reports</NavLink>
-        <details>
-          <summary>Settings</summary>
+      {/* Dark overlay behind the sidebar on mobile */}
+      <div
+        className={`sidebar-overlay ${open ? "active" : ""}`}
+        onClick={closeSidebar}
+      />
 
-          <NavLink to="/categories">Category</NavLink>
-          <NavLink to="/brands">Brand</NavLink>
-          <NavLink to="/styles">Style</NavLink>
-          <NavLink to="/fabrics">Fabric</NavLink>
-          <NavLink to="/seasons">Season</NavLink>
-        </details>
-      </nav>
-    </aside>
+      <aside className={`sidebar ${open ? "open" : ""}`}>
+        <div className="sidebar-brand">
+          <span className="sidebar-brand-logo">
+            <BrandLogoIcon />
+          </span>
+          <div className="sidebar-brand-text">
+            <h2>BI System</h2>
+            <span>Enterprise Edition</span>
+          </div>
+        </div>
+
+        <nav onClick={closeSidebar}>
+          <NavLink to="/" end>
+            <span className="nav-icon">
+              <DashboardIcon />
+            </span>
+            <span>Dashboard</span>
+          </NavLink>
+          <NavLink to="/billing">
+            <span className="nav-icon">
+              <POSIcon />
+            </span>
+            <span>POS Billing</span>
+          </NavLink>
+          <NavLink to="/products">
+            <span className="nav-icon">
+              <ProductsIcon />
+            </span>
+            <span>Products</span>
+          </NavLink>
+          <NavLink to="/customers">
+            <span className="nav-icon">
+              <CustomersIcon />
+            </span>
+            <span>Customers</span>
+          </NavLink>
+          <NavLink to="/purchases">
+            <span className="nav-icon">
+              <PurchaseIcon />
+            </span>
+            <span>Purchases</span>
+          </NavLink>
+          <NavLink to="/invoices">
+            <span className="nav-icon">
+              <InvoiceIcon />
+            </span>
+            <span>Invoices</span>
+          </NavLink>
+          <NavLink to="/reports">
+            <span className="nav-icon">
+              <ReportsIcon />
+            </span>
+            <span>Reports</span>
+          </NavLink>
+
+          <details>
+            <summary>
+              <span className="summary-label">
+                <span className="nav-icon">
+                  <SettingsIcon />
+                </span>
+                <span>Settings</span>
+              </span>
+            </summary>
+
+            <NavLink to="/categories">
+              <span className="nav-icon">
+                <DotIcon />
+              </span>
+              <span>Category</span>
+            </NavLink>
+            <NavLink to="/brands">
+              <span className="nav-icon">
+                <DotIcon />
+              </span>
+              <span>Brand</span>
+            </NavLink>
+            <NavLink to="/styles">
+              <span className="nav-icon">
+                <DotIcon />
+              </span>
+              <span>Style</span>
+            </NavLink>
+            <NavLink to="/fabrics">
+              <span className="nav-icon">
+                <DotIcon />
+              </span>
+              <span>Fabric</span>
+            </NavLink>
+            <NavLink to="/seasons">
+              <span className="nav-icon">
+                <DotIcon />
+              </span>
+              <span>Season</span>
+            </NavLink>
+          </details>
+        </nav>
+      </aside>
+    </>
   );
 };
 
