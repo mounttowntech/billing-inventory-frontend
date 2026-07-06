@@ -165,7 +165,7 @@ th, td {
   text-align: left;
   padding: 14px 18px;
   font-size: 14px;
-  border-bottom: 1px solid var(--border-color);
+  /* border-bottom: 1px solid var(--border-color); */
 }
 
 th {
@@ -257,7 +257,7 @@ input::placeholder {
 button {
   padding: 11px 20px;
   cursor: pointer;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  /* background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); */
   color: white;
   border: none;
   border-radius: 8px;
