@@ -12,6 +12,7 @@ const ProductList = () => {
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
+  const [expandedProduct, setExpandedProduct] = useState(null);
   const [category, setCategory] = useState("");
   const dispatch = useDispatch();
 
@@ -63,70 +64,83 @@ const ProductList = () => {
       />
 
       <table className="product-table">
-        <thead>
-          <tr>
-            <th>Product Code</th>
-            <th>Product Name</th>
-            <th>Category</th>
-            <th>Brand</th>
-            <th>Fabric</th>
-            <th>Season</th>
-            <th>Style</th>
-            <th>Gender</th>
-            <th>Description</th>
-            <th>Variants</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
         <tbody>
           {products.map((product) => (
-            <tr key={product._id}>
-              <td>{product.productCode}</td>
-              <td>{product.productName}</td>
-              <td>{product.category?.categoryName}</td>
-              <td>{product.brand?.brandName}</td>
-              <td>{product.fabric?.fabricName}</td>
-              <td>{product.season?.seasonName}</td>
-              <td>{product.style?.styleName}</td>
-              <td>{product.gender}</td>
-              <td>{product.description}</td>
+            <>
+              <tr key={product._id}>
+                <td>{product.productCode}</td>
+                <td>{product.productName}</td>
+                <td>{product.category?.categoryName}</td>
+                <td>{product.brand?.brandName}</td>
+                <td>{product.fabric?.fabricName}</td>
+                <td>{product.season?.seasonName}</td>
+                <td>{product.style?.styleName}</td>
+                <td>{product.gender}</td>
+                <td>{product.description}</td>
 
-              <td>
-                <table className="variant-table">
-                  <thead>
-                    <tr>
-                      <th>Color</th>
-                      <th>Size</th>
-                      <th>Price</th>
-                      <th>Stock</th>
-                      <th>SKU</th>
-                      <th>Barcode</th>
-                    </tr>
-                  </thead>
+                <td>
+                  <button
+                    className="Viewvariants"
+                    onClick={() =>
+                      setExpandedProduct(
+                        expandedProduct === product._id ? null : product._id,
+                      )
+                    }
+                  >
+                    View Variants ({product.variants.length})
+                  </button>
+                </td>
 
-                  <tbody>
-                    {product.variants.map((variant, index) => (
-                      <tr key={index}>
-                        <td>{variant.color}</td>
-                        <td>{variant.size}</td>
-                        <td>₹{variant.sellingPrice}</td>
-                        <td>{variant.currentStock}</td>
-                        <td>{variant.skuCode}</td>
-                        <td>{variant.barcode}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </td>
+                <td className="action-buttons">
+                  <button
+                    onClick={() => handleEdit(product)}
+                    className="secondary-heading1"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(product._id)}
+                    className="secondary-heading2"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
 
-              <td>
-                <button onClick={() => handleEdit(product)}>Edit</button>
-                <button onClick={() => handleDelete(product._id)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
+              {expandedProduct === product._id && (
+                <tr>
+                  <td colSpan={11}>
+                    <table className="variant-table">
+                      <thead>
+                        <tr>
+                          <th>Color</th>
+                          <th>Size</th>
+                          <th>MRP</th>
+                          <th>Selling Price</th>
+                          <th>Stock</th>
+                          <th>SKU</th>
+                          <th>Barcode</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {product.variants.map((variant, index) => (
+                          <tr key={index}>
+                            <td>{variant.color}</td>
+                            <td>{variant.size}</td>
+                            <td>₹{variant.mrp}</td>
+                            <td>₹{variant.sellingPrice}</td>
+                            <td>{variant.currentStock}</td>
+                            <td>{variant.skuCode}</td>
+                            <td>{variant.barcode}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              )}
+            </>
           ))}
         </tbody>
       </table>

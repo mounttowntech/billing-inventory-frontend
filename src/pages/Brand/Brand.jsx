@@ -203,7 +203,11 @@ const Brand = () => {
                       <img
                         src={brand.logo}
                         alt={brand.brandName}
-                        className="brand-logo"
+                        style={{
+                          width: "150px",
+                          height: "50px",
+                          objectFit: "contain",
+                        }}
                       />
                     ) : (
                       "No Logo"
