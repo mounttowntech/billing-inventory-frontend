@@ -1,0 +1,66 @@
+.btn {
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  width: 100px;
+  color: var(--color-white);
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.btn-add,
+.btn-save {
+  background: var(--color-primary);
+  float: inline-end;
+  width: fit-content;
+  margin-bottom: 15px !important;
+}
+
+.btn-add:hover,
+.btn-save:hover {
+  background: #115e59;
+}
+
+.btn-edit {
+  background: #115e59;
+  color: #fff;
+}
+
+.btn-edit:hover {
+  background: #115e59;
+}
+
+.btn-delete {
+  background:#A3282E ;
+  color: #fff;
+}
+
+.btn-delete:hover {
+  background:#A3282E ;
+}
+
+.btn-cancel {
+  background: #6b7280;
+  color: #fff;
+  width: auto;
+  padding: 11px 22px;
+}
+
+.btn-cancel:hover {
+  background: #4b5563;
+}
+
+.btn-pagination {
+  background: #0f766e;
+  color: #fff;
+}
+
+.btn-pagination:hover:not(:disabled) {
+  background: #115e59;
+}
+
+.btn-pagination:disabled {
+  background: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}

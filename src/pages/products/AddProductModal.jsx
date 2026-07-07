@@ -17,6 +17,15 @@ import { brandValidation } from "../../validations/brandValidation";
 import { categoryValidation } from "../../validations/categoryValidation";
 import { styleValidation } from "../../validations/styleValidation";
 import fabricValidation from "../../validations/fabricValidation";
+import {
+  AddButton,
+  EditButton,
+  DeleteButton,
+  CancelButton,
+  PreviousButton,
+  NextButton,
+  SaveButton,
+} from "../../components/Common/Button";
 
 const GENDER_OPTIONS = ["Men", "Women", "Unisex", "Kids"];
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -70,6 +79,7 @@ const AddProductModal = ({
   const { styles = [], loading: stylesLoading } = useSelector(
     (state) => state.style,
   );
+
   useEffect(() => {
     dispatch(fetchCategories())
       .unwrap()
@@ -494,12 +504,10 @@ const AddProductModal = ({
 
           {/* ===== Footer actions ===== */}
           <div className="modal-footer">
-            <button type="button" className="secondary" onClick={handleClose}>
-              Cancel
-            </button>
-            <button type="submit" disabled={submitting}>
+            <CancelButton onClick={handleClose}>Cancel</CancelButton>
+            <SaveButton type="submit" disabled={submitting}>
               {submitting ? "Saving..." : "Save Product"}
-            </button>
+            </SaveButton>
           </div>
         </form>
       </div>

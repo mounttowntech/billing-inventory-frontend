@@ -49,7 +49,6 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 0.85rem;
-  border-radius: var(--radius-pill);
   padding: 8px 18px;
   transition:
     transform 0.12s ease,
@@ -132,6 +131,7 @@
 .action-buttons {
   display: flex;
   gap: 8px;
+  justify-content: center !important;
   flex-wrap: wrap;
 }
 
@@ -302,7 +302,7 @@
   }
 
   .style-table tbody td {
-    text-align: right;
+    text-align: center;
     padding: 10px 14px;
     border-bottom: 1px dashed var(--border-soft);
     position: relative;

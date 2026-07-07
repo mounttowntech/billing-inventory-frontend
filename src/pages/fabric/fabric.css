@@ -12,6 +12,14 @@
   margin: 30px auto;
 }
 
+.action-buttons{
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+  gap: 10px;
+  border:none !important;
+}
+
 .fabric-title {
   text-align: center;
   margin-bottom: 20px;

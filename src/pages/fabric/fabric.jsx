@@ -8,6 +8,14 @@ import {
   updateFabric,
   deleteFabric,
 } from "../../features/fabric/fabricSlice";
+import {
+  AddButton,
+  EditButton,
+  DeleteButton,
+  CancelButton,
+  PreviousButton,
+  NextButton,
+} from "../../components/Common/Button";
 
 const Fabric = () => {
   const dispatch = useDispatch();
@@ -104,8 +112,7 @@ const Fabric = () => {
     <div className="fabric-container">
       <h2 className="fabric-title">Fabric </h2>
 
-      <button
-        className="create-btn"
+      <AddButton
         onClick={() => {
           setEditId("");
           setFabricName("");
@@ -114,7 +121,7 @@ const Fabric = () => {
         }}
       >
         Add Fabric
-      </button>
+      </AddButton>
 
       {showModal && (
         <div className="modal-overlay">
@@ -145,13 +152,11 @@ const Fabric = () => {
                 </p>
               )}
               <div className="modal-buttons">
-                <button type="submit" className="create-btn">
+                <Createbutton type="submit">
                   {editId ? "Update" : "Create"}
-                </button>
+                </Createbutton>
 
-                <button
-                  type="button"
-                  className="cancel-btn"
+                <CancelButton
                   onClick={() => {
                     setShowModal(false);
                     setEditId("");
@@ -160,7 +165,7 @@ const Fabric = () => {
                   }}
                 >
                   Cancel
-                </button>
+                </CancelButton>
               </div>
             </form>
           </div>
@@ -190,20 +195,14 @@ const Fabric = () => {
 
                   <td>{fabric.fabricCode}</td>
 
-                  <td>
-                    <button
-                      onClick={() => handleEdit(fabric)}
-                      className="edit-btn"
-                    >
+                  <td className="action-buttons">
+                    <EditButton onClick={() => handleEdit(fabric)}>
                       Edit
-                    </button>
+                    </EditButton>
 
-                    <button
-                      onClick={() => handleDelete(fabric._id)}
-                      className="delete-btn"
-                    >
+                    <DeleteButton onClick={() => handleDelete(fabric._id)}>
                       Delete
-                    </button>
+                    </DeleteButton>
                   </td>
                 </tr>
               ))}
@@ -212,23 +211,23 @@ const Fabric = () => {
         )}
       </div>
       <div className="pagination">
-        <button
+        <PreviousButton
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous
-        </button>
+        </PreviousButton>
 
         <span>
           Page {currentPage} of {totalPages}
         </span>
 
-        <button
+        <NextButton
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           Next
-        </button>
+        </NextButton>
       </div>
     </div>
   );

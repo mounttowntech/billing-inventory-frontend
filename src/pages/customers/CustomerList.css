@@ -63,36 +63,6 @@ tbody tr:hover {
   background: #f7f9fc;
 }
 
-td button {
-  padding: 8px 15px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #fff;
-  margin-right: 8px;
-  transition: .3s;
-}
-
-td button:first-child {
-  background: #f59e0b;
-}
-
-td button:first-child:hover {
-  background: #d97706;
-}
-
-td button:last-child {
-  background: #dc2626;
-}
-
-td button:last-child:hover {
-  background: #b91c1c;
-}
-
-/* ===========================
-   MODAL
-=========================== */
-
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -158,35 +128,13 @@ td button:last-child:hover {
   margin-top: 4px;
 }
 
-.modal button {
-  margin-top: 18px;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
-  transition: .3s;
+.action-buttons{
+  display: flex;
+  justify-content: start !important;
+  flex-wrap: wrap;
+  gap: 10px;
+  border:none !important;
 }
-
-.modal button[type="submit"] {
-  background: #2563eb;
-  color: #fff;
-}
-
-.modal button[type="submit"]:hover {
-  background: #1d4ed8;
-}
-
-.modal button[type="button"] {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.modal button[type="button"]:hover {
-  background: #d1d5db;
-}
-
 /* ===========================
    TABLET
 =========================== */

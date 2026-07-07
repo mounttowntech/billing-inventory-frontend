@@ -7,6 +7,13 @@ import {
   updateCategory,
   deleteCategory,
 } from "../../features/Category/categorySlice";
+import {
+  AddButton,
+  EditButton,
+  DeleteButton,
+  SaveButton,
+  CancelButton,
+} from "../../components/Common/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { categoryValidation } from "../../validations/categoryValidation";
@@ -108,18 +115,10 @@ const CategoryOptions = ({ value, onChange }) => {
             <p className="error-text">{errors.categoryName?.message}</p>
 
             <div className="modal-buttons">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleSubmit((data) => {
-                  onSubmit(data);
-                })}
-              >
+              <SaveButton onClick={handleSubmit((data) => onSubmit(data))}>
                 {editId ? "Update" : "Add"}
-              </button>
-              <button
-                type="button"
-                className="btn btn-secondary"
+              </SaveButton>
+              <CancelButton
                 onClick={() => {
                   reset();
                   setEditId(null);
@@ -127,22 +126,20 @@ const CategoryOptions = ({ value, onChange }) => {
                 }}
               >
                 Cancel
-              </button>
+              </CancelButton>
             </div>
           </div>
         </div>
       )}
 
       <br />
-      <button
-        type="button"
-        className="btn btn-primary"
+      <AddButton
         onClick={() => {
           setShowModal(true);
         }}
       >
         Add Category
-      </button>
+      </AddButton>
       {loading && <p>Loading...</p>}
 
       <table border="1" cellPadding="8" width="100%" className="category-table">
@@ -160,23 +157,10 @@ const CategoryOptions = ({ value, onChange }) => {
               <td>{indexOfFirst + index + 1}</td>
               <td>{category.categoryName}</td>
 
-              <td>
-                <button
-                  type="button"
-                  onClick={() => handleEdit(category)}
-                  className="btn btn-edit"
-                >
-                  Edit
-                </button>
+              <td className="action-buttons">
+                <EditButton onClick={() => handleEdit(category)} />
 
-                <button
-                  type="button"
-                  onClick={() => handleDelete(category._id)}
-                  className="btn btn-delete"
-                  style={{ marginLeft: "10px" }}
-                >
-                  Delete
-                </button>
+                <DeleteButton onClick={() => handleDelete(category._id)} />
               </td>
             </tr>
           ))}

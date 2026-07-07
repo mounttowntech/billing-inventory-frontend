@@ -7,7 +7,15 @@ import {
   updateCustomer,
   deleteCustomer,
 } from "../../features/Customer/customerSlice";
-
+import {
+  AddButton,
+  EditButton,
+  DeleteButton,
+  PreviousButton,
+  NextButton,
+  SaveButton,
+  CancelButton,
+} from "../../components/Common/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CustomerValidation from "../../validations/CustomerValidation";
@@ -118,6 +126,7 @@ const Customer = () => {
       <table border="1" className="table-container">
         <thead>
           <tr>
+            <th>S.No</th>
             <th>Code</th>
             <th>Name</th>
             <th>Phone</th>
@@ -138,37 +147,41 @@ const Customer = () => {
 
               <td>{customer.email}</td>
 
-              <td>
-                <button onClick={() => handleEdit(customer)}>Edit</button>
+              <td className="action-buttons">
+                <EditButton onClick={() => handleEdit(customer)}>
+                  Edit
+                </EditButton>
 
-                <button onClick={() => dispatch(deleteCustomer(customer._id))}>
+                <DeleteButton
+                  onClick={() => dispatch(deleteCustomer(customer._id))}
+                >
                   Delete
-                </button>
+                </DeleteButton>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
       <div className="pagination">
-        <button
+        <PreviousButton
           type="button"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous
-        </button>
+        </PreviousButton>
 
         <span>
           Page {currentPage} of {totalPages || 1}
         </span>
 
-        <button
+        <NextButton
           type="button"
           disabled={currentPage >= totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           Next
-        </button>
+        </NextButton>
       </div>
     </div>
   );
