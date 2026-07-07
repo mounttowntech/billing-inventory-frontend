@@ -3,3 +3,52 @@
   justify-content: space-between;
   align-items: center;
 }
+
+
+.season-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #042f2e !important;
+}
+
+.season-table thead tr {
+  background: var(--teal-500);
+}
+
+.season-table thead th {
+  color: #fff;
+  background: #0f766e !important;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-align: center;
+  padding: 14px 12px;
+  font-weight: 700;
+  border: #ffffff solid 1px;
+}
+
+.season-table tbody td {
+  text-align: center;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  border: 1px solid var(--border-soft);
+  font-size: 0.9rem;
+  color: var(--teal-900);
+}
+
+.season-table tbody tr:nth-child(even) {
+  background: var(--bg-soft);
+}
+
+.season-table tbody tr:hover {
+  background: #eef6f5;
+}
+
+.season-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.empty-row td {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 24px;
+}

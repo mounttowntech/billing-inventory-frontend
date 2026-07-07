@@ -21,7 +21,7 @@
 }
 
 .fabric-title {
-  text-align: center;
+  text-align: start;
   margin-bottom: 20px;
   color: #333;
 }
@@ -54,4 +54,53 @@
 
 .fabric-form button:hover {
   background: #0056b3;
+}
+
+
+.fabric-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #042f2e !important;
+}
+
+.fabric-table thead tr {
+  background: var(--teal-500);
+}
+
+.fabric-table thead th {
+  color: #fff;
+  background: #0f766e;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-align: center;
+  padding: 14px 12px;
+  font-weight: 700;
+  border: #ffffff solid 1px;
+}
+
+.fabric-table tbody td {
+  text-align: center;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  border: 1px solid var(--border-soft);
+  font-size: 0.9rem;
+  color: var(--teal-900);
+}
+
+.fabric-table tbody tr:nth-child(even) {
+  background: var(--bg-soft);
+}
+
+.fabric-table tbody tr:hover {
+  background: #eef6f5;
+}
+
+.fabric-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.empty-row td {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 24px;
 }
