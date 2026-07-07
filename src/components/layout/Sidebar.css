@@ -37,7 +37,7 @@
   width: 5px;
 }
 .sidebar::-webkit-scrollbar-thumb {
-  background: var(--accent-light);
+  background: #042f2E;
   border-radius: 10px;
 }
 
@@ -113,7 +113,7 @@ details a {
   height: 44px;
   flex-shrink: 0;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  background: #115E59;
   box-shadow: 0 4px 12px rgba(15, 118, 110, 0.4);
 }
 
@@ -202,7 +202,7 @@ details a {
 }
 
 .sidebar a.active {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%) !important;
+  background: #0F766E;
   color: #ffffff !important;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(15, 118, 110, 0.35);
