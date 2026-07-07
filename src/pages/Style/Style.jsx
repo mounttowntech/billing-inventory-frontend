@@ -20,13 +20,14 @@ const Style = () => {
   const [editId, setEditId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1;
+  const itemsPerPage = 5;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentStyles = styles.slice(indexOfFirst, indexOfLast);
 
   const totalPages =
     styles.length > 0 ? Math.ceil(styles.length / itemsPerPage) : 1;
+
   const {
     register,
     handleSubmit,
@@ -82,104 +83,125 @@ const Style = () => {
 
   return (
     <div className="style-container">
-      <h2>Style Management</h2>
+      <div className="style-header">
+        <h2>Style Management</h2>
 
-      <button
-        onClick={() => {
-          reset();
-          setEditId(null);
-          setShowModal(true);
-        }}
-      >
-        Add Style
-      </button>
+        <button
+          className="btn btn-add"
+          onClick={() => {
+            reset();
+            setEditId(null);
+            setShowModal(true);
+          }}
+        >
+          + Add Style
+        </button>
+      </div>
 
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2>{editId ? "Update Style" : "Add Style"}</h2>
 
-            <input placeholder="Style Name" {...register("styleName")} />
+            <label className="field-label">Style Name</label>
+            <input
+              className="text-input"
+              placeholder="Style Name"
+              {...register("styleName")}
+            />
+            <p className="error-text">{errors.styleName?.message}</p>
 
-            <p>{errors.styleName?.message}</p>
+            <label className="field-label">Style Code</label>
+            <input
+              className="text-input"
+              placeholder="Style Code"
+              {...register("styleCode")}
+            />
+            <p className="error-text">{errors.styleCode?.message}</p>
 
-            <input placeholder="Style Code" {...register("styleCode")} />
+            <div className="modal-actions">
+              <button
+                className="btn btn-cancel"
+                onClick={() => {
+                  reset();
+                  setEditId(null);
+                  setShowModal(false);
+                }}
+              >
+                Cancel
+              </button>
 
-            <p>{errors.styleCode?.message}</p>
-
-            <button onClick={handleSubmit(onSubmit)}>
-              {editId ? "Update" : "Create"}
-            </button>
-
-            <button
-              onClick={() => {
-                reset();
-                setEditId(null);
-                setShowModal(false);
-              }}
-            >
-              Cancel
-            </button>
+              <button className="btn btn-save" onClick={handleSubmit(onSubmit)}>
+                {editId ? "Update" : "Create"}
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {loading && <h3>Loading...</h3>}
+      {loading && <h3 className="loading-text">Loading...</h3>}
 
-      <table border="1">
-        <thead>
-          <tr>
-            <th>S.No</th>
-
-            <th>Style Name</th>
-
-            <th>Style Code</th>
-
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {currentStyles.length > 0 ? (
-            currentStyles.map((style, index) => (
-              <tr key={style._id}>
-                <td>{indexOfFirst + index + 1}</td>
-
-                <td>{style.styleName}</td>
-
-                <td>{style.styleCode}</td>
-
-                <td>
-                  <button onClick={() => handleEdit(style)}>Edit</button>
-
-                  <button onClick={() => handleDelete(style._id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
+      <div className="table-wrapper">
+        <table className="style-table">
+          <thead>
             <tr>
-              <td colSpan="4" style={{ textAlign: "center" }}>
-                No Styles Found
-              </td>
+              <th>S.NO</th>
+              <th>STYLE NAME</th>
+              <th>STYLE CODE</th>
+              <th>ACTIONS</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {currentStyles.length > 0 ? (
+              currentStyles.map((style, index) => (
+                <tr key={style._id}>
+                  <td data-label="S.No">{indexOfFirst + index + 1}</td>
+                  <td data-label="Style Name">{style.styleName}</td>
+                  <td data-label="Style Code">{style.styleCode}</td>
+                  <td data-label="Actions">
+                    <div className="action-buttons">
+                      <button
+                        className="btn btn-edit"
+                        onClick={() => handleEdit(style)}
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        className="btn btn-delete"
+                        onClick={() => handleDelete(style._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr className="empty-row">
+                <td colSpan="4">No Styles Found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
       <div className="pagination">
         <button
+          className="btn btn-page"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous
         </button>
 
-        <span>
+        <span className="page-info">
           Page {currentPage} of {totalPages}
         </span>
 
         <button
+          className="btn btn-page"
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
