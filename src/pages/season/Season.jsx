@@ -106,7 +106,7 @@ const Season = () => {
   if (error) return <h2>{error}</h2>;
 
   return (
-    <div>
+    <div className="season-container">
       <div className="season-header">
         <h2>Season Management</h2>
         <AddButton

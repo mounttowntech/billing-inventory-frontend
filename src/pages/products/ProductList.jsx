@@ -65,124 +65,143 @@ const ProductList = () => {
 
   return (
     <>
-      <div className="dash-actions">
-        <AddButton onClick={() => setShowAddProduct(true)}>
-          + Add Product
-        </AddButton>
-      </div>
+      <div className="product-container">
+        <div className="dash-actions">
+          <AddButton onClick={() => setShowAddProduct(true)}>
+            + Add Product
+          </AddButton>
+        </div>
 
-      <AddProductModal
-        isOpen={showAddProduct}
-        onClose={() => {
-          setShowAddProduct(false);
-          setSelectedProduct(null);
-          setIsEdit(false);
-        }}
-        onProductAdded={(product) => {
-          console.log(product);
-        }}
-        fetchProducts={() => dispatch(getProducts())}
-        product={selectedProduct}
-        isEdit={isEdit}
-      />
-      <div className="product-table-wrapper">
-        <table className="product-table">
-          <tbody>
-            {currentProducts.map((product) => (
-              <>
-                <tr key={product._id}>
-                  <td>{product.productCode}</td>
-                  <td>{product.productName}</td>
-                  <td>{product.category?.categoryName}</td>
-                  <td>{product.brand?.brandName}</td>
-                  <td>{product.fabric?.fabricName}</td>
-                  <td>{product.season?.seasonName}</td>
-                  <td>{product.style?.styleName}</td>
-                  <td>{product.gender}</td>
-                  <td>{product.description}</td>
+        <AddProductModal
+          isOpen={showAddProduct}
+          onClose={() => {
+            setShowAddProduct(false);
+            setSelectedProduct(null);
+            setIsEdit(false);
+          }}
+          onProductAdded={(product) => {
+            console.log(product);
+          }}
+          fetchProducts={() => dispatch(getProducts())}
+          product={selectedProduct}
+          isEdit={isEdit}
+        />
+        <div className="product-table-wrapper">
+          <table className="product-table">
+            <thead>
+              <tr>
+                <th>productCode</th>
+                <th>productName</th>
+                <th>category</th>
+                <th>brand</th>
+                <th>fabric</th>
+                <th>season</th>
+                <th>style</th>
+                <th>gender</th>
+                <th>description</th>
+                <th>View Type</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentProducts.map((product) => (
+                <>
+                  <tr key={product._id}>
+                    <td>{product.productCode}</td>
+                    <td>{product.productName}</td>
+                    <td>{product.category?.categoryName}</td>
+                    <td>{product.brand?.brandName}</td>
+                    <td>{product.fabric?.fabricName}</td>
+                    <td>{product.season?.seasonName}</td>
+                    <td>{product.style?.styleName}</td>
+                    <td>{product.gender}</td>
+                    <td>{product.description}</td>
 
-                  <td>
-                    <button
-                      className="Viewvariants"
-                      onClick={() =>
-                        setExpandedProduct(
-                          expandedProduct === product._id ? null : product._id,
-                        )
-                      }
-                    >
-                      View Variants ({product.variants.length})
-                    </button>
-                  </td>
+                    <td>
+                      <button
+                        className="Viewvariants"
+                        onClick={() =>
+                          setExpandedProduct(
+                            expandedProduct === product._id
+                              ? null
+                              : product._id,
+                          )
+                        }
+                      >
+                        View Variants ({product.variants.length})
+                      </button>
+                    </td>
 
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(product)}>
-                      Edit
-                    </EditButton>
-                    <DeleteButton
-                      onClick={() => handleDelete(product._id)}
-                      className="secondary-heading2"
-                    >
-                      Delete
-                    </DeleteButton>
-                  </td>
-                </tr>
-
-                {expandedProduct === product._id && (
-                  <tr>
-                    <td colSpan={11}>
-                      <table className="variant-table">
-                        <thead>
-                          <tr>
-                            <th>Color</th>
-                            <th>Size</th>
-                            <th>MRP</th>
-                            <th>Selling Price</th>
-                            <th>Stock</th>
-                            <th>SKU</th>
-                            <th>Barcode</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {product.variants.map((variant, index) => (
-                            <tr key={index}>
-                              <td>{variant.color}</td>
-                              <td>{variant.size}</td>
-                              <td>₹{variant.mrp}</td>
-                              <td>₹{variant.sellingPrice}</td>
-                              <td>{variant.currentStock}</td>
-                              <td>{variant.skuCode}</td>
-                              <td>{variant.barcode}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(product)}>
+                        Edit
+                      </EditButton>
+                      <DeleteButton
+                        onClick={() => handleDelete(product._id)}
+                        className="secondary-heading2"
+                      >
+                        Delete
+                      </DeleteButton>
                     </td>
                   </tr>
-                )}
-              </>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="pagination">
-        <PreviousButton
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-        >
-          Previous
-        </PreviousButton>
 
-        <span>
-          Page {currentPage} of {totalPages || 1}
-        </span>
+                  {expandedProduct === product._id && (
+                    <tr>
+                      <td colSpan={11}>
+                        <table className="variant-table">
+                          <thead>
+                            <tr>
+                              <th>Color</th>
+                              <th>Size</th>
+                              <th>MRP</th>
+                              <th>Selling Price</th>
+                              <th>Stock</th>
+                              <th>SKU</th>
+                              <th>Barcode</th>
+                            </tr>
+                          </thead>
 
-        <NextButton
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+                          <tbody>
+                            {product.variants.map((variant, index) => (
+                              <tr key={index}>
+                                <td>{variant.color}</td>
+                                <td>{variant.size}</td>
+                                <td>₹{variant.mrp}</td>
+                                <td>₹{variant.sellingPrice}</td>
+                                <td>{variant.currentStock}</td>
+                                <td>{variant.skuCode}</td>
+                                <td>{variant.barcode}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="pagination">
+          <PreviousButton
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+          >
+            Previous
+          </PreviousButton>
+
+          <span>
+            Page {currentPage} of {totalPages || 1}
+          </span>
+
+          <NextButton
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+          >
+            Next
+          </NextButton>
+        </div>
       </div>
     </>
   );

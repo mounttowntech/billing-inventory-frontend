@@ -1,4 +1,13 @@
 
+.product-container{
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  max-width: 1200px !important;
+  padding: 24px 20px 48px;
+  margin: 30px auto;
+}
+
 .product-table-wrapper {
   width: 100%;
   overflow-x: hidden;
@@ -14,7 +23,8 @@
 
 .product-table td,
 .product-table th {
-  padding: 14px 10px;
+  padding: 18px 16px;  
+  border-right: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
   text-align: left;
   vertical-align: middle;
@@ -53,7 +63,7 @@
 }
 
 .Viewvariants {
-  width: 79px;
+  width: 59px;
   height: 50px;
   padding: 2px;
   font-size: 12px;
@@ -79,4 +89,17 @@
 .dash-actions button {
   width: auto;
   white-space: nowrap;
+}
+
+
+.product-table thead th {
+  color: #fff;
+  background: #0f766e;
+  font-size: 0.78rem;
+  border-right: 1px solid #ffffff; 
+  letter-spacing: 0.03em;
+  text-align: center;
+  padding: 14px 12px;
+  font-weight: 700;
+  border: #ffffff solid 1px;
 }

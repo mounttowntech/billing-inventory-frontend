@@ -1,9 +1,17 @@
+.season-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 24px 20px 48px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
 .season-header {
   display: flex !important;
   justify-content: space-between;
   align-items: center;
 }
-
 
 .season-table {
   width: 100%;
