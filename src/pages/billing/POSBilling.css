@@ -1,0 +1,564 @@
+/* ==========================================================
+   POS PAGE STYLES
+   Color tokens (edit these to re-theme the whole page)
+   ========================================================== */
+:root {
+  --primary-color: #0f766e;
+  --secondary-color: #115e59;
+  --dark-color: #042f2e;
+  --light-color: #f8fafc;
+  --white-color: #ffffff;
+
+  /* Derived tones used across the page (kept separate so the
+     5 tokens above stay the single source of truth) */
+  --primary-color-10: rgba(15, 118, 110, 0.1);
+  --primary-color-15: rgba(15, 118, 110, 0.15);
+  --border-color: #e6ebee;
+  --muted-text: #64748b;
+  --heading-text: #1f2937;
+  --danger-color: #ef4444;
+  --success-color: #16a34a;
+  --info-color: #2563eb;
+  --warning-color: #f59e0b;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 2px 10px rgba(4, 47, 46, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ==========================================================
+   PAGE LAYOUT
+   ========================================================== */
+.pos-page {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+  background: var(--light-color);
+  font-family:
+    "Inter",
+    "Segoe UI",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  color: var(--dark-color);
+}
+
+/* ==========================================================
+   LEFT PANEL — PRODUCTS
+   ========================================================== */
+.products-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0; /* allow grid children to shrink properly */
+}
+
+.products-card,
+.quick-actions-card,
+.bill-card {
+  background: var(--white-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+}
+
+/* ---------- Search bar ---------- */
+.search-bar {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 16px 20px 16px 48px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--primary-color-15);
+  color: var(--dark-color);
+  font-size: 15px;
+  outline: none;
+  transition: box-shadow 0.15s ease;
+}
+
+.search-input::placeholder {
+  color: var(--muted-text);
+}
+
+.search-input:focus {
+  box-shadow: 0 0 0 3px var(--primary-color-10);
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--muted-text);
+  pointer-events: none;
+}
+
+/* ---------- Category filters ---------- */
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.category-pill {
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-color);
+  background: var(--white-color);
+  color: var(--dark-color);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.category-pill:hover {
+  border-color: var(--primary-color);
+}
+
+.category-pill--active {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+/* ---------- Product grid ---------- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--white-color);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition:
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.product-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.product-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-height: 120px; /* fallback in case width/aspect-ratio don't resolve */
+  border-radius: var(--radius-sm);
+  background: var(--light-color);
+  margin-bottom: 8px;
+  overflow: hidden; /* clips the image to the rounded square */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills the square without stretching */
+  display: block;
+  border-radius: inherit;
+}
+
+.product-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--border-color);
+}
+
+.product-name {
+  margin: 0;
+  font-size: 15px;
+  color: var(--muted-text);
+}
+
+.product-price {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+/* ---------- Quick actions ---------- */
+.quick-actions-title {
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--heading-text);
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.quick-action-btn {
+  width: auto;  
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--white-color);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--dark-color);
+  transition:
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.quick-action-btn:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-card);
+}
+
+.quick-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: var(--white-color);
+}
+
+.quick-action-icon .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.quick-action-icon--blue {
+  background: var(--info-color);
+}
+.quick-action-icon--green {
+  background: var(--success-color);
+}
+.quick-action-icon--orange {
+  background: var(--warning-color);
+}
+.quick-action-icon--red {
+  background: var(--danger-color);
+}
+
+/* ==========================================================
+   RIGHT PANEL — CURRENT BILL
+   ========================================================== */
+.bill-panel {
+  position: sticky;
+  top: 24px;
+}
+
+.bill-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--heading-text);
+}
+
+.bill-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.bill-menu-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--muted-text);
+  display: flex;
+  align-items: center;
+}
+
+.bill-menu-btn .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.bill-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 16px 0;
+}
+
+.bill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.bill-label {
+  font-size: 15px;
+  color: var(--muted-text);
+}
+
+.bill-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.bill-value--discount {
+  color: var(--dark-color);
+}
+
+.customer-badge {
+  padding: 6px 18px;
+  border-radius: var(--radius-pill);
+  background: var(--primary-color-15);
+  color: var(--secondary-color);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.bill-row--total {
+  margin: 6px 0 24px;
+}
+
+.bill-label--total {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--heading-text);
+}
+
+.bill-value--total {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--heading-text);
+}
+
+/* ---------- Received amount ---------- */
+.received-amount {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.received-input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--light-color);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dark-color);
+  outline: none;
+}
+
+.received-input:focus {
+  border-color: var(--primary-color);
+}
+
+/* ---------- Return amount ---------- */
+.return-amount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--light-color);
+  margin-bottom: 20px;
+}
+
+.return-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+.return-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--success-color);
+}
+
+/* ---------- Pay button ---------- */
+.pay-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--secondary-color);
+  color: var(--white-color);
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.pay-btn:hover {
+  background: var(--dark-color);
+}
+
+.pay-btn .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ==========================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================== */
+
+/* Tablets / small laptops */
+@media (max-width: 1200px) {
+  .pos-page {
+    grid-template-columns: 1fr 340px;
+    gap: 18px;
+    padding: 18px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Stack panels: bill moves below products */
+@media (max-width: 960px) {
+  .pos-page {
+    grid-template-columns: 1fr;
+  }
+
+  .bill-panel {
+    position: static;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets portrait */
+@media (max-width: 700px) {
+  .products-card,
+  .quick-actions-card,
+  .bill-card {
+    padding: 20px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .category-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .category-list::-webkit-scrollbar {
+    height: 4px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .pos-page {
+    padding: 12px;
+    gap: 14px;
+  }
+
+  .products-card,
+  .quick-actions-card,
+  .bill-card {
+    padding: 16px;
+    border-radius: var(--radius-md);
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .quick-action-btn {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+
+  .bill-title {
+    font-size: 20px;
+  }
+
+  .bill-value--total {
+    font-size: 20px;
+  }
+
+  .search-input {
+    font-size: 14px;
+    padding: 14px 16px 14px 44px;
+  }
+
+  .category-pill {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
