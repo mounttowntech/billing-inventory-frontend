@@ -6,6 +6,14 @@ import {
   updateSeason,
   deleteSeason,
 } from "../../features/season/seasonSlice";
+import {
+  AddButton,
+  EditButton,
+  DeleteButton,
+  CancelButton,
+  PreviousButton,
+  NextButton,
+} from "../../components/Common/Button";
 import seasonValidation from "../../validations/seasonValidation";
 
 const Season = () => {
@@ -100,9 +108,7 @@ const Season = () => {
     <div>
       <div className="season-header">
         <h2>Season Management</h2>
-        <button
-          type="button"
-          className="btn btn-primary"
+        <AddButton
           onClick={() => {
             setEditId("");
             setSeasonName("");
@@ -111,7 +117,7 @@ const Season = () => {
           }}
         >
           Add Season
-        </button>
+        </AddButton>
       </div>
       <br />
       <br />
@@ -148,9 +154,7 @@ const Season = () => {
                   {editId ? "Update" : "Create"}
                 </button>
 
-                <button
-                  type="button"
-                  className="btn btn-secondary"
+                <CancelButton
                   onClick={() => {
                     setShowModal(false);
                     setEditId("");
@@ -159,7 +163,7 @@ const Season = () => {
                   }}
                 >
                   Cancel
-                </button>
+                </CancelButton>
               </div>
             </form>
           </div>
@@ -186,12 +190,14 @@ const Season = () => {
 
                 <td>{season.seasonCode}</td>
 
-                <td>
-                  <button onClick={() => handleEdit(season)}>Edit</button>
+                <td className="action-buttons">
+                  <EditButton onClick={() => handleEdit(season)}>
+                    Edit
+                  </EditButton>
 
-                  <button onClick={() => handleDelete(season._id)}>
+                  <DeleteButton onClick={() => handleDelete(season._id)}>
                     Delete
-                  </button>
+                  </DeleteButton>
                 </td>
               </tr>
             ))
@@ -205,23 +211,23 @@ const Season = () => {
         </tbody>
       </table>
       <div className="pagination">
-        <button
+        <PreviousButton
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous
-        </button>
+        </PreviousButton>
 
         <span>
           Page {currentPage} of {totalPages}
         </span>
 
-        <button
+        <NextButton
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           Next
-        </button>
+        </NextButton>
       </div>
     </div>
   );

@@ -7,6 +7,15 @@ import {
   updateBrand,
   deleteBrand,
 } from "../../features/Brand/brandSlice";
+import {
+  AddButton,
+  EditButton,
+  DeleteButton,
+  SaveButton,
+  CancelButton,
+  PreviousButton,
+  NextButton,
+} from "../../components/Common/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { brandValidation } from "../../validations/brandValidation";
@@ -130,17 +139,11 @@ const Brand = () => {
               <p className="error">{errors.description?.message}</p>
 
               <div className="form-buttons">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handleSubmit(onSubmit)}
-                >
+                <EditButton onClick={handleSubmit(onSubmit)}>
                   {editId ? "Update Brand" : "Add Brand"}
-                </button>
+                </EditButton>
 
-                <button
-                  type="button"
-                  className="btn btn-secondary"
+                <CancelButton
                   onClick={() => {
                     reset();
                     setEditId(null);
@@ -148,23 +151,13 @@ const Brand = () => {
                   }}
                 >
                   Cancel
-                </button>
+                </CancelButton>
               </div>
             </div>
           </div>
         </div>
       )}
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() => {
-          reset();
-          setEditId(null);
-          setShowModal(true);
-        }}
-      >
-        Add Brand
-      </button>
+
       <div className="search-box">
         <input
           type="text"
@@ -172,6 +165,15 @@ const Brand = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <AddButton
+          onClick={() => {
+            reset();
+            setEditId(null);
+            setShowModal(true);
+          }}
+        >
+          Add Brand
+        </AddButton>
       </div>
 
       {loading && <p>Loading...</p>}
@@ -217,21 +219,13 @@ const Brand = () => {
                   <td>{brand.description}</td>
 
                   <td className="action-buttons">
-                    <button
-                      type="button"
-                      className="btn btn-edit"
-                      onClick={() => handleEdit(brand)}
-                    >
+                    <EditButton onClick={() => handleEdit(brand)}>
                       Edit
-                    </button>
+                    </EditButton>
 
-                    <button
-                      type="button"
-                      className="btn btn-delete"
-                      onClick={() => handleDelete(brand._id)}
-                    >
+                    <DeleteButton onClick={() => handleDelete(brand._id)}>
                       Delete
-                    </button>
+                    </DeleteButton>
                   </td>
                 </tr>
               ))
@@ -247,25 +241,23 @@ const Brand = () => {
       </div>
 
       <div className="pagination">
-        <button
-          type="button"
+        <NextButton
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous
-        </button>
+        </NextButton>
 
         <span>
           Page {currentPage} of {totalPages || 1}
         </span>
 
-        <button
-          type="button"
+        <NextButton
           disabled={currentPage === totalPages || totalPages === 0}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           Next
-        </button>
+        </NextButton>
       </div>
     </div>
   );

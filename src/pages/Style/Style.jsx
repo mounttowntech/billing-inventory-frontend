@@ -7,7 +7,14 @@ import {
   updateStyle,
   deleteStyle,
 } from "../../features/style/styleSlice";
-
+import {
+  AddButton,
+  EditButton,
+  DeleteButton,
+  CancelButton,
+  PreviousButton,
+  NextButton,
+} from "../../components/Common/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { styleValidation } from "../../validations/styleValidation";
@@ -41,6 +48,13 @@ const Style = () => {
   useEffect(() => {
     dispatch(getStyles());
   }, [dispatch]);
+
+  // Keep currentPage valid if the list shrinks (e.g. after a delete)
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
 
   const onSubmit = (data) => {
     if (editId) {
@@ -86,16 +100,15 @@ const Style = () => {
       <div className="style-header">
         <h2>Style Management</h2>
 
-        <button
-          className="btn btn-add"
+        <AddButton
           onClick={() => {
             reset();
             setEditId(null);
             setShowModal(true);
           }}
         >
-          + Add Style
-        </button>
+          Add Style
+        </AddButton>
       </div>
 
       {showModal && (
@@ -161,19 +174,19 @@ const Style = () => {
                   <td data-label="Style Code">{style.styleCode}</td>
                   <td data-label="Actions">
                     <div className="action-buttons">
-                      <button
+                      <EditButton
                         className="btn btn-edit"
                         onClick={() => handleEdit(style)}
                       >
                         Edit
-                      </button>
+                      </EditButton>
 
-                      <button
+                      <DeleteButton
                         className="btn btn-delete"
                         onClick={() => handleDelete(style._id)}
                       >
                         Delete
-                      </button>
+                      </DeleteButton>
                     </div>
                   </td>
                 </tr>
@@ -188,25 +201,25 @@ const Style = () => {
       </div>
 
       <div className="pagination">
-        <button
+        <PreviousButton
           className="btn btn-page"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous
-        </button>
+        </PreviousButton>
 
         <span className="page-info">
           Page {currentPage} of {totalPages}
         </span>
 
-        <button
+        <NextButton
           className="btn btn-page"
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           Next
-        </button>
+        </NextButton>
       </div>
     </div>
   );

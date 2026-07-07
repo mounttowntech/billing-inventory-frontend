@@ -49,53 +49,6 @@
   border-color: var(--color-primary);
 }
 
-.btn {
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  padding: 8px 16px;
-  color: var(--color-white);
-  font-size: 14px;
-  transition: 0.3s;
-}
-
-.btn-primary {
-  background: var(--color-primary);
-  width: auto;
-  margin: 10px 0px 10px 0px;
-  float: inline-end;
-}
-
-.btn-primary:hover {
-  background: var(--color-primary-hover);
-}
-
-.btn-secondary {
-  background: #6c757d;
-}
-
-.btn-secondary:hover {
-  background: #545b62;
-}
-
-.btn-edit {
-  background: var(--color-primary-hover);
-  width: auto;
-}
-
-.btn-edit:hover {
-  background: var(--color-primary-dark);
-}
-
-.btn-delete {
-  background: #dc3545;
-  width: auto;
-}
-
-.btn-delete:hover {
-  background: #bb2d3b;
-}
-
 .error-text {
   color: red;
   margin-bottom: 15px;
@@ -140,9 +93,12 @@
 
 .action-buttons {
   display: flex;
-  justify-content: center;
+  justify-content: center ! important;
+  align-items: center ! important;
   flex-wrap: wrap;
   gap: 10px;
+  border:none !important;
+
 }
 
 .pagination {
@@ -283,6 +239,8 @@
 
   .action-buttons {
     flex-direction: column;
+      border:none !important;
+
   }
 
   .btn-edit,

@@ -1,10 +1,34 @@
 
+.product-table-wrapper {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ===== MAIN PRODUCT TABLE ===== */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.product-table td,
+.product-table th {
+  padding: 14px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: middle;
+  white-space: normal;
+  word-break: normal;       /* never split a word in half */
+  overflow-wrap: break-word; /* only wraps if a single word is truly too long */
+}
+
 /* ===== HEADING ===== */
 .dash-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 6px;
   flex-wrap: wrap;
   margin-bottom: 18px;
 }
@@ -12,7 +36,7 @@
 .action-buttons {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  border:none !important;
 }
 
 .secondary-heading1,
@@ -34,7 +58,7 @@
   padding: 2px;
   font-size: 12px;
   font-weight: 600;
-  background-color: #0F766E;
+  background-color: #0F766E !important;
   color: #fff;
   border: none;
   border-radius: 4px;
