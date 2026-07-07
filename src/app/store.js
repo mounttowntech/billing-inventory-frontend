@@ -8,6 +8,7 @@ import brandReducer from "../features/Brand/brandSlice";
 import fabricReducer from "../features/fabric/fabricSlice";
 import seasonReducer from "../features/season/seasonSlice";
 import styleReducer from "../features/style/styleSlice";
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
