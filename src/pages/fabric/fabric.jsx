@@ -110,7 +110,7 @@ const Fabric = () => {
 
   return (
     <div className="fabric-container">
-      <h2 className="fabric-title">Fabric </h2>
+      <h2 className="fabric-title">Fabric Management</h2>
 
       <AddButton
         onClick={() => {

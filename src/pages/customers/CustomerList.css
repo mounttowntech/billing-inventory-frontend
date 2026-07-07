@@ -9,7 +9,9 @@
 .customer-container {
   padding: 30px;
   background: #f5f7fb;
-  min-height: 100vh;
+  min-height: fit-content;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
 }
 
 .customer-header {
@@ -135,6 +137,30 @@ tbody tr:hover {
   gap: 10px;
   border:none !important;
 }
+
+
+.customer-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #042f2e !important;
+}
+
+.customer-table thead tr {
+  background: var(--teal-500);
+}
+
+.customer-table thead th {
+  color: #fff;
+  background: #0f766e;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-align: center;
+  padding: 14px 12px;
+  font-weight: 700;
+  border: #ffffff solid 1px;
+}
+
+
 /* ===========================
    TABLET
 =========================== */

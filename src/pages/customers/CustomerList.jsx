@@ -11,10 +11,9 @@ import {
   AddButton,
   EditButton,
   DeleteButton,
+  CancelButton,
   PreviousButton,
   NextButton,
-  SaveButton,
-  CancelButton,
 } from "../../components/Common/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -71,8 +70,7 @@ const Customer = () => {
 
   return (
     <div className="customer-container">
-      <button
-        className="customer-header"
+      <AddButton
         onClick={() => {
           setEditId(null);
           reset();
@@ -80,7 +78,7 @@ const Customer = () => {
         }}
       >
         Add Customer
-      </button>
+      </AddButton>
 
       {showModal && (
         <div className="modal-overlay">
@@ -108,8 +106,7 @@ const Customer = () => {
 
               <button type="submit">{editId ? "Update" : "Save"}</button>
 
-              <button
-                type="button"
+              <CancelButton
                 onClick={() => {
                   setShowModal(false);
                   setEditId(null);
@@ -117,13 +114,13 @@ const Customer = () => {
                 }}
               >
                 Cancel
-              </button>
+              </CancelButton>
             </form>
           </div>
         </div>
       )}
 
-      <table border="1" className="table-container">
+      <table border="1" className="customer-table">
         <thead>
           <tr>
             <th>S.No</th>
@@ -163,20 +160,19 @@ const Customer = () => {
         </tbody>
       </table>
       <div className="pagination">
-        <PreviousButton
+        <button
           type="button"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous
-        </PreviousButton>
+        </button>
 
         <span>
           Page {currentPage} of {totalPages || 1}
         </span>
 
         <NextButton
-          type="button"
           disabled={currentPage >= totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >

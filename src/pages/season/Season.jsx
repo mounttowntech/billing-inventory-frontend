@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "./Season.css";
 import {
   getSeasons,
   createSeason,
@@ -105,7 +106,7 @@ const Season = () => {
   if (error) return <h2>{error}</h2>;
 
   return (
-    <div>
+    <div className="season-container">
       <div className="season-header">
         <h2>Season Management</h2>
         <AddButton
@@ -170,7 +171,7 @@ const Season = () => {
         </div>
       )}
 
-      <table border="1" cellPadding="10">
+      <table border="1" cellPadding="10" className="season-table">
         <thead>
           <tr>
             <th>S.No</th>
