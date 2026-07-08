@@ -38,7 +38,7 @@
    ========================================================== */
 .pos-page {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: 24px;
   align-items: start;
   width: 100%;
@@ -72,6 +72,10 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 28px;
+}
+
+.bill-card {
+  padding: 24px 22px;
 }
 
 /* ---------- Search bar ---------- */
@@ -148,7 +152,7 @@
 /* ---------- Product grid ---------- */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -235,9 +239,11 @@
 }
 
 .quick-action-btn {
-  width: auto;  
   display: flex;
   align-items: center;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
   gap: 12px;
   padding: 16px;
   border: 1px solid var(--border-color);
@@ -462,7 +468,7 @@
 /* Tablets / small laptops */
 @media (max-width: 1200px) {
   .pos-page {
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: minmax(0, 1fr) 290px;
     gap: 18px;
     padding: 18px;
   }
