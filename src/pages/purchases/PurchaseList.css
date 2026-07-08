@@ -1,0 +1,144 @@
+.purchase-container {
+  width: 96%;
+  margin: 25px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 34px 20px 68px;
+}
+
+.purchase-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+/* Popup */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.purchase-modal {
+  width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.close-btn {
+  border: none;
+  background: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.purchase-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #d7d7d7;
+  border-radius: 5px;
+}
+
+.form-group span {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* Table */
+
+.table-wrapper {
+  width: 100%;
+  max-height: 500px; /* adjust to taste */
+  overflow-y: auto;
+  border-radius: 8px; /* keeps the scrollbar corner tidy inside the box */
+}
+
+.purchase-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.purchase-table th,
+.purchase-table td {
+  border: 1px solid #ddd;
+  padding: 10px 6px;
+  text-align: center;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+/* FIXED: merged duplicate th selectors so background + sticky
+   positioning are guaranteed to apply together */
+.purchase-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f5f5f5;
+}
+
+.purchase-table tbody tr:hover {
+  background: #fafafa;
+}
+
+/* ---- Custom scrollbar (inside the box) ---- */
+
+.table-wrapper,
+.purchase-modal {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #c1c1c1 #f1f1f1; /* Firefox: thumb track */
+}
+
+.table-wrapper::-webkit-scrollbar,
+.purchase-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track,
+.purchase-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb,
+.purchase-modal::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover,
+.purchase-modal::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}

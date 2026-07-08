@@ -8,6 +8,8 @@ import brandReducer from "../features/Brand/brandSlice";
 import fabricReducer from "../features/fabric/fabricSlice";
 import seasonReducer from "../features/season/seasonSlice";
 import styleReducer from "../features/style/styleSlice";
+import purchaseReducer from "../features/purchase/purchaseSlice";
+import supplierReducer from "../features/supplier/supplierSlice";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +22,7 @@ export const store = configureStore({
     fabric: fabricReducer,
     season: seasonReducer,
     style: styleReducer,
+    purchase: purchaseReducer,
+    supplier: supplierReducer,
   },
 });

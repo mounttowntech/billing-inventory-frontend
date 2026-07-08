@@ -64,6 +64,24 @@ export const PurchaseIcon = (props) => (
   </svg>
 );
 
+export const SupplierIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect x="2" y="7" width="11" height="9" rx="1.5" />
+    <path d="M13 10h4l3 3v3h-7z" />
+    <circle cx="7" cy="18" r="1.3" fill="currentColor" stroke="none" />
+    <circle cx="18" cy="18" r="1.3" fill="currentColor" stroke="none" />
+  </svg>
+);
+
 export const InvoiceIcon = (props) => (
   <svg
     viewBox="0 0 24 24"
