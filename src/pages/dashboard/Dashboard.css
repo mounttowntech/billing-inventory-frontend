@@ -275,6 +275,7 @@ thead th {
 thead th:first-child {
   border-top-left-radius: var(--radius-md);
   border-bottom-left-radius: var(--radius-md);
+  width: fit-content !important; 
 }
 thead th:last-child {
   border-top-right-radius: var(--radius-md);

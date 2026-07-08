@@ -19,6 +19,7 @@ import Brand from "../pages/Brand/Brand";
 import Fabric from "../pages/fabric/fabric";
 import Season from "../pages/season/Season";
 import Style from "../pages/Style/Style";
+import Supplier from "../pages/Supplier/Supplier";
 
 const AppRoutes = () => {
   return (
@@ -48,6 +49,7 @@ const AppRoutes = () => {
         <Route path="fabrics" element={<Fabric />} />
         <Route path="seasons" element={<Season />} />
         <Route path="styles" element={<Style />} />
+        <Route path="suppliers" element={<Supplier />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

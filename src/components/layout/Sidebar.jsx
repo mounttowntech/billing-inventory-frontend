@@ -7,6 +7,7 @@ import {
   ProductsIcon,
   CustomersIcon,
   PurchaseIcon,
+  SupplierIcon,
   InvoiceIcon,
   ReportsIcon,
   SettingsIcon,
@@ -78,6 +79,12 @@ const Sidebar = () => {
               <PurchaseIcon />
             </span>
             <span>Purchases</span>
+          </NavLink>
+          <NavLink to="/suppliers">
+            <span className="nav-icon">
+              <SupplierIcon />
+            </span>
+            <span>Suppliers</span>
           </NavLink>
           <NavLink to="/invoices">
             <span className="nav-icon">

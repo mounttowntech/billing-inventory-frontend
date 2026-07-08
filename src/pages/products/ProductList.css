@@ -84,14 +84,13 @@
 .dash-actions {
   display: flex;
   gap: 10px;
-}
-
+}   
+  
 .dash-actions button {
   width: auto;
   white-space: nowrap;
 }
-
-
+ 
 .product-table thead th {
   color: #fff;
   background: #0f766e;
