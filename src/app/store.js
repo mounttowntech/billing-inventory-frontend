@@ -10,6 +10,8 @@ import seasonReducer from "../features/season/seasonSlice";
 import styleReducer from "../features/style/styleSlice";
 import purchaseReducer from "../features/purchase/purchaseSlice";
 import supplierReducer from "../features/supplier/supplierSlice";
+import expenseReducer from "../features/expense/expenseSlice";
+import storeReducer from "../features/store/storeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,5 +26,7 @@ export const store = configureStore({
     style: styleReducer,
     purchase: purchaseReducer,
     supplier: supplierReducer,
+    expense: expenseReducer,
+    store: storeReducer,
   },
 });

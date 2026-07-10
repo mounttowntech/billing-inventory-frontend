@@ -12,13 +12,30 @@ import {
   deletePurchase,
 } from "../../features/purchase/purchaseSlice";
 import "./PurchaseList.css";
-import { AddButton, SaveButton } from "../../components/Common/Button";
+import {
+  AddButton,
+  SaveButton,
+  PreviousButton,
+  NextButton,
+  EditButton,
+  DeleteButton,
+} from "../../components/Common/Button";
 
 const Purchase = () => {
   const dispatch = useDispatch();
 
   const { purchases, loading } = useSelector((state) => state.purchase);
+  const [editingId, setEditingId] = useState(null);
+
   const [showModal, setShowModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 1;
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentPurchases = purchases.slice(indexOfFirst, indexOfLast);
+  const totalPages =
+    purchases.length > 0 ? Math.ceil(purchases.length / itemsPerPage) : 1;
+
   const {
     register,
     handleSubmit,
@@ -34,6 +51,37 @@ const Purchase = () => {
     dispatch(getPurchases());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const handleEdit = (purchase) => {
+    setEditingId(purchase._id);
+
+    reset({
+      supplier: purchase.supplier?._id || "",
+      product: purchase.items?.[0]?.product || "",
+      skuCode: purchase.items?.[0]?.skuCode || "",
+      quantity: purchase.items?.[0]?.quantity || "",
+      purchasePrice: purchase.items?.[0]?.purchasePrice || "",
+      gstAmount: purchase.items?.[0]?.gstAmount || "",
+      totalAmount: purchase.items?.[0]?.totalAmount || "",
+      paidAmount: purchase.paidAmount || "",
+    });
+
+    setShowModal(true);
+  };
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this purchase?")) {
+      const result = await dispatch(deletePurchase(id));
+
+      if (!result.error) {
+        dispatch(getPurchases());
+      }
+    }
+  };
   const onSubmit = async (data) => {
     console.log("onSubmit called");
     console.log("Form Data:", data);
@@ -55,12 +103,24 @@ const Purchase = () => {
 
     console.log("Sending:", purchaseData);
 
-    const result = await dispatch(createPurchase(purchaseData));
+    let result;
+
+    if (editingId) {
+      result = await dispatch(
+        updatePurchase({
+          id: editingId,
+          purchase: purchaseData,
+        }),
+      );
+    } else {
+      result = await dispatch(createPurchase(purchaseData));
+    }
 
     console.log("Result:", result);
 
     if (!result.error) {
       reset();
+      setEditingId(null);
       setShowModal(false);
       dispatch(getPurchases());
     }
@@ -197,8 +257,8 @@ const Purchase = () => {
           <thead>
             <tr>
               <th>Purchase No</th>
-              <th>Supplier Code</th>
-              <th>Supplier Name</th>
+              <th className="supplier-actions">Supplier Code</th>
+              <th className="supplier-column">Supplier Name</th>
               <th>Date</th>
               <th>Sub Total</th>
               <th>GST</th>
@@ -206,26 +266,62 @@ const Purchase = () => {
               <th>Paid</th>
               <th>Due</th>
               <th>Status</th>
+              <th className="supplier-actions">Action</th>
             </tr>
           </thead>
 
           <tbody>
-            {purchases.map((purchase) => (
-              <tr key={purchase._id}>
-                <td>{purchase.purchaseNo}</td>
-                <td>{purchase.supplier?.supplierCode}</td>
-                <td>{purchase.supplier?.supplierName}</td>
-                <td>{purchase.purchaseDate?.split("T")[0]}</td>
-                <td>₹{purchase.subTotal}</td>
-                <td>₹{purchase.gstAmount}</td>
-                <td>₹{purchase.grandTotal}</td>
-                <td>₹{purchase.paidAmount}</td>
-                <td>₹{purchase.dueAmount}</td>
-                <td>{purchase.paymentStatus}</td>
+            {currentPurchases.length > 0 ? (
+              currentPurchases.map((purchase) => (
+                <tr key={purchase._id}>
+                  <td>{purchase.purchaseNo}</td>
+                  <td>{purchase.supplier?.supplierCode}</td>
+                  <td className="supplier-column">
+                    {purchase.supplier?.supplierName}
+                  </td>
+                  <td>{purchase.purchaseDate?.split("T")[0]}</td>
+                  <td>₹{purchase.subTotal}</td>
+                  <td>₹{purchase.gstAmount}</td>
+                  <td>₹{purchase.grandTotal}</td>
+                  <td>₹{purchase.paidAmount}</td>
+                  <td>₹{purchase.dueAmount}</td>
+                  <td>{purchase.paymentStatus}</td>
+                  <td className="action-buttons">
+                    <EditButton onClick={() => handleEdit(purchase)} />
+
+                    <DeleteButton onClick={() => handleDelete(purchase._id)} />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr className="empty-row">
+                <td colSpan="4">No Styles Found</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
+      </div>
+
+      <div className="pagination">
+        <PreviousButton
+          className="btn btn-page"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Previous
+        </PreviousButton>
+
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <NextButton
+          className="btn btn-page"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </NextButton>
       </div>
     </div>
   );

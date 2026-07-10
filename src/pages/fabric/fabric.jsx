@@ -152,9 +152,7 @@ const Fabric = () => {
                 </p>
               )}
               <div className="modal-buttons">
-                <Createbutton type="submit">
-                  {editId ? "Update" : "Create"}
-                </Createbutton>
+                <button type="submit">{editId ? "Update" : "Create"}</button>
 
                 <CancelButton
                   onClick={() => {
