@@ -20,6 +20,9 @@ import Fabric from "../pages/fabric/fabric";
 import Season from "../pages/season/Season";
 import Style from "../pages/Style/Style";
 import Supplier from "../pages/Supplier/Supplier";
+import Profile from "../pages/profile/Profilepage";
+import ProfilePage from "../pages/profile/Profilepage";
+
 import Expense from "../pages/Expense/Expense";
 import Store from "../pages/store/Store";
 import Measurement from "../pages/measurement/Measurement";
@@ -53,6 +56,7 @@ const AppRoutes = () => {
         <Route path="seasons" element={<Season />} />
         <Route path="styles" element={<Style />} />
         <Route path="suppliers" element={<Supplier />} />
+        <Route path="profile" element={<ProfilePage />} />
         <Route path="expense" element={<Expense />} />
         <Route path="stores" element={<Store />} />
         <Route path="measurement" element={<Measurement />} />
