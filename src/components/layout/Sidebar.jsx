@@ -6,6 +6,7 @@ import {
   POSIcon,
   ProductsIcon,
   CustomersIcon,
+  MeasurementIcon,
   PurchaseIcon,
   SupplierIcon,
   InvoiceIcon,
@@ -62,6 +63,12 @@ const Sidebar = () => {
             </span>
             <span>POS Billing</span>
           </NavLink>
+          <NavLink to="/expense">
+            <span className="nav-icon">
+              <POSIcon />
+            </span>
+            <span>Expense</span>
+          </NavLink>
           <NavLink to="/products">
             <span className="nav-icon">
               <ProductsIcon />
@@ -73,6 +80,12 @@ const Sidebar = () => {
               <CustomersIcon />
             </span>
             <span>Customers</span>
+          </NavLink>
+          <NavLink to="/measurement">
+            <span className="nav-icon">
+              <MeasurementIcon />
+            </span>
+            <span>Measurements</span>
           </NavLink>
           <NavLink to="/purchases">
             <span className="nav-icon">
@@ -114,6 +127,12 @@ const Sidebar = () => {
                 <DotIcon />
               </span>
               <span>Category</span>
+            </NavLink>
+            <NavLink to="/stores">
+              <span className="nav-icon">
+                <DotIcon />
+              </span>
+              <span>Store</span>
             </NavLink>
             <NavLink to="/brands">
               <span className="nav-icon">

@@ -31,12 +31,10 @@ export const createPurchase = createAsyncThunk(
 
 export const updatePurchase = createAsyncThunk(
   "purchase/update",
-  async ({ id, purchaseData }, thunkAPI) => {
+  async ({ id, purchase }, thunkAPI) => {
+    console.log("Updating purchase with ID:", id, "and data:", purchase);
     try {
-      return await purchaseService.updatePurchase({
-        id,
-        purchaseData,
-      });
+      return await purchaseService.updatePurchase(id, purchase);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

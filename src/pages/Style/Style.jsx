@@ -10,6 +10,7 @@ import {
 import {
   AddButton,
   EditButton,
+  SaveButton,
   DeleteButton,
   CancelButton,
   PreviousButton,
@@ -31,7 +32,6 @@ const Style = () => {
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentStyles = styles.slice(indexOfFirst, indexOfLast);
-
   const totalPages =
     styles.length > 0 ? Math.ceil(styles.length / itemsPerPage) : 1;
 
@@ -144,9 +144,9 @@ const Style = () => {
                 Cancel
               </button>
 
-              <button className="btn btn-save" onClick={handleSubmit(onSubmit)}>
+              <SaveButton onClick={handleSubmit(onSubmit)}>
                 {editId ? "Update" : "Create"}
-              </button>
+              </SaveButton>
             </div>
           </div>
         </div>
