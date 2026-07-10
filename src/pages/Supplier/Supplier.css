@@ -2,6 +2,8 @@
   padding: 24px;
   font-family: "Segoe UI", Arial, sans-serif;
   color: #1f2937;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .supplier-header {
