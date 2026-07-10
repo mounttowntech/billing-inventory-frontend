@@ -135,6 +135,32 @@ export const CustomersIcon = (props) => (
   </svg>
 );
 
+export const MeasurementIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect x="5" y="3" width="14" height="18" rx="2" />
+    <path d="M9 6v2" />
+    <path d="M12 6v1.5" />
+    <path d="M15 6v2" />
+    <path d="M9 10v1.5" />
+    <path d="M12 10v2" />
+    <path d="M15 10v1.5" />
+    <path d="M9 14v2" />
+    <path d="M12 14v1.5" />
+    <path d="M15 14v2" />
+    <path d="M9 18v1" />
+    <path d="M15 18v1" />
+  </svg>
+);
+
 export const SuppliersIcon = (props) => (
   <svg
     viewBox="0 0 24 24"

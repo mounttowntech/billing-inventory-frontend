@@ -1,0 +1,115 @@
+.expense-container{
+    padding: 30px;
+  background: #f5f7fb;
+  min-height: fit-content;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+.expense-modal {
+  width: 95%;
+  max-width: 700px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  animation: modalFade 0.25s ease;
+}
+
+.expense-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.expense-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.expense-group label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.expense-group input,
+.expense-group select,
+.expense-group textarea {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 15px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.expense-group input:focus,
+.expense-group select:focus,
+.expense-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.expense-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.expense-group span {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #e53935;
+  font-weight: 500;
+}
+
+/* Make Note field take full width */
+.expense-group:last-of-type {
+  grid-column: 1 / -1;
+}
+
+/* Save Button */
+.save-btn {
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin-top: 10px;
+  min-width: 180px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .expense-modal {
+    width: 95%;
+    padding: 18px;
+  }
+
+  .expense-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .expense-group:last-of-type,
+  .save-btn {
+    grid-column: auto;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
+}
+
+/* Animation */
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

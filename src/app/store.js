@@ -11,6 +11,8 @@ import styleReducer from "../features/style/styleSlice";
 import purchaseReducer from "../features/purchase/purchaseSlice";
 import supplierReducer from "../features/supplier/supplierSlice";
 import roleReducer from "../features/rolls/roleSlice";
+import expenseReducer from "../features/expense/expenseSlice";
+import storeReducer from "../features/store/storeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -26,5 +28,7 @@ export const store = configureStore({
     purchase: purchaseReducer,
     supplier: supplierReducer,
     role: roleReducer,
+    expense: expenseReducer,
+    store: storeReducer,
   },
 });

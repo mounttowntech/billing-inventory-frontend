@@ -79,14 +79,18 @@
 /* Table */
 
 .table-wrapper {
-  width: 100%;
-  max-height: 500px; /* adjust to taste */
+  width: 100%;              /* fits inside .purchase-container, no overflow of parent */
+  max-width: 100%;
+  max-height: 500px;        /* adjust to taste */
+  overflow-x: auto;         /* horizontal scrollbar lives here now */
   overflow-y: auto;
-  border-radius: 8px; /* keeps the scrollbar corner tidy inside the box */
+  border-radius: 8px;       /* keeps the scrollbar corner tidy inside the box */
+  position: relative;       /* needed for sticky header to anchor correctly */
 }
 
 .purchase-table {
   width: 100%;
+  min-width: 950px;         /* moved here: table can be wider than wrapper, wrapper scrolls */
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -100,8 +104,6 @@
   word-break: break-word;
 }
 
-/* FIXED: merged duplicate th selectors so background + sticky
-   positioning are guaranteed to apply together */
 .purchase-table thead th {
   position: sticky;
   top: 0;
@@ -112,7 +114,6 @@
 .purchase-table tbody tr:hover {
   background: #fafafa;
 }
-
 /* ---- Custom scrollbar (inside the box) ---- */
 
 .table-wrapper,
@@ -124,6 +125,7 @@
 .table-wrapper::-webkit-scrollbar,
 .purchase-modal::-webkit-scrollbar {
   width: 8px;
+  height: 8px;   /* added: needed for the horizontal scrollbar too */
 }
 
 .table-wrapper::-webkit-scrollbar-track,

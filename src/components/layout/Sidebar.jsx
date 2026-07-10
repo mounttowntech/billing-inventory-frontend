@@ -6,6 +6,7 @@ import {
   POSIcon,
   ProductsIcon,
   CustomersIcon,
+  MeasurementIcon,
   PurchaseIcon,
   SupplierIcon,
   InvoiceIcon,
@@ -71,6 +72,14 @@ const Sidebar = () => {
           </NavLink>
           )}
           {hasPermission(user, "Product") && (
+          <NavLink to="/expense">
+            <span className="nav-icon">
+              <POSIcon />
+            </span>
+            <span>Expense</span>
+          </NavLink>
+          )}
+          {hasPermission(user, "products") && (
           <NavLink to="/products">
             <span className="nav-icon">
               <ProductsIcon />
@@ -84,6 +93,14 @@ const Sidebar = () => {
               <CustomersIcon />
             </span>
             <span>Customers</span>
+          </NavLink>
+          )}
+          {hasPermission(user, "purchases") && (
+          <NavLink to="/measurement">
+            <span className="nav-icon">
+              <MeasurementIcon />
+            </span>
+            <span>Measurements</span>
           </NavLink>
           )}
           {hasPermission(user, "purchases") && (
@@ -136,6 +153,12 @@ const Sidebar = () => {
                 <DotIcon />
               </span>
               <span>Category</span>
+            </NavLink>
+            <NavLink to="/stores">
+              <span className="nav-icon">
+                <DotIcon />
+              </span>
+              <span>Store</span>
             </NavLink>
             <NavLink to="/brands">
               <span className="nav-icon">

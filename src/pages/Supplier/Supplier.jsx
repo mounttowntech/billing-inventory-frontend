@@ -13,6 +13,8 @@ import {
 import {
   AddButton,
   SaveButton,
+  PreviousButton,
+  NextButton,
   CancelButton,
   EditButton,
   DeleteButton,
@@ -26,6 +28,14 @@ const Supplier = () => {
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 1;
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentSuppliers = suppliers.slice(indexOfFirst, indexOfLast);
+  const totalPages =
+    suppliers.length > 0 ? Math.ceil(suppliers.length / itemsPerPage) : 1;
 
   const {
     register,
@@ -253,8 +263,8 @@ const Supplier = () => {
             </thead>
 
             <tbody>
-              {suppliers.length > 0 ? (
-                suppliers.map((supplier) => (
+              {currentSuppliers.length > 0 ? (
+                currentSuppliers.map((supplier) => (
                   <tr key={supplier._id}>
                     <td>{supplier.supplierCode}</td>
                     <td>{supplier.supplierName}</td>
@@ -282,6 +292,28 @@ const Supplier = () => {
             </tbody>
           </table>
         )}
+      </div>
+
+      <div className="pagination">
+        <PreviousButton
+          className="btn btn-page"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Previous
+        </PreviousButton>
+
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <NextButton
+          className="btn btn-page"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </NextButton>
       </div>
     </div>
   );

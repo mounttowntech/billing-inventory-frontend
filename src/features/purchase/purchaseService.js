@@ -15,7 +15,7 @@ const createPurchase = async (purchaseData) => {
   return response.data.data;
 };
 
-const updatePurchase = async ({ id, purchaseData }) => {
+const updatePurchase = async (id, purchaseData) => {
   const response = await API.put(`/purchase/update/${id}`, purchaseData);
   return response.data.data;
 };

@@ -34,6 +34,7 @@ export const CancelButton = ({ children = "Cancel", onClick }) => {
 };
 
 export const SaveButton = ({ children = "Save", type = "submit", onClick }) => {
+  console.log("SaveButton clicked", type);
   return (
     <button type={type} className="btn btn-save" onClick={onClick}>
       {children}
