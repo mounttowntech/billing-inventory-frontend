@@ -20,9 +20,6 @@ import Fabric from "../pages/fabric/fabric";
 import Season from "../pages/season/Season";
 import Style from "../pages/Style/Style";
 import Supplier from "../pages/Supplier/Supplier";
-import Profile from "../pages/profile/Profilepage";
-import ProfilePage from "../pages/profile/Profilepage";
-
 
 const AppRoutes = () => {
   return (
@@ -53,7 +50,6 @@ const AppRoutes = () => {
         <Route path="seasons" element={<Season />} />
         <Route path="styles" element={<Style />} />
         <Route path="suppliers" element={<Supplier />} />
-        <Route path="profile" element={<ProfilePage />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
