@@ -1,84 +1,307 @@
-* {
+:root {
+  --primary-color: #0f766e;
+  --secondary-color: #115e59;
+  --dark-color: #042f2e;
+  --light-color: #f8fafc;
+  --white-color: #ffffff;
+}
+
+.bh-header * {
   box-sizing: border-box;
 }
 
-.header {
+.bh-header {
   width: 100%;
   height: 70px;
-  background: #ffffff;
+  background: var(--white-color);
   border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(4, 47, 46, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
+  position: relative;
+  z-index: 100;
 }
 
-.header-title-page {
+.bh-title-page {
   margin: 0;
   font-size: 24px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--dark-color);
 }
 
-.logout-btn-header {
-  background: rgb(78, 78, 182);
-  color: white;
-  border: none;
-  outline: none;
-  width: fit-content;
-  padding: 10px 22px;
-  border-radius: 8px;
+.bh-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Bell icon button */
+.bh-icon-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: var(--white-color);
+  color: var(--secondary-color);
   cursor: pointer;
-  font-size: 15px;
+  transition: 0.2s ease;
+  overflow: visible;
+  padding: 0;
+}
+
+.bh-icon-btn svg {
+  display: block !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  flex-shrink: 0 !important;
+  overflow: visible !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  color: inherit !important;
+}
+
+.bh-icon-btn:hover {
+  background: var(--light-color);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* Profile trigger */
+.bh-profile-menu {
+  position: relative;
+}
+
+.bh-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--white-color);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 6px 14px 6px 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  width: auto;
+}
+
+.bh-profile-trigger:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.12);
+}
+
+.bh-profile-trigger-active {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+.bh-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: var(--white-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.bh-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bh-profile-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.bh-profile-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dark-color);
+  white-space: nowrap;
+}
+
+.bh-profile-role {
+  font-size: 11px;
   font-weight: 600;
-  transition: 0.3s ease;
+  letter-spacing: 0.04em;
+  color: var(--secondary-color);
+  text-transform: uppercase;
 }
 
-.logout-btn-header:hover {
-  background: #4f46e5;
-  transform: translateY(-2px);
+.bh-chevron-icon {
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  color: var(--secondary-color);
+  stroke: currentColor !important;
+  fill: none !important;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
-.logout-btn-header:active {
-  transform: scale(0.98);
+.bh-chevron-open {
+  transform: rotate(180deg);
 }
 
+/* Dropdown */
+.bh-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 260px;
+  background: var(--white-color);
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(4, 47, 46, 0.16);
+  padding: 8px;
+  animation: bh-dropdown-in 0.16s ease;
+}
+
+@keyframes bh-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bh-dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.bh-dropdown-item:hover {
+  background: var(--light-color);
+}
+
+.bh-dropdown-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(15, 118, 110, 0.1);
+  color: var(--primary-color);
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.bh-dropdown-icon svg {
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  color: inherit !important;
+}
+
+.bh-dropdown-icon-danger {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.bh-dropdown-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.bh-dropdown-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.bh-dropdown-item-danger .bh-dropdown-label {
+  color: #dc2626;
+}
+
+.bh-dropdown-subtext {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.bh-dropdown-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 6px 4px;
+}
+
+/* Tablet */
 @media screen and (max-width: 768px) {
-  .header {
+  .bh-header {
     padding: 0 20px;
     height: 65px;
   }
-
-  .header-title {
+  .bh-title-page {
     font-size: 20px;
   }
-
-  .logout-btn {
-    padding: 9px 18px;
-    font-size: 14px;
+  .bh-profile-text {
+    display: none;
+  }
+  .bh-profile-trigger {
+    padding: 6px;
+    gap: 0;
+  }
+  .bh-chevron-icon {
+    margin-left: 4px;
   }
 }
 
 /* Mobile */
-
 @media screen and (max-width: 480px) {
-  .header {
-    height: auto;
-    padding: 15px;
-    flex-direction: column;
-    gap: 12px;
-    align-items: stretch;
+  .bh-header {
+    padding: 0 14px;
+    height: 60px;
   }
-
-  .header-title {
-    text-align: center;
-    font-size: 20px;
+  .bh-title-page {
+    font-size: 17px;
   }
-
-  .logout-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
+  .bh-actions {
+    gap: 8px;
+  }
+  .bh-icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+  .bh-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 12px;
+  }
+  .bh-dropdown {
+    right: -14px;
+    min-width: 240px;
   }
 }
