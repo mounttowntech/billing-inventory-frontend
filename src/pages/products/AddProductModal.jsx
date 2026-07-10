@@ -12,7 +12,7 @@ import { getFabrics } from "../../features/Fabric/fabricSlice";
 import { getSeasons } from "../../features/season/seasonSlice";
 import { getStyles } from "../../features/style/styleSlice";
 import { useEffect } from "react";
-import seasonValidation from "../../validations/seasonValidation";
+import {productValidation}  from "../../validations/productValidation";
 import { brandValidation } from "../../validations/brandValidation";
 import { categoryValidation } from "../../validations/categoryValidation";
 import { styleValidation } from "../../validations/styleValidation";
@@ -26,6 +26,11 @@ import {
   NextButton,
   SaveButton,
 } from "../../components/Common/Button";
+
+import Input  from "../../components/Common/Input";
+import Select  from "../../components/Common/Select";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const GENDER_OPTIONS = ["Men", "Women", "Unisex", "Kids"];
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -79,6 +84,14 @@ const AddProductModal = ({
   const { styles = [], loading: stylesLoading } = useSelector(
     (state) => state.style,
   );
+
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm({
+      resolver: yupResolver(productValidation),
+    });
 
   useEffect(() => {
     dispatch(fetchCategories())
@@ -180,7 +193,7 @@ const AddProductModal = ({
 
   /* ---------- submit ---------- */
 
-  const handleSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
@@ -241,34 +254,65 @@ const AddProductModal = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-body">
+        <form onSubmit={handleSubmit(onSubmit)} className="modal-body">
           {/* ===== Basic Info ===== */}
           <div className="form-section">
             <h4 className="form-section-title">Basic Information</h4>
             <div className="form-grid">
               <div className="form-group">
-                <label>Product Code *</label>
-                <input
+                {/* <label>Product Code *</label> */}
+                <Input
+                  label="Product Code"
+                  name="productCode"
+                  placeholder="e.g. GRM-1001"
+                  register={register}
+                  error={errors.productCode?.message}
+                  value={form.productCode}
+                  onChange={(e) => updateField("productCode", e.target.value)}
+
+                />
+                
+                {/* <input
                   type="text"
                   placeholder="e.g. GRM-1001"
                   value={form.productCode}
                   onChange={(e) => updateField("productCode", e.target.value)}
-                />
+                /> */}
               </div>
 
               <div className="form-group">
-                <label>Product Name *</label>
-                <input
+                {/* <label>Product Name *</label> */}
+                <Input
+                  label="Product Name"
+                  name="productName"
+                  placeholder="e.g. Classic Cotton Shirt"
+                  register={register}
+                  error={errors.productName?.message}
+                  value={form.productName}
+                  onChange={(e) => updateField("productName", e.target.value)}
+                />
+                {/* <input
                   type="text"
                   placeholder="e.g. Classic Cotton Shirt"
                   value={form.productName}
                   onChange={(e) => updateField("productName", e.target.value)}
-                />
+                /> */}
               </div>
 
               <div className="form-group">
-                <label>Category *</label>
-                <select
+                {/* <label>Category *</label> */}
+                <Select 
+                  label="Category"
+                  name="category"
+                  register={register}
+                  error={errors.category?.message}
+                  value={form.category}
+                  onChange={(e) => updateField("category", e.target.value)}
+                  options={categories}
+                  placeholder="Select Category"
+                />
+
+                {/* <select
                   value={form.category}
                   onChange={(e) => updateField("category", e.target.value)}
                 >
@@ -278,12 +322,22 @@ const AddProductModal = ({
                       {category.categoryName}
                     </option>
                   ))}{" "}
-                </select>
+                </select> */}
               </div>
 
               <div className="form-group">
-                <label>Brand *</label>
-                <select
+                {/* <label>Brand *</label> */}
+                <Select 
+                  label="Brand"
+                  name="brand"
+                  register={register}
+                  error={errors.brand?.message}
+                  value={form.brand}
+                  onChange={(e) => updateField("brand", e.target.value)}
+                  options={brands}
+                  placeholder="Select Brand"
+                />
+                {/* <select
                   value={form.brand}
                   onChange={(e) => updateField("brand", e.target.value)}
                 >
@@ -293,12 +347,22 @@ const AddProductModal = ({
                       {brand.brandName}
                     </option>
                   ))}{" "}
-                </select>
+                </select> */}
               </div>
 
               <div className="form-group">
-                <label>Fabric</label>
-                <select
+                {/* <label>Fabric</label> */}
+                <Select
+                  label="Fabric"
+                  name="fabric"
+                  register={register}
+                  error={errors.fabric?.message}
+                  value={form.fabric}
+                  onChange={(e) => updateField("fabric", e.target.value)}
+                  options={fabrics}
+                  placeholder="Select Fabric"
+                />
+                {/* <select
                   value={form.fabric}
                   onChange={(e) => updateField("fabric", e.target.value)}
                 >
@@ -308,12 +372,22 @@ const AddProductModal = ({
                       {fabric.fabricName}
                     </option>
                   ))}{" "}
-                </select>
+                </select> */}
               </div>
 
               <div className="form-group">
-                <label>Season</label>
-                <select
+                {/* <label>Season</label> */}
+                <Select
+                  label="Season"
+                  name="season"
+                  register={register}
+                  error={errors.season?.message}
+                  value={form.season}
+                  onChange={(e) => updateField("season", e.target.value)}
+                  options={seasons}
+                  placeholder="Select Season"
+                />
+                {/* <select
                   value={form.season}
                   onChange={(e) => updateField("season", e.target.value)}
                 >
@@ -327,8 +401,17 @@ const AddProductModal = ({
               </div>
 
               <div className="form-group">
-                <label>Style</label>
-                <select
+                {/* <label>Style</label> */}
+                <Select
+                  label="Style"
+                  name="style"
+                  placeholder="Select Style"
+                  register={register}
+                  error={errors.style?.message}
+                  value={form.style}
+                  onChange={(e) => updateField("style", e.target.value)}
+                />
+                {/* <select
                   value={form.style}
                   onChange={(e) => updateField("style", e.target.value)}
                 >
@@ -338,12 +421,19 @@ const AddProductModal = ({
                       {style.styleName}
                     </option>
                   ))}
-                </select>
+                </select> */}
               </div>
 
               <div className="form-group">
-                <label>Gender *</label>
-                <select
+                {/* <label>Gender *</label> */}
+                <Select
+                  label="Gender"
+                  name="gender"
+                  placeholder="Select Gender"
+                  register={register}
+                  error={errors.gender?.message}
+                />
+                {/* <select
                   value={form.gender}
                   onChange={(e) => updateField("gender", e.target.value)}
                 >
@@ -353,12 +443,12 @@ const AddProductModal = ({
                       {g}
                     </option>
                   ))}
-                </select>
+                </select> */}
               </div>
             </div>
 
             <div className="form-group full-width">
-              <label>Description</label>
+              {/* <label>Description</label> */}
               <textarea
                 rows={3}
                 placeholder="Short description of the product..."

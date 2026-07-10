@@ -169,6 +169,38 @@ button {
   text-decoration: underline;
 }
 
+.register-grid .password-toggle-icon {
+  position: absolute;
+  top: 50%;
+  /* right: 14px; */
+  transform: translateY(-50%);
+
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: #7b8794;
+left: 90%;
+  z-index: 10;
+}
+
+.register-grid .password-toggle-icon:hover {
+    cursor: pointer;
+    transform: none;
+    box-shadow: none;
+    top:25%;
+    color: #0f766e;
+
+  }
+
 
 @media (max-width: 1200px) {
 

@@ -61,7 +61,7 @@ const ProductList = () => {
       dispatch(deleteProduct(id));
     }
   };
-  console.log("Categories in AddProductModal are the :", category);
+  console.log("Products in ProductList are the :", products);
 
   return (
     <>
