@@ -157,86 +157,116 @@ const AuditLog = () => {
       >
         Add Audit Log
       </AddButton>{" "}
-      <table className="auditlog-table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Module</th>
-            <th>Action</th>
-            <th>Reference Id</th>
-            <th>Old Value</th>
-            <th>New Value</th>
-            <th>IP Address</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {auditLogs?.length > 0 ? (
-            auditLogs.map((log) => (
-              <tr key={log._id}>
-                <td>
-                  {log.user
-                    ? `${log.user.firstName} ${log.user.lastName}`
-                    : "-"}
-                </td>
-
-                <td>{log.module}</td>
-
-                <td>{log.action}</td>
-
-                <td>{log.recordId}</td>
-
-                <td>
-                  <pre>{JSON.stringify(log.oldValues, null, 2)}</pre>
-                </td>
-
-                <td>
-                  {log.newValues ? (
-                    <div className="audit-data-card">
-                      <div className="audit-row">
-                        <span className="audit-label">Invoice</span>
-                        <span className="audit-value">
-                          {log.newValues.invoiceNo || "-"}
-                        </span>
-                      </div>
-
-                      <div className="audit-row">
-                        <span className="audit-label">Customer</span>
-                        <span className="audit-value">
-                          {log.newValues.customer || "-"}
-                        </span>
-                      </div>
-
-                      <div className="audit-row">
-                        <span className="audit-label">Grand Total</span>
-                        <span className="audit-value">
-                          ₹{log.newValues.grandTotal?.toLocaleString() || 0}
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    "-"
-                  )}
-                </td>
-
-                <td>{log.ipAddress}</td>
-
-                <td>{new Date(log.createdAt).toLocaleString()}</td>
-                <td className="action-buttons">
-                  <EditButton onClick={() => handleEdit(log)} />
-                  <DeleteButton onClick={() => handleDelete(log._id)} />
-                </td>
-              </tr>
-            ))
-          ) : (
+      <div className="auditlog-table-wrapper">
+        <table className="auditlog-table">
+          <thead>
             <tr>
-              <td colSpan="8">No Audit Logs Found</td>
+              <th>User</th>
+              <th>Module</th>
+              <th>Action</th>
+              <th>Reference Id</th>
+              <th>Old Value</th>
+              <th>New Value</th>
+              <th>IP Address</th>
+              <th>Date</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {auditLogs?.length > 0 ? (
+              auditLogs.map((log) => (
+                <tr key={log._id}>
+                  <td>
+                    {log.user
+                      ? `${log.user.firstName} ${log.user.lastName}`
+                      : "-"}
+                  </td>
+
+                  <td>{log.module}</td>
+
+                  <td>{log.action}</td>
+
+                  <td>{log.recordId}</td>
+
+                  <td>
+                    {log.oldValues ? (
+                      <div className="audit-data-card">
+                        <div className="audit-row">
+                          <span className="audit-label">Invoice : </span>
+                          <span className="audit-value">
+                            {log.oldValues.invoiceNo || "-"}
+                          </span>
+                        </div>
+
+                        <div className="audit-row">
+                          <span className="audit-label">Customer : </span>
+                          <span className="audit-value">
+                            {log.oldValues.customer || "-"}
+                          </span>
+                        </div>
+
+                        <div className="audit-row">
+                          <span className="audit-label">Grand Total : </span>
+                          <span className="audit-value">
+                            ₹{log.oldValues.grandTotal?.toLocaleString() || 0}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    {log.newValues ? (
+                      <div className="audit-data-card">
+                        <div className="audit-row">
+                          <span className="audit-label">Invoice : </span>
+                          <span className="audit-value">
+                            {log.newValues.invoiceNo || "-"}
+                          </span>
+                        </div>
+
+                        <div className="audit-row">
+                          <span className="audit-label">Customer : </span>
+                          <span className="audit-value">
+                            {log.newValues.customer || "-"}
+                          </span>
+                        </div>
+
+                        <div className="audit-row">
+                          <span className="audit-label">Grand Total : </span>
+                          <span className="audit-value">
+                            ₹{log.newValues.grandTotal?.toLocaleString() || 0}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  <td>{log.ipAddress}</td>
+
+                  <td>
+                    <div>{new Date(log.createdAt).toLocaleDateString()}</div>
+                    <div>{new Date(log.createdAt).toLocaleTimeString()}</div>
+                  </td>
+                  <td className="action-buttons">
+                    <EditButton onClick={() => handleEdit(log)} />
+                    <DeleteButton onClick={() => handleDelete(log._id)} />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8">No Audit Logs Found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
       {showForm && (
         <div className="modal-overlay">
           <div className="audit-modal">

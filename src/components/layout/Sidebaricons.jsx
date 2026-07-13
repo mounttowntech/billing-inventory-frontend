@@ -198,6 +198,45 @@ export const MeasurementIcon = (props) => (
   </svg>
 );
 
+export const UnitIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect x="3" y="7" width="18" height="10" rx="2" />
+    <line x1="6" y1="7" x2="6" y2="11" />
+    <line x1="9" y1="7" x2="9" y2="10" />
+    <line x1="12" y1="7" x2="12" y2="11" />
+    <line x1="15" y1="7" x2="15" y2="10" />
+    <line x1="18" y1="7" x2="18" y2="11" />
+  </svg>
+);
+
+export const SalesReturnIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path d="M7 3h8l2 2v15l-2-1-2 1-2-1-2 1-2-1-2 1V5l2-2z" />
+    <line x1="9" y1="8" x2="15" y2="8" />
+    <line x1="9" y1="11" x2="15" y2="11" />
+    <path d="M15 16H9" />
+    <path d="M11 14L9 16L11 18" />
+  </svg>
+);
+
 export const SuppliersIcon = (props) => (
   <svg
     viewBox="0 0 24 24"
