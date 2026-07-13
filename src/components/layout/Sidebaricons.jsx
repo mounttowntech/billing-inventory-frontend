@@ -117,6 +117,43 @@ export const ReturnsIcon = (props) => (
   </svg>
 );
 
+export const AuditLogIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect x="6" y="4" width="12" height="16" rx="2" />
+    <path d="M9 4.5h6M10 2.5h4a1 1 0 0 1 1 1V5H9V3.5a1 1 0 0 1 1-1z" />
+    <line x1="9" y1="9" x2="15" y2="9" />
+    <line x1="9" y1="12" x2="15" y2="12" />
+    <line x1="9" y1="15" x2="13" y2="15" />
+  </svg>
+);
+
+export const RolesIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle cx="8" cy="8" r="3" />
+    <path d="M3 18c0-2.8 2.2-5 5-5s5 2.2 5 5" />
+    <path d="M16 4l4 2v4c0 3-2 5.5-4 6.5-2-1-4-3.5-4-6.5V6l4-2z" />
+    <path d="M14.8 10.5l1.2 1.2 2.2-2.4" />
+  </svg>
+);
+
 export const CustomersIcon = (props) => (
   <svg
     viewBox="0 0 24 24"

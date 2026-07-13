@@ -91,6 +91,7 @@ const ProductList = () => {
             <thead>
               <tr>
                 <th>productCode</th>
+                <th>Image</th>
                 <th>productName</th>
                 <th>category</th>
                 <th>brand</th>
@@ -108,6 +109,17 @@ const ProductList = () => {
                 <>
                   <tr key={product._id}>
                     <td>{product.productCode}</td>
+                    <td>
+                      {product.image ? (
+                        <img
+                          src={`${IMAGE_URL}/${product.image}`}
+                          alt={product.productName}
+                          className="product-image"
+                        />
+                      ) : (
+                        <span>No Image</span>
+                      )}
+                    </td>
                     <td>{product.productName}</td>
                     <td>{product.category?.categoryName}</td>
                     <td>{product.brand?.brandName}</td>
@@ -147,7 +159,7 @@ const ProductList = () => {
 
                   {expandedProduct === product._id && (
                     <tr>
-                      <td colSpan={11}>
+                      <td colSpan={12}>
                         <table className="variant-table">
                           <thead>
                             <tr>
