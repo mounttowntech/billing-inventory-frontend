@@ -26,6 +26,8 @@ import ProfilePage from "../pages/profile/Profilepage";
 import Expense from "../pages/Expense/Expense";
 import Store from "../pages/store/Store";
 import Measurement from "../pages/measurement/Measurement";
+import AuditLog from "../pages/auditLog/AuditLog";
+import RolesPermission from "../pages/RolesPermission/RolesPermission";
 
 const AppRoutes = () => {
   return (
@@ -60,6 +62,8 @@ const AppRoutes = () => {
         <Route path="expense" element={<Expense />} />
         <Route path="stores" element={<Store />} />
         <Route path="measurement" element={<Measurement />} />
+        <Route path="audit-logs" element={<AuditLog />} />
+        <Route path="roles" element={<RolesPermission />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

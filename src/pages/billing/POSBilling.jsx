@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import "./POSBilling.css";
 import img1 from "../../assets/shirt.jpg";
 import img2 from "../../assets/jeans.jpg";
@@ -8,6 +7,9 @@ import img5 from "../../assets/kid.jpg";
 import img6 from "../../assets/jack.jpg";
 import img7 from "../../assets/kurta.jpg";
 import img8 from "../../assets/cargo.jpg";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "../../features/product/productSlice";
 
 const CATEGORIES = [
   "All Items",
@@ -16,32 +18,6 @@ const CATEGORIES = [
   "T-Shirts",
   "Sarees",
   "Kids Wear",
-];
-
-const PRODUCTS = [
-  { id: 1, name: "Shirts", price: 55, image: img1 },
-  { id: 2, name: "Jeans", price: 110, image: img2 },
-  { id: 3, name: "T-Shirts", price: 165, image: img3 },
-  { id: 4, name: "Sarees", price: 220, image: img4 },
-  {
-    id: 5,
-    name: "Kids Wear",
-    price: 275,
-    image: img5,
-  },
-  { id: 6, name: "Jacket", price: 150, image: img6 },
-  {
-    id: 7,
-    name: "Kurta-pajama",
-    price: 250,
-    image: img7,
-  },
-  {
-    id: 8,
-    name: "Cargo pants",
-    price: 350,
-    image: img8,
-  },
 ];
 
 const QUICK_ACTIONS = [
@@ -134,12 +110,17 @@ export default function POSPage() {
   const received = parseFloat(receivedAmount) || 0;
   const returnAmount = received - grandTotal;
 
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(getProducts());
+  }, [dispatch]);
+
   return (
     <div className="pos-page">
-      {/* ================= LEFT: PRODUCTS PANEL ================= */}
       <section className="products-panel">
         <div className="products-card">
-          {/* Search bar */}
           <div className="search-bar">
             <Icon name="search" className="search-icon" />
             <input
@@ -151,7 +132,6 @@ export default function POSPage() {
             />
           </div>
 
-          {/* Category filters */}
           <div className="category-list">
             {CATEGORIES.map((category) => (
               <button
@@ -166,25 +146,42 @@ export default function POSPage() {
             ))}
           </div>
 
-          {/* Product grid */}
           <div className="product-grid">
-            {PRODUCTS.map((product) => (
-              <button key={product.id} className="product-card">
-                <div className="product-image">
-                  {product.image ? (
-                    <img src={product.image} alt={product.name} />
-                  ) : (
-                    // image placeholder: add a real photo for this product
-                    <span
-                      className="product-image-placeholder"
-                      aria-hidden="true"
-                    />
-                  )}
-                </div>
-                <p className="product-name">{product.name}</p>
-                <p className="product-price">₹{product.price}</p>
-              </button>
-            ))}
+            {products
+              ?.filter((product) => {
+                const search = searchTerm.toLowerCase();
+
+                const matchesSearch =
+                  product.productName?.toLowerCase().includes(search) ||
+                  product.productCode?.toLowerCase().includes(search) ||
+                  product.variants?.some(
+                    (variant) =>
+                      variant.skuCode?.toLowerCase().includes(search) ||
+                      variant.barcode?.toLowerCase().includes(search),
+                  );
+
+                const matchesCategory =
+                  activeCategory === "All Items" ||
+                  product.category?.categoryName === activeCategory;
+
+                return matchesSearch && matchesCategory;
+              })
+              .map((product) => (
+                <button key={product.id} className="product-card">
+                  <div className="product-image">
+                    <img src={product.image} alt={product.productName} />
+                  </div>
+
+                  <p className="product-name">{product.productName}</p>
+
+                  <p className="product-price">
+                    ₹
+                    {product.variants?.[0]?.sellingPrice ??
+                      product.variants?.[0]?.mrp ??
+                      0}
+                  </p>
+                </button>
+              ))}
           </div>
         </div>
 
@@ -210,7 +207,6 @@ export default function POSPage() {
         </div>
       </section>
 
-      {/* ================= RIGHT: CURRENT BILL PANEL ================= */}
       <aside className="bill-panel">
         <div className="bill-card">
           <div className="bill-header">
