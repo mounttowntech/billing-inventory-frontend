@@ -28,6 +28,8 @@ import Store from "../pages/store/Store";
 import Measurement from "../pages/measurement/Measurement";
 import AuditLog from "../pages/auditLog/AuditLog";
 import RolesPermission from "../pages/RolesPermission/RolesPermission";
+import SalesReturn from "../pages/SalesReturn/SalesReturn";
+import Unit from "../pages/Unit/Unit";
 
 const AppRoutes = () => {
   return (
@@ -64,6 +66,8 @@ const AppRoutes = () => {
         <Route path="measurement" element={<Measurement />} />
         <Route path="audit-logs" element={<AuditLog />} />
         <Route path="roles" element={<RolesPermission />} />
+        <Route path="sales-return" element={<SalesReturn />} />
+        <Route path="units" element={<Unit />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

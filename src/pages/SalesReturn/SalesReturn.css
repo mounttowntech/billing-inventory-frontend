@@ -1,0 +1,313 @@
+.salesreturn-container {
+  width: 95%;
+  margin: 25px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* ================= Header ================= */
+
+.salesreturn-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.salesreturn-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* ================= Table ================= */
+
+.salesreturn-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+.salesreturn-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 900px;
+}
+
+.salesreturn-table th,
+.salesreturn-table td {
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  vertical-align: middle;
+  word-break: break-word;
+}
+
+.salesreturn-table th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.salesreturn-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.salesreturn-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* Column Widths */
+
+.salesreturn-table th:nth-child(1),
+.salesreturn-table td:nth-child(1) {
+  width: 18%;
+}
+
+.salesreturn-table th:nth-child(2),
+.salesreturn-table td:nth-child(2) {
+  width: 18%;
+}
+
+.salesreturn-table th:nth-child(3),
+.salesreturn-table td:nth-child(3) {
+  width: 15%;
+}
+
+.salesreturn-table th:nth-child(4),
+.salesreturn-table td:nth-child(4) {
+  width: 15%;
+}
+
+.salesreturn-table th:nth-child(5),
+.salesreturn-table td:nth-child(5) {
+  width: 24%;
+}
+
+.salesreturn-table th:nth-child(6),
+.salesreturn-table td:nth-child(6) {
+  width: 10%;
+  text-align: center;
+}
+
+/* ================= Buttons ================= */
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ================= Popup ================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 999;
+}
+
+.salesreturn-modal {
+  width: 650px;
+  max-width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+  animation: popup 0.25s ease;
+}
+
+@keyframes popup {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ================= Modal Header ================= */
+
+.salesreturn-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.salesreturn-modal-header h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 22px;
+  color: #666;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+/* ================= Form ================= */
+
+.salesreturn-modal form {
+  padding: 24px;
+}
+
+.salesreturn-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.salesreturn-form-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.salesreturn-form-group input,
+.salesreturn-form-group textarea,
+.salesreturn-form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: .2s;
+  box-sizing: border-box;
+}
+
+.salesreturn-form-group textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.salesreturn-form-group input:focus,
+.salesreturn-form-group textarea:focus,
+.salesreturn-form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+}
+
+.salesreturn-form-group p {
+  margin-top: 5px;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+/* ================= Form Buttons ================= */
+
+.salesreturn-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+/* ================= Scrollbar ================= */
+
+.salesreturn-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.salesreturn-modal::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.salesreturn-modal::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+/* ================= Tablet ================= */
+
+@media (max-width: 992px) {
+
+  .salesreturn-container {
+    width: 98%;
+    padding: 15px;
+  }
+
+  .salesreturn-header h2 {
+    font-size: 22px;
+  }
+
+  .salesreturn-table th,
+  .salesreturn-table td {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .salesreturn-modal {
+    width: 90%;
+  }
+
+}
+
+/* ================= Mobile ================= */
+
+@media (max-width: 768px) {
+
+  .salesreturn-container {
+    width: 100%;
+    padding: 12px;
+    border-radius: 0;
+  }
+
+  .salesreturn-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .salesreturn-header h2 {
+    font-size: 20px;
+  }
+
+  .salesreturn-table {
+    min-width: 900px;
+  }
+
+  .salesreturn-modal {
+    width: 100%;
+    max-height: 95vh;
+  }
+
+  .salesreturn-modal-header {
+    padding: 16px;
+  }
+
+  .salesreturn-modal form {
+    padding: 16px;
+  }
+
+  .salesreturn-form-buttons {
+    flex-direction: column;
+  }
+
+  .salesreturn-form-buttons button {
+    width: 100%;
+  }
+
+}
