@@ -3,6 +3,8 @@ const Select = ({
   name,
   register,
   error,
+  value,
+  onChange,
   options = [],
   placeholder = "Select option",
 }) => {
@@ -10,11 +12,16 @@ const Select = ({
     <div className="form-group">
       {label && <label>{label}</label>}
 
-      <select {...register(name)} className="form-control">
+      <select
+        {...register(name)}
+        className="form-control"
+        value={value}
+        onChange={onChange}
+      >
         <option value="">{placeholder}</option>
 
-        {options.map((item) => (
-          <option key={item.value} value={item.value}>
+        {options.map((item, index) => (
+          <option key={index} value={item.id || item.value}>
             {item.label}
           </option>
         ))}

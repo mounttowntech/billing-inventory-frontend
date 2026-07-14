@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./ProfilePage.css";
 
 // Placeholder user — replace with data from your auth/user slice (useSelector)
 const INITIAL_USER = {
-  name: "Manojkumar B.R",
-  role: "Employee",
-  employeeId: "EMP-0231",
+  name: "Unknown User",
+  role: "User",
+  employeeId: "EMP-1234",
   department: "Billing & Inventory",
-  email: "manojkumar.br@example.com",
+  email: "test@example.com",
   phone: "+91 98765 43210",
   joinedOn: "12 Mar 2023",
   address: "24, Anna Nagar, Salem, Tamil Nadu",
@@ -200,6 +201,18 @@ const BpPinIcon = () => (
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const login_user = useSelector((state) => state.auth.user);
+  if (login_user) {
+    INITIAL_USER.name = login_user?.firstName + " " + login_user?.lastName;
+    INITIAL_USER.role = login_user?.role?.roleName || "User";
+    INITIAL_USER.avatarUrl = login_user?.avatarUrl || "";
+    INITIAL_USER.employeeId = login_user?.employeeCode || "";
+    INITIAL_USER.phone = login_user?.phone || "";
+    INITIAL_USER.department = login_user?.department || "";
+    INITIAL_USER.joinedOn = login_user?.joinedOn || "";
+    INITIAL_USER.address = login_user?.address || "";
+    INITIAL_USER.email = login_user?.email || "";
+  }
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(INITIAL_USER);
   const [savedData, setSavedData] = useState(INITIAL_USER);

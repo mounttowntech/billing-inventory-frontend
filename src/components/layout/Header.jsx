@@ -2,12 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./Header.css";
 
 // Placeholder user — replace with data from your auth/user slice
 const CURRENT_USER = {
-  name: "Manojkumar B.R",
-  role: "Employee",
+  name: "Unknown User",
+  role: "User",
   avatarUrl: "", // if you have a real photo URL, drop it here
 };
 
@@ -123,6 +124,14 @@ const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  // Set login user details in the header component. The CURRENT_USER object is a placeholder and should be replaced with actual user data from your authentication or user slice in your Redux store.
+  const login_user = useSelector((state) => state.auth.user);
+  console.log("Current user in Header:", login_user);
+  if(login_user) {
+    CURRENT_USER.name = login_user?.firstName + " " + login_user?.lastName;
+    CURRENT_USER.role = login_user?.role?.roleName || "User";
+    CURRENT_USER.avatarUrl = login_user?.avatarUrl || "";
+  }
 
   useEffect(() => {
     const handleClickOutside = (e) => {

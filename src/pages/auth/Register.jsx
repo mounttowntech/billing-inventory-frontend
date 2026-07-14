@@ -9,17 +9,14 @@ import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
 import "./Register.css";
 
-const businessTypeOptions = [
-  { label: "Restaurant", value: "restaurant" },
-  { label: "Garments", value: "garments" },
-  { label: "Department Store", value: "department_store" },
-  { label: "General", value: "general" },
-];
+import { fetchRoles } from "../../features/rolls/roleSlice";
+import { useEffect, useState } from "react";
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.auth);
+  const [roles, setRoles] = useState([]);
 
   const {
     register,
@@ -29,6 +26,15 @@ const Register = () => {
     resolver: yupResolver(registerValidation),
   });
 
+  useEffect(() => {
+    dispatch(fetchRoles()).unwrap().then(res => {
+      // Handle the fetched roles if needed
+      console.log('rolesres:', res);
+      // set role name in the state
+      setRoles(res.map(role => ({ id: role._id, label: role.roleName, value: role.roleName })));
+    });
+  }, [dispatch]);
+
   const onSubmit = async (data) => {
     const result = await dispatch(registerUser(data));
 
@@ -36,7 +42,7 @@ const Register = () => {
       navigate("/login");
     }
   };
-
+console.log('roles:', roles);
   return (
     <div className="login-page1">
       <form onSubmit={handleSubmit(onSubmit)} className="login-card1">
@@ -99,12 +105,12 @@ const Register = () => {
 
           <div className="form-item">
             <Select
-              label="Business Type"
-              name="businessType"
+              label="Select Role"
+              name="role"
               register={register}
-              error={errors.businessType?.message}
-              options={businessTypeOptions}
-              placeholder="Select Business Type"
+              error={errors.role?.message}
+              options={roles}
+              placeholder="Select Role"
             />
           </div>
 

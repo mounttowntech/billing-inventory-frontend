@@ -67,7 +67,7 @@ details[open] summary .nav-icon {
 }
 
 .summary-label {
-  display: flex;
+  /* display: flex; */
   align-items: center;
   gap: 10px;
   color: var(--sidebar-text) !important;
@@ -83,8 +83,9 @@ details summary::-webkit-details-marker {
 
 details summary::after {
   content: "▸";
-  font-size: 12px;
+  font-size: 24px;
   transition: transform 0.3s ease;
+  padding:5px 0px 0px 0px;
 }
 
 details[open] summary::after {
