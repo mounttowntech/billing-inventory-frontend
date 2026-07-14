@@ -112,7 +112,7 @@ const ProductList = () => {
                     <td>
                       {product.image ? (
                         <img
-                          src={`${IMAGE_URL}/${product.image}`}
+                          src={`${import.meta.env.VITE_API_URL}/${product.image}`}
                           alt={product.productName}
                           className="product-image"
                         />

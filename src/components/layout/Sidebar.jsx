@@ -67,7 +67,7 @@ const Sidebar = () => {
             <span>Dashboard</span>
           </NavLink>
           )}
-          {hasPermission(user, "billing") && (
+          {hasPermission(user, "pos-billing") && (
           <NavLink to="/billing">
             <span className="nav-icon">
               <POSIcon />
