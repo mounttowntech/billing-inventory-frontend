@@ -13,6 +13,10 @@ import supplierReducer from "../features/supplier/supplierSlice";
 import roleReducer from "../features/rolls/roleSlice";
 import expenseReducer from "../features/expense/expenseSlice";
 import storeReducer from "../features/store/storeSlice";
+import auditLogReducer from "../features/auditLog/auditLogSlice";
+import rolePermissionReducer from "../features/rolePermission/rolePermissionSlice";
+import salesReturnReducer from "../features/salesReturn/salesReturnSlice";
+import unitReducer from "../features/unit/unitSlice";
 
 export const store = configureStore({
   reducer: {
@@ -30,5 +34,9 @@ export const store = configureStore({
     role: roleReducer,
     expense: expenseReducer,
     store: storeReducer,
+    auditLogs: auditLogReducer,
+    rolePermission: rolePermissionReducer,
+    salesReturn: salesReturnReducer,
+    unit: unitReducer,
   },
 });

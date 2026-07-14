@@ -1,0 +1,426 @@
+/* ================= Audit Log Container ================= */
+
+.auditlog-container {
+  width: 95%;
+  margin: 25px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.auditlog-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+/* ================= Table ================= */
+
+.auditlog-table {
+  width: 100%;
+  min-width: 1200px;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.auditlog-table th {
+  background: #f8fafc;
+  color: #0f4c5c;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ================= Overlay ================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* ================= Modal ================= */
+
+.audit-modal {
+  width: 700px;
+  max-width: 95%;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+  animation: popup 0.25s ease;
+}
+
+@keyframes popup {
+  from {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ================= Header ================= */
+
+.audit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.audit-modal-header h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* ================= Form ================= */
+
+
+.audit-modal form {
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.audit-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.audit-form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.audit-form-group input,
+.audit-form-group textarea {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+  box-sizing: border-box;
+}
+
+.audit-form-group textarea {
+  resize: vertical;
+  min-height: 90px;
+  font-family: inherit;
+}
+
+.audit-form-group input:focus,
+.audit-form-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Disabled User Field */
+
+.audit-form-group input:disabled {
+  background: #f3f4f6;
+  color: #555;
+  cursor: not-allowed;
+}
+
+/* Validation */
+
+.audit-form-group p {
+  margin-top: 5px;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+/* ================= Buttons ================= */
+
+.audit-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 20px;
+}
+
+/* ================= Scrollbar ================= */
+
+.audit-modal form::-webkit-scrollbar {
+  width: 7px;
+}
+
+.audit-modal form::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.audit-modal form::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+/* ================= Tablet ================= */
+
+@media (max-width: 992px) {
+  .audit-modal {
+    width: 90%;
+  }
+
+  .audit-modal-header h3 {
+    font-size: 20px;
+  }
+
+  .audit-modal form {
+    padding: 18px;
+  }
+
+  .audit-form-group input,
+  .audit-form-group textarea {
+    font-size: 13px;
+  }
+}
+
+/* ================= Mobile ================= */
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .audit-modal {
+    width: 100%;
+    max-height: 95vh;
+    border-radius: 10px;
+  }
+
+  .audit-modal-header {
+    padding: 15px;
+  }
+
+  .audit-modal-header h3 {
+    font-size: 18px;
+  }
+
+  .audit-modal form {
+    padding: 15px;
+  }
+
+  .audit-form-group {
+    margin-bottom: 15px;
+  }
+
+  .audit-form-group label {
+    font-size: 13px;
+  }
+
+  .audit-form-group input,
+  .audit-form-group textarea {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .audit-form-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .audit-form-buttons button {
+    width: 100%;
+  }
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+}
+
+.auditlog-table td {
+  padding: 14px 12px;
+  font-size: 13px;
+  color: #374151;
+  border-bottom: 1px solid #edf2f7;
+  vertical-align: top;
+}
+
+/* User */
+
+.auditlog-table th:nth-child(1),
+.auditlog-table td:nth-child(1){
+    min-width:10px;
+}
+
+/* Module */
+
+.auditlog-table th:nth-child(2),
+.auditlog-table td:nth-child(2){
+    min-width:90px;
+}
+
+/* Action */
+
+.auditlog-table th:nth-child(3),
+.auditlog-table td:nth-child(3){
+    min-width:90px;
+}
+
+/* Reference */
+
+.auditlog-table th:nth-child(4),
+.auditlog-table td:nth-child(4){
+    min-width:180px;
+    word-break: break-all;
+}
+
+/* Old */
+
+.auditlog-table th:nth-child(5),
+.auditlog-table td:nth-child(5){
+    min-width: 120px;
+}
+
+/* New */
+
+.auditlog-table th:nth-child(6),
+.auditlog-table td:nth-child(6){
+    min-width: 120px;
+}
+
+/* IP */
+
+.auditlog-table th:nth-child(7),
+.auditlog-table td:nth-child(7){
+    min-width:10px;
+}
+
+/* Date */
+
+.auditlog-table th:nth-child(8),
+.auditlog-table td:nth-child(8){
+    min-width:10px;
+}
+
+/* Actions */
+
+.auditlog-table th:nth-child(9),
+.auditlog-table td:nth-child(9){
+    min-width:0px;
+    text-align:center;
+}
+
+/* ================= Audit Card ================= */
+
+.audit-data-card{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    line-height:1.4;
+}
+
+.audit-row{
+    display:flex;
+    gap:4px;
+    flex-wrap:wrap;
+}
+
+.audit-label{
+    font-weight:600;
+}
+
+.audit-value{
+    word-break:break-word;
+}
+
+/* ================= Buttons ================= */
+
+.action-buttons{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+}
+
+.action-buttons button{
+    width:90px;
+}
+
+/* ================= Tablet ================= */
+
+@media (max-width:992px){
+
+.auditlog-container{
+    width:98%;
+    padding:15px;
+}
+
+.auditlog-table{
+    min-width:1150px;
+}
+
+.auditlog-table th,
+.auditlog-table td{
+    padding:10px;
+    font-size:12px;
+}
+
+.action-buttons button{
+    width:80px;
+}
+
+}
+
+/* ================= Mobile ================= */
+
+@media (max-width:768px){
+
+.auditlog-container{
+    width:100%;
+    margin:10px auto;
+    padding:10px;
+    border-radius:8px;
+}
+
+.auditlog-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.auditlog-table{
+    min-width:1100px;
+}
+
+.auditlog-table th,
+.auditlog-table td{
+    padding:8px;
+    font-size:11px;
+}
+
+.action-buttons button{
+    width:75px;
+    font-size:11px;
+}
+
+.audit-data-card{
+    font-size:11px;
+}
+
+}

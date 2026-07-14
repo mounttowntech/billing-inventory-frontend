@@ -7,8 +7,12 @@ import {
   ProductsIcon,
   CustomersIcon,
   MeasurementIcon,
+  AuditLogIcon,
   PurchaseIcon,
+  SalesReturnIcon,
   SupplierIcon,
+  RolesIcon,
+  UnitIcon,
   InvoiceIcon,
   ReportsIcon,
   SettingsIcon,
@@ -71,7 +75,23 @@ const Sidebar = () => {
             <span>POS Billing</span>
           </NavLink>
           )}
-          {hasPermission(user, "Product") && (
+          {hasPermission(user, "sales-returns") && (
+          <NavLink to="/sales-return">
+            <span className="nav-icon">
+              <SalesReturnIcon />
+            </span>
+            <span>Sales Returns</span>
+          </NavLink>
+          )}
+          {hasPermission(user, "roles") && (
+          <NavLink to="/roles">
+            <span className="nav-icon">
+              <RolesIcon />
+            </span>
+            <span>Roles</span>
+          </NavLink>
+          )}
+          {hasPermission(user, "expense") && (
           <NavLink to="/expense">
             <span className="nav-icon">
               <POSIcon />
@@ -95,12 +115,20 @@ const Sidebar = () => {
             <span>Customers</span>
           </NavLink>
           )}
-          {hasPermission(user, "purchases") && (
+          {hasPermission(user, "measurement") && (
           <NavLink to="/measurement">
             <span className="nav-icon">
               <MeasurementIcon />
             </span>
             <span>Measurements</span>
+          </NavLink>
+          )}
+          {hasPermission(user, "audit-logs") && (
+          <NavLink to="/audit-logs">
+            <span className="nav-icon">
+              <AuditLogIcon />
+            </span>
+            <span>Audit Logs</span>
           </NavLink>
           )}
           {hasPermission(user, "purchases") && (
@@ -153,6 +181,12 @@ const Sidebar = () => {
                 <DotIcon />
               </span>
               <span>Category</span>
+            </NavLink>
+            <NavLink to="/units">
+              <span className="nav-icon">
+                <UnitIcon />
+              </span>
+              <span>Unit</span>
             </NavLink>
             <NavLink to="/stores">
               <span className="nav-icon">

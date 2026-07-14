@@ -56,6 +56,7 @@ const emptyForm = () => ({
   style: "",
   gender: "",
   description: "",
+  image: null,
   variants: [emptyVariant()],
 });
 
@@ -208,17 +209,29 @@ const AddProductModal = ({
           currentStock: Number(v.currentStock),
         })),
       };
+      const formData = new FormData();
 
+      Object.keys(payload).forEach((key) => {
+        if (key === "variants") {
+          formData.append("variants", JSON.stringify(payload.variants));
+        } else if (key === "image") {
+          if (payload.image) {
+            formData.append("image", payload.image);
+          }
+        } else {
+          formData.append(key, payload[key]);
+        }
+      });
       let response;
       if (isEdit) {
         response = await dispatch(
           updateProduct({
             id: product._id,
-            data: payload,
+            data: formData,
           }),
         ).unwrap();
       } else {
-        response = await dispatch(createProduct(payload)).unwrap();
+        response = await dispatch(createProduct(formData)).unwrap();
       }
 
       console.log(response);
@@ -445,6 +458,15 @@ const AddProductModal = ({
                   ))}
                 </select> */}
               </div>
+            </div>
+
+            <div className="form-group">
+              <label>Product Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => updateField("image", e.target.files[0])}
+              />
             </div>
 
             <div className="form-group full-width">

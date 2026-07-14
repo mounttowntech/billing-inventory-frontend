@@ -1,0 +1,328 @@
+/* ===========================
+   Container
+=========================== */
+
+.unit-container {
+  width: 95%;
+  margin: 25px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.unit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.unit-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #222;
+  font-weight: 600;
+}
+
+/* ===========================
+   Table
+=========================== */
+
+.unit-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 850px;
+}
+
+.unit-table th {
+  background: #f5f7fb;
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.unit-table td {
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #444;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.unit-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.unit-table tbody tr:hover {
+  background: #f3f8ff;
+}
+
+/* ===========================
+   Action Buttons
+=========================== */
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ===========================
+   Overlay
+=========================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* ===========================
+   Modal
+=========================== */
+
+.unit-modal {
+  width: 600px;
+  max-width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  animation: popup 0.25s ease;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes popup {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===========================
+   Modal Header
+=========================== */
+
+.unit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.unit-modal-header h3 {
+  margin: 0;
+  font-size: 22px;
+  color: #222;
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  transition: .2s;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+/* ===========================
+   Form
+=========================== */
+
+.unit-modal form {
+  padding: 24px;
+}
+
+.unit-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.unit-form-group label {
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.unit-form-group input,
+.unit-form-group textarea,
+.unit-form-group select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: .25s;
+  box-sizing: border-box;
+}
+
+.unit-form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.unit-form-group input:focus,
+.unit-form-group textarea:focus,
+.unit-form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}
+
+.unit-form-group p {
+  margin-top: 5px;
+  color: red;
+  font-size: 12px;
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+.unit-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+/* ===========================
+   Scrollbar
+=========================== */
+
+.unit-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.unit-modal::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 20px;
+}
+
+.unit-modal::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+/* ===========================
+   Tablet
+=========================== */
+
+@media (max-width: 992px) {
+
+  .unit-container {
+    width: 98%;
+    padding: 15px;
+  }
+
+  .unit-header h2 {
+    font-size: 22px;
+  }
+
+  .unit-table {
+    min-width: 780px;
+  }
+
+  .unit-table th,
+  .unit-table td {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .unit-modal {
+    width: 90%;
+  }
+
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width: 768px) {
+
+  .unit-container {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .unit-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .unit-header button {
+    width: 100%;
+  }
+
+  .unit-table {
+    min-width: 850px;
+  }
+
+  .unit-modal {
+    width: 100%;
+    max-height: 95vh;
+  }
+
+  .unit-modal-header {
+    padding: 15px;
+  }
+
+  .unit-modal form {
+    padding: 15px;
+  }
+
+  .unit-form-buttons {
+    flex-direction: column;
+  }
+
+  .unit-form-buttons button {
+    width: 100%;
+  }
+
+}
+
+/* ===========================
+   Small Mobile
+=========================== */
+
+@media (max-width: 480px) {
+
+  .unit-header h2 {
+    font-size: 20px;
+  }
+
+  .unit-table th,
+  .unit-table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .unit-form-group input,
+  .unit-form-group textarea,
+  .unit-form-group select {
+    font-size: 13px;
+  }
+}
