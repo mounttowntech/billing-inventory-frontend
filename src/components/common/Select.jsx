@@ -7,7 +7,11 @@ const Select = ({
   onChange,
   options = [],
   placeholder = "Select option",
+  optionValue = "_id",
+  optionLabel = "label",
 }) => {
+  console.log("Select options:", options);
+  console.log("Select value:", value);
   return (
     <div className="form-group">
       {label && <label>{label}</label>}
@@ -20,9 +24,9 @@ const Select = ({
       >
         <option value="">{placeholder}</option>
 
-        {options.map((item, index) => (
-          <option key={index} value={item.id || item.value}>
-            {item.label}
+        {options.map((item) => (
+          <option key={item[optionValue]} value={item[optionValue]}>
+            {item[optionLabel]}
           </option>
         ))}
       </select>

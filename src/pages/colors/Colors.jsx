@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const initialColors = [
-  { id: 1, name: 'Red', hex: '#FF0000', rgb: '255,0,0' },
-  { id: 2, name: 'Green', hex: '#00FF00', rgb: '0,255,0' },
-  { id: 3, name: 'Blue', hex: '#0000FF', rgb: '0,0,255' },
+  { id: 1, name: "Red", hex: "#FF0000", rgb: "255,0,0" },
+  { id: 2, name: "Green", hex: "#00FF00", rgb: "0,255,0" },
+  { id: 3, name: "Blue", hex: "#0000FF", rgb: "0,0,255" },
 ];
 
 function Colors() {
   const [colors, setColors] = useState(initialColors);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [hex, setHex] = useState('#');
-  const [rgb, setRgb] = useState('');
+  const [name, setName] = useState("");
+  const [hex, setHex] = useState("#");
+  const [rgb, setRgb] = useState("");
 
   const openModal = () => {
-    setName('');
-    setHex('#');
-    setRgb('');
+    setName("");
+    setHex("#");
+    setRgb("");
     setIsModalOpen(true);
   };
 
@@ -85,7 +85,11 @@ function Colors() {
           <div style={styles.modalContent}>
             <div style={styles.modalHeader}>
               <h2 style={styles.modalTitle}>Add Color</h2>
-              <button style={styles.closeButton} type="button" onClick={closeModal}>
+              <button
+                style={styles.closeButton}
+                type="button"
+                onClick={closeModal}
+              >
                 ×
               </button>
             </div>
@@ -135,7 +139,11 @@ function Colors() {
                 <button style={styles.submitButton} type="submit">
                   Save Color
                 </button>
-                <button style={styles.cancelButton} type="button" onClick={closeModal}>
+                <button
+                  style={styles.cancelButton}
+                  type="button"
+                  onClick={closeModal}
+                >
                   Cancel
                 </button>
               </div>
@@ -149,127 +157,127 @@ function Colors() {
 
 const styles = {
   page: {
-    padding: '24px',
-    fontFamily: 'Arial, sans-serif',
-    color: '#222',
+    padding: "24px",
+    fontFamily: "Arial, sans-serif",
+    color: "#222",
   },
   headerRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '16px',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "16px",
   },
   title: {
     margin: 0,
   },
   addButton: {
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    padding: '10px 16px',
-    borderRadius: '4px',
-    cursor: 'pointer',
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    padding: "10px 16px",
+    borderRadius: "4px",
+    cursor: "pointer",
   },
   table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    backgroundColor: '#fff',
+    width: "100%",
+    borderCollapse: "collapse",
+    backgroundColor: "#fff",
   },
   th: {
-    textAlign: 'left',
-    borderBottom: '2px solid #e0e0e0',
-    padding: '12px 10px',
+    textAlign: "left",
+    borderBottom: "2px solid #e0e0e0",
+    padding: "12px 10px",
   },
   td: {
-    padding: '12px 10px',
-    borderBottom: '1px solid #f0f0f0',
-    verticalAlign: 'middle',
+    padding: "12px 10px",
+    borderBottom: "1px solid #f0f0f0",
+    verticalAlign: "middle",
   },
   emptyCell: {
-    padding: '24px 10px',
-    textAlign: 'center',
-    color: '#666',
+    padding: "24px 10px",
+    textAlign: "center",
+    color: "#666",
   },
   swatch: {
-    width: '32px',
-    height: '24px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
+    width: "32px",
+    height: "24px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
   },
   modalOverlay: {
-    position: 'fixed',
+    position: "fixed",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.45)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 1000,
   },
   modalContent: {
-    width: '100%',
-    maxWidth: '420px',
-    backgroundColor: '#fff',
-    borderRadius: '8px',
-    boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-    padding: '24px',
+    width: "100%",
+    maxWidth: "420px",
+    backgroundColor: "#fff",
+    borderRadius: "8px",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+    padding: "24px",
   },
   modalHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '16px',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "16px",
   },
   modalTitle: {
     margin: 0,
-    fontSize: '18px',
+    fontSize: "18px",
   },
   closeButton: {
-    background: 'transparent',
-    border: 'none',
-    fontSize: '24px',
+    background: "transparent",
+    border: "none",
+    fontSize: "24px",
     lineHeight: 1,
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   form: {
-    display: 'grid',
-    gap: '12px',
+    display: "grid",
+    gap: "12px",
   },
   label: {
-    display: 'block',
-    marginBottom: '6px',
-    fontWeight: '600',
+    display: "block",
+    marginBottom: "6px",
+    fontWeight: "600",
   },
   input: {
-    width: '100%',
-    padding: '10px 12px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    fontSize: '14px',
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+    fontSize: "14px",
   },
   modalActions: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '10px',
-    marginTop: '12px',
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "10px",
+    marginTop: "12px",
   },
   submitButton: {
-    backgroundColor: '#28a745',
-    color: '#fff',
-    border: 'none',
-    padding: '10px 16px',
-    borderRadius: '4px',
-    cursor: 'pointer',
+    backgroundColor: "#28a745",
+    color: "#fff",
+    border: "none",
+    padding: "10px 16px",
+    borderRadius: "4px",
+    cursor: "pointer",
   },
   cancelButton: {
-    backgroundColor: '#f0f0f0',
-    color: '#333',
-    border: 'none',
-    padding: '10px 16px',
-    borderRadius: '4px',
-    cursor: 'pointer',
+    backgroundColor: "#f0f0f0",
+    color: "#333",
+    border: "none",
+    padding: "10px 16px",
+    borderRadius: "4px",
+    cursor: "pointer",
   },
 };
 

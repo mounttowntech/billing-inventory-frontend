@@ -12,7 +12,7 @@ import { getFabrics } from "../../features/Fabric/fabricSlice";
 import { getSeasons } from "../../features/season/seasonSlice";
 import { getStyles } from "../../features/style/styleSlice";
 import { useEffect } from "react";
-import {productValidation}  from "../../validations/productValidation";
+import { productValidation } from "../../validations/productValidation";
 import { brandValidation } from "../../validations/brandValidation";
 import { categoryValidation } from "../../validations/categoryValidation";
 import { styleValidation } from "../../validations/styleValidation";
@@ -27,8 +27,8 @@ import {
   SaveButton,
 } from "../../components/Common/Button";
 
-import Input  from "../../components/Common/Input";
-import Select  from "../../components/Common/Select";
+import Input from "../../components/Common/Input";
+import Select from "../../components/Common/Select";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -86,13 +86,13 @@ const AddProductModal = ({
     (state) => state.style,
   );
 
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm({
-      resolver: yupResolver(productValidation),
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(productValidation),
+  });
 
   useEffect(() => {
     dispatch(fetchCategories())
@@ -195,7 +195,6 @@ const AddProductModal = ({
   /* ---------- submit ---------- */
 
   const onSubmit = async (e) => {
-    e.preventDefault();
     setSubmitting(true);
 
     try {
@@ -209,6 +208,8 @@ const AddProductModal = ({
           currentStock: Number(v.currentStock),
         })),
       };
+
+      console.log("Payload before sending to API:", payload);
       const formData = new FormData();
 
       Object.keys(payload).forEach((key) => {
@@ -253,6 +254,8 @@ const AddProductModal = ({
     onClose();
   };
 
+  console.log("Brands in AddProductModal are the :", brands);
+
   return (
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -282,9 +285,8 @@ const AddProductModal = ({
                   error={errors.productCode?.message}
                   value={form.productCode}
                   onChange={(e) => updateField("productCode", e.target.value)}
-
                 />
-                
+
                 {/* <input
                   type="text"
                   placeholder="e.g. GRM-1001"
@@ -314,7 +316,7 @@ const AddProductModal = ({
 
               <div className="form-group">
                 {/* <label>Category *</label> */}
-                <Select 
+                <Select
                   label="Category"
                   name="category"
                   register={register}
@@ -322,6 +324,8 @@ const AddProductModal = ({
                   value={form.category}
                   onChange={(e) => updateField("category", e.target.value)}
                   options={categories}
+                  optionValue="_id"
+                  optionLabel="categoryName"
                   placeholder="Select Category"
                 />
 
@@ -340,7 +344,7 @@ const AddProductModal = ({
 
               <div className="form-group">
                 {/* <label>Brand *</label> */}
-                <Select 
+                <Select
                   label="Brand"
                   name="brand"
                   register={register}
@@ -348,6 +352,8 @@ const AddProductModal = ({
                   value={form.brand}
                   onChange={(e) => updateField("brand", e.target.value)}
                   options={brands}
+                  optionValue="_id"
+                  optionLabel="brandName"
                   placeholder="Select Brand"
                 />
                 {/* <select
@@ -373,6 +379,8 @@ const AddProductModal = ({
                   value={form.fabric}
                   onChange={(e) => updateField("fabric", e.target.value)}
                   options={fabrics}
+                  optionValue="_id"
+                  optionLabel="fabricName"
                   placeholder="Select Fabric"
                 />
                 {/* <select
@@ -398,6 +406,8 @@ const AddProductModal = ({
                   value={form.season}
                   onChange={(e) => updateField("season", e.target.value)}
                   options={seasons}
+                  optionValue="_id"
+                  optionLabel="seasonName"
                   placeholder="Select Season"
                 />
                 {/* <select
@@ -423,6 +433,10 @@ const AddProductModal = ({
                   error={errors.style?.message}
                   value={form.style}
                   onChange={(e) => updateField("style", e.target.value)}
+                  options={styles}
+                  optionValue="_id"
+                  optionLabel="styleName"
+                  placeholder="Select Style"
                 />
                 {/* <select
                   value={form.style}
@@ -442,9 +456,13 @@ const AddProductModal = ({
                 <Select
                   label="Gender"
                   name="gender"
-                  placeholder="Select Gender"
                   register={register}
-                  error={errors.gender?.message}
+                  value={form.gender}
+                  onChange={(e) => updateField("gender", e.target.value)}
+                  options={GENDER_OPTIONS.map((g) => ({
+                    label: g,
+                    value: g,
+                  }))}
                 />
                 {/* <select
                   value={form.gender}
