@@ -1,0 +1,266 @@
+/* ===========================
+   Colors Page
+=========================== */
+
+.colors-container {
+  padding: 25px;
+  background: #f5f7fb;
+  min-height: fit-content;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);  
+}
+
+/* Header */
+
+.colors-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.colors-header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #1f2937;
+}
+
+/* Add Button */
+
+.add-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.add-btn:hover {
+  background: #1d4ed8;
+}
+
+/* ===========================
+   Table
+=========================== */
+
+.table-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.colors-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.colors-table thead {
+  background: #2563eb;
+}
+
+.colors-table th {
+  color: white;
+  padding: 14px;
+  text-align: left;
+  font-size: 15px;
+}
+
+.colors-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.colors-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Color Preview */
+
+.color-preview {
+  width: 35px;
+  height: 25px;
+  border-radius: 5px;
+  border: 1px solid #d1d5db;
+}
+
+/* Empty Row */
+
+.empty-row {
+  text-align: center;
+  padding: 30px;
+  color: #6b7280;
+}
+
+/* ===========================
+   Modal
+=========================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  width: 95%;
+  max-width: 450px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: popup 0.25s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+
+@keyframes popup {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Header */
+
+.modal-header {
+  background: #2563eb;
+  color: white;
+  padding: 16px 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* ===========================
+   Form
+=========================== */
+
+.color-form {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: .3s;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.save-btn {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.save-btn:hover {
+  background: #15803d;
+}
+
+.cancel-btn {
+  background: #e5e7eb;
+  color: #111827;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.cancel-btn:hover {
+  background: #d1d5db;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width: 768px) {
+
+  .colors-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-btn {
+    width: 100%;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .form-buttons button {
+    width: 100%;
+  }
+
+  .colors-table th,
+  .colors-table td {
+    padding: 10px;
+    font-size: 13px;
+  }
+}

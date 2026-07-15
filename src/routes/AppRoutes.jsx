@@ -33,6 +33,7 @@ import Unit from "../pages/Unit/Unit";
 import StockAdjustment from "../pages/StockAdjustment/StockAdjustment";
 import Alteration from "../pages/Alteration/Alteration";
 import Colors from "../pages/colors/Colors";
+import Sizes from "../pages/sizes/Sizes";
 
 const AppRoutes = () => {
   return (
@@ -74,6 +75,7 @@ const AppRoutes = () => {
         <Route path="stock-adjustment" element={<StockAdjustment />} />
         <Route path="alterations" element={<Alteration />} />
         <Route path="colors" element={<Colors />} />
+        <Route path="sizes" element={<Sizes />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
