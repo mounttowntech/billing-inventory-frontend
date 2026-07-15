@@ -18,6 +18,8 @@ import {
   AddButton,
   EditButton,
   DeleteButton,
+  PreviousButton,
+  NextButton,
   SaveButton,
   CancelButton,
 } from "../../components/Common/Button";
@@ -29,6 +31,14 @@ const SalesReturn = () => {
   const [editId, setEditId] = useState(null);
 
   const { salesReturns, isLoading } = useSelector((state) => state.salesReturn);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentSalesReturns = salesReturns.slice(indexOfFirst, indexOfLast);
+  const totalPages =
+    salesReturns.length > 0 ? Math.ceil(salesReturns.length / itemsPerPage) : 1;
 
   const {
     register,
@@ -147,8 +157,8 @@ const SalesReturn = () => {
           </thead>
 
           <tbody>
-            {salesReturns?.length > 0 ? (
-              salesReturns.map((item) => (
+            {currentSalesReturns?.length > 0 ? (
+              currentSalesReturns.map((item) => (
                 <tr key={item._id}>
                   <td>
                     {typeof item.invoice === "object"
@@ -264,6 +274,27 @@ const SalesReturn = () => {
           </div>
         </div>
       )}
+      <div className="pagination">
+        <PreviousButton
+          className="btn btn-page"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Previous
+        </PreviousButton>
+
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <NextButton
+          className="btn btn-page"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </NextButton>
+      </div>
     </div>
   );
 };

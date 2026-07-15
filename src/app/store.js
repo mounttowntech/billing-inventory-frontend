@@ -21,6 +21,7 @@ import stockAdjustmentReducer from "../features/StockAdjustment/stockAdjustmentS
 import dashboardReducer from "../features/Dashboard/GarmentDashboardSlice";
 import alterationReducer from "../features/alteration/alterationSlice";
 import sizesReducer from "../features/Sizes/sizesSlice";
+import colorsReducer from "../features/color/colorSlice";
 
 export const store = configureStore({
   reducer: {
@@ -46,5 +47,6 @@ export const store = configureStore({
     dashboard: dashboardReducer,
     alteration: alterationReducer,
     sizes: sizesReducer,
+    colors: colorsReducer,
   },
 });

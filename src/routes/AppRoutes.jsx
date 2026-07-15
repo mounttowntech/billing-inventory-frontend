@@ -32,7 +32,7 @@ import SalesReturn from "../pages/SalesReturn/SalesReturn";
 import Unit from "../pages/Unit/Unit";
 import StockAdjustment from "../pages/StockAdjustment/StockAdjustment";
 import Alteration from "../pages/Alteration/Alteration";
-import Colors from "../pages/colors/Colors";
+import Colors from "../pages/Colors/Colors";
 import Sizes from "../pages/sizes/Sizes";
 
 const AppRoutes = () => {
@@ -65,14 +65,14 @@ const AppRoutes = () => {
         <Route path="styles" element={<Style />} />
         <Route path="suppliers" element={<Supplier />} />
         <Route path="profile" element={<ProfilePage />} />
-        <Route path="expense" element={<Expense />} />
+        <Route path="expenses" element={<Expense />} />
         <Route path="stores" element={<Store />} />
-        <Route path="measurement" element={<Measurement />} />
+        <Route path="measurements" element={<Measurement />} />
         <Route path="audit-logs" element={<AuditLog />} />
         <Route path="roles" element={<RolesPermission />} />
         <Route path="sales-return" element={<SalesReturn />} />
         <Route path="units" element={<Unit />} />
-        <Route path="stock-adjustment" element={<StockAdjustment />} />
+        <Route path="stock-adjustments" element={<StockAdjustment />} />
         <Route path="alterations" element={<Alteration />} />
         <Route path="colors" element={<Colors />} />
         <Route path="sizes" element={<Sizes />} />
