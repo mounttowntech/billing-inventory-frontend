@@ -53,7 +53,7 @@ const Sidebar = () => {
             <BrandLogoIcon />
           </span>
           <div className="sidebar-brand-text">
-            <h2>BI System</h2>
+            <h2>WonderBill</h2>
             <span>Enterprise Edition</span>
           </div>
         </div>

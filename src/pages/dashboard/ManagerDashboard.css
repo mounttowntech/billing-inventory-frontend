@@ -1,0 +1,500 @@
+:root {
+  --primary-color: #0f766e;
+  --secondary-color: #115e59;
+  --dark-color: #042f2e;
+  --light-color: #f8fafc;
+  --white-color: #ffffff;
+
+  /* Supporting tokens (not supplied, needed for state/feedback colors) */
+  --danger-color: #dc2626;
+  --danger-bg: #fef2f2;
+  --primary-bg-tint: #e6f4f2; /* icon chip background */
+  --border-color: #e7ecf1;
+  --text-muted: #64748b;
+  --text-heading: #0f172a;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-card:
+    0 1px 2px rgba(4, 47, 46, 0.04), 0 1px 8px rgba(4, 47, 46, 0.05);
+
+  --font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+.mgr-dash-dashboard * {
+  box-sizing: border-box;
+}
+
+.mgr-dash-dashboard {
+  font-family: var(--font-family);
+  background: var(--light-color);
+  color: var(--text-heading);
+  min-height: 100vh;
+  width: 100%;
+  padding: 32px 40px 56px;
+}
+
+.mgr-dash-dashboard__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ==================================================================
+   HEADER
+================================================================== */
+.mgr-dash-dashboard-header h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-heading);
+  letter-spacing: -0.01em;
+}
+
+.mgr-dash-dashboard-header p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ==================================================================
+   STAT CARDS
+================================================================== */
+.mgr-dash-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.mgr-dash-stat-card {
+  background: var(--white-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 22px 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.mgr-dash-stat-card__icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--primary-bg-tint);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mgr-dash-stat-card__body {
+  min-width: 0;
+}
+
+.mgr-dash-stat-card__label {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.mgr-dash-stat-card__value {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-heading);
+  letter-spacing: -0.01em;
+}
+
+.mgr-dash-stat-card__change {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mgr-dash-stat-card__arrow {
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* ==================================================================
+   SHARED PANEL STYLES
+================================================================== */
+.mgr-dash-panel {
+  background: var(--white-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 22px 24px 24px;
+  min-width: 0;
+}
+
+.mgr-dash-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: 12px;
+}
+
+.mgr-dash-panel__header h2 {
+  margin: 0;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.mgr-dash-panel__subtitle {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.mgr-dash-view-all {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mgr-dash-view-all:hover {
+  color: var(--secondary-color);
+  text-decoration: underline;
+}
+
+.mgr-dash-range-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-heading);
+  background: var(--white-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mgr-dash-range-select:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* ==================================================================
+   MID GRID — Sales overview + Quick summary
+================================================================== */
+.mgr-dash-mid-grid {
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* --- Chart --- */
+.mgr-dash-chart-wrap {
+  display: flex;
+  gap: 10px;
+}
+
+.mgr-dash-chart-yaxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 2px 0 26px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.mgr-dash-chart-plot {
+  flex: 1;
+  min-width: 0;
+}
+
+.mgr-dash-chart-svg {
+  width: 100%;
+  height: 220px;
+  display: block;
+  overflow: visible;
+}
+
+.mgr-dash-chart-gridline {
+  stroke: var(--border-color);
+  stroke-width: 1;
+}
+
+.mgr-dash-chart-line {
+  stroke: var(--primary-color);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mgr-dash-chart-dot {
+  fill: var(--white-color);
+  stroke: var(--primary-color);
+  stroke-width: 2.5;
+}
+
+.mgr-dash-chart-xaxis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-top: 8px;
+}
+
+/* --- Quick summary --- */
+.mgr-dash-summary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mgr-dash-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mgr-dash-summary-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.mgr-dash-summary-row:first-child {
+  padding-top: 0;
+}
+
+.mgr-dash-summary-row__icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-bg-tint);
+  color: var(--primary-color);
+}
+
+.mgr-dash-summary-row__icon--alert {
+  background: var(--danger-bg);
+  color: var(--danger-color);
+}
+
+.mgr-dash-summary-row__label {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-heading);
+  min-width: 0;
+}
+
+.mgr-dash-summary-row__value {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-heading);
+  white-space: nowrap;
+}
+
+.mgr-dash-summary-row__value--alert {
+  color: var(--danger-color);
+}
+
+/* ==================================================================
+   BOTTOM GRID — Recent sales + Low stock
+================================================================== */
+.mgr-dash-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.mgr-dash-table-scroll {
+  overflow-x: auto;
+}
+
+.mgr-dash-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mgr-dash-data-table thead th {
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 10px 10px 0;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.mgr-dash-data-table tbody td {
+  padding: 13px 10px 13px 0;
+  font-size: 13.5px;
+  color: var(--text-heading);
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.mgr-dash-data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.mgr-dash-cell-link {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.mgr-dash-cell-strong {
+  font-weight: 700;
+}
+
+.mgr-dash-cell-muted {
+  color: var(--text-muted);
+}
+
+.mgr-dash-cell-danger {
+  color: var(--danger-color);
+  font-weight: 700;
+}
+
+.mgr-dash-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.mgr-dash-status-pill__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  display: inline-block;
+}
+
+.mgr-dash-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mgr-dash-product-cell__swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mgr-dash-product-cell__name {
+  font-weight: 600;
+}
+
+/* ==================================================================
+   RESPONSIVE
+================================================================== */
+
+/* Laptops / small desktops */
+@media (max-width: 1180px) {
+  .mgr-dash-dashboard {
+    padding: 28px 24px 48px;
+  }
+}
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .mgr-dash-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mgr-dash-mid-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mgr-dash-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Large phones / small tablets */
+@media (max-width: 640px) {
+  .mgr-dash-dashboard {
+    padding: 20px 16px 40px;
+  }
+
+  .mgr-dash-dashboard-header h1 {
+    font-size: 20px;
+  }
+
+  .mgr-dash-stat-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .mgr-dash-stat-card {
+    padding: 18px;
+  }
+
+  .mgr-dash-panel {
+    padding: 18px 16px 20px;
+  }
+
+  .mgr-dash-panel__header h2 {
+    font-size: 15px;
+  }
+
+  .mgr-dash-chart-yaxis {
+    display: none;
+  }
+
+  .mgr-dash-chart-svg {
+    height: 180px;
+  }
+
+  .mgr-dash-mid-grid,
+  .mgr-dash-bottom-grid {
+    gap: 14px;
+  }
+
+  .mgr-dash-data-table thead th,
+  .mgr-dash-data-table tbody td {
+    font-size: 12.5px;
+    padding-right: 14px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  .mgr-dash-stat-card__value {
+    font-size: 20px;
+  }
+
+  .mgr-dash-chart-svg {
+    height: 160px;
+  }
+}

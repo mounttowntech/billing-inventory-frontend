@@ -35,6 +35,7 @@ import Alteration from "../pages/Alteration/Alteration";
 import Colors from "../pages/Colors/Colors";
 import Sizes from "../pages/sizes/Sizes";
 import UserLists from "../pages/users/UserLists";
+import ManagerDashboard from "../pages/dashboard/ManagerDashboard";
 
 const AppRoutes = () => {
   return (
@@ -78,6 +79,7 @@ const AppRoutes = () => {
         <Route path="colors" element={<Colors />} />
         <Route path="sizes" element={<Sizes />} />
         <Route path="users" element={<UserLists />} />
+        <Route path="ManagerDashboard" element={<ManagerDashboard />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
