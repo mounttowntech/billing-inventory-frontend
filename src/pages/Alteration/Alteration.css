@@ -1,0 +1,242 @@
+
+.alteration-container {
+  width: 100%;
+  padding: 24px;
+  background: #f5f7fb;
+  min-height: fit-content;
+  box-sizing: border-box;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* =========================
+   Form
+========================= */
+
+.alteration-form {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 5px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.alteration-form input,
+.alteration-form select,
+.alteration-form textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  font-size: 15px;
+  transition: .3s;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.alteration-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.alteration-form input:focus,
+.alteration-form select:focus,
+.alteration-form textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+/* Validation */
+
+.alteration-form p {
+  margin: -10px 0 0;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+/* Buttons */
+
+.form-buttons {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* =========================
+   Table
+========================= */
+
+.alteration-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+}
+
+.alteration-table thead {
+  background: #2563eb;
+  color: white;
+}
+
+.alteration-table th {
+  padding: 14px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.alteration-table td {
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #374151;
+}
+
+.alteration-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.alteration-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* =========================
+   Status
+========================= */
+
+.status {
+  padding: 5px 12px;
+  border-radius: 30px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background: #f59e0b;
+}
+
+.status.in_progress {
+  background: #2563eb;
+}
+
+.status.completed {
+  background: #16a34a;
+}
+
+.status.delivered {
+  background: #7c3aed;
+}
+
+/* =========================
+   Action Buttons
+========================= */
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* =========================
+   Empty Table
+========================= */
+
+.no-data {
+  text-align: center;
+  padding: 25px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width:992px) {
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .alteration-form {
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  }
+
+}
+
+@media (max-width:768px) {
+
+  .alteration-container {
+    padding: 15px;
+  }
+
+  .alteration-form {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .form-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .alteration-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .alteration-table th,
+  .alteration-table td {
+    padding: 12px;
+  }
+
+}
+
+@media (max-width:480px) {
+
+  .page-header h2 {
+    font-size: 22px;
+  }
+
+  .alteration-form input,
+  .alteration-form select,
+  .alteration-form textarea {
+    font-size: 14px;
+  }
+
+  .alteration-table th,
+  .alteration-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+}

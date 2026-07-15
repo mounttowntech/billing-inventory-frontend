@@ -27,12 +27,13 @@ body {
   text-decoration: none;
   padding: 12px;
   border-radius: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .sidebar a.active,
 .sidebar a:hover {
   background: #115E59;
+  padding: 8px;
 }
 
 .main-content {

@@ -17,6 +17,9 @@ import auditLogReducer from "../features/auditLog/auditLogSlice";
 import rolePermissionReducer from "../features/rolePermission/rolePermissionSlice";
 import salesReturnReducer from "../features/salesReturn/salesReturnSlice";
 import unitReducer from "../features/unit/unitSlice";
+import stockAdjustmentReducer from "../features/StockAdjustment/stockAdjustmentSlice";
+import dashboardReducer from "../features/Dashboard/GarmentDashboardSlice";
+import alterationReducer from "../features/alteration/alterationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -38,5 +41,8 @@ export const store = configureStore({
     rolePermission: rolePermissionReducer,
     salesReturn: salesReturnReducer,
     unit: unitReducer,
+    stockAdjustment: stockAdjustmentReducer,
+    dashboard: dashboardReducer,
+    alteration: alterationReducer,
   },
 });

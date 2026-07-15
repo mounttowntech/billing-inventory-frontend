@@ -6,6 +6,7 @@ import {
   POSIcon,
   ProductsIcon,
   CustomersIcon,
+  AlterationIcon,
   MeasurementIcon,
   AuditLogIcon,
   PurchaseIcon,
@@ -60,165 +61,180 @@ const Sidebar = () => {
 
         <nav onClick={closeSidebar}>
           {hasPermission(user, "dashboard") && (
-          <NavLink to="/" end>
-            <span className="nav-icon">
-              <DashboardIcon />
-            </span>
-            <span>Dashboard</span>
-          </NavLink>
+            <NavLink to="/" end>
+              <span className="nav-icon">
+                <DashboardIcon />
+              </span>
+              <span>Dashboard</span>
+            </NavLink>
+          )}
+          {hasPermission(user, "alterations") && (
+            <NavLink to="/alteration" end>
+              <span className="nav-icon">
+                <AlterationIcon />
+              </span>
+              <span>Alterations</span>
+            </NavLink>
+          )}
+          {hasPermission(user, "stock-adjustment") && (
+            <NavLink to="/stock-adjustment" end>
+              <span className="nav-icon">
+                <DashboardIcon />
+              </span>
+              <span>Stock Adjustment</span>
+            </NavLink>
           )}
           {hasPermission(user, "billing") && (
-          <NavLink to="/billing">
-            <span className="nav-icon">
-              <POSIcon />
-            </span>
-            <span>POS Billing</span>
-          </NavLink>
+            <NavLink to="/billing">
+              <span className="nav-icon">
+                <POSIcon />
+              </span>
+              <span>POS Billing</span>
+            </NavLink>
           )}
           {hasPermission(user, "sales-returns") && (
-          <NavLink to="/sales-return">
-            <span className="nav-icon">
-              <SalesReturnIcon />
-            </span>
-            <span>Sales Returns</span>
-          </NavLink>
+            <NavLink to="/sales-return">
+              <span className="nav-icon">
+                <SalesReturnIcon />
+              </span>
+              <span>Sales Return</span>
+            </NavLink>
           )}
           {hasPermission(user, "roles") && (
-          <NavLink to="/roles">
-            <span className="nav-icon">
-              <RolesIcon />
-            </span>
-            <span>Roles</span>
-          </NavLink>
+            <NavLink to="/roles">
+              <span className="nav-icon">
+                <RolesIcon />
+              </span>
+              <span>Roles</span>
+            </NavLink>
           )}
           {hasPermission(user, "expense") && (
-          <NavLink to="/expense">
-            <span className="nav-icon">
-              <POSIcon />
-            </span>
-            <span>Expense</span>
-          </NavLink>
+            <NavLink to="/expense">
+              <span className="nav-icon">
+                <POSIcon />
+              </span>
+              <span>Expense</span>
+            </NavLink>
           )}
           {hasPermission(user, "products") && (
-          <NavLink to="/products">
-            <span className="nav-icon">
-              <ProductsIcon />
-            </span>
-            <span>Products</span>
-          </NavLink>
+            <NavLink to="/products">
+              <span className="nav-icon">
+                <ProductsIcon />
+              </span>
+              <span>Products</span>
+            </NavLink>
           )}
           {hasPermission(user, "customers") && (
-          <NavLink to="/customers">
-            <span className="nav-icon">
-              <CustomersIcon />
-            </span>
-            <span>Customers</span>
-          </NavLink>
+            <NavLink to="/customers">
+              <span className="nav-icon">
+                <CustomersIcon />
+              </span>
+              <span>Customers</span>
+            </NavLink>
           )}
           {hasPermission(user, "measurement") && (
-          <NavLink to="/measurement">
-            <span className="nav-icon">
-              <MeasurementIcon />
-            </span>
-            <span>Measurements</span>
-          </NavLink>
+            <NavLink to="/measurement">
+              <span className="nav-icon">
+                <MeasurementIcon />
+              </span>
+              <span>Measurements</span>
+            </NavLink>
           )}
           {hasPermission(user, "audit-logs") && (
-          <NavLink to="/audit-logs">
-            <span className="nav-icon">
-              <AuditLogIcon />
-            </span>
-            <span>Audit Logs</span>
-          </NavLink>
+            <NavLink to="/audit-logs">
+              <span className="nav-icon">
+                <AuditLogIcon />
+              </span>
+              <span>Audit Logs</span>
+            </NavLink>
           )}
           {hasPermission(user, "purchases") && (
-          <NavLink to="/purchases">
-            <span className="nav-icon">
-              <PurchaseIcon />
-            </span>
-            <span>Purchases</span>
-          </NavLink>
+            <NavLink to="/purchases">
+              <span className="nav-icon">
+                <PurchaseIcon />
+              </span>
+              <span>Purchases</span>
+            </NavLink>
           )}
           {hasPermission(user, "suppliers") && (
-          <NavLink to="/suppliers">
-            <span className="nav-icon">
-              <SupplierIcon />
-            </span>
-            <span>Suppliers</span>
-          </NavLink>
+            <NavLink to="/suppliers">
+              <span className="nav-icon">
+                <SupplierIcon />
+              </span>
+              <span>Suppliers</span>
+            </NavLink>
           )}
           {hasPermission(user, "invoices") && (
-          <NavLink to="/invoices">
-            <span className="nav-icon">
-              <InvoiceIcon />
-            </span>
-            <span>Invoices</span>
-          </NavLink>
+            <NavLink to="/invoices">
+              <span className="nav-icon">
+                <InvoiceIcon />
+              </span>
+              <span>Invoices</span>
+            </NavLink>
           )}
           {hasPermission(user, "reports") && (
-          <NavLink to="/reports">
-            <span className="nav-icon">
-              <ReportsIcon />
-            </span>
-            <span>Reports</span>
-          </NavLink>
+            <NavLink to="/reports">
+              <span className="nav-icon">
+                <ReportsIcon />
+              </span>
+              <span>Reports</span>
+            </NavLink>
           )}
 
           {hasPermission(user, "settings") && (
-
-          <details>
-            <summary>
-              <span className="summary-label">
-                <span className="nav-icon">
-                  <SettingsIcon />
+            <details>
+              <summary>
+                <span className="summary-label">
+                  <span className="nav-icon">
+                    <SettingsIcon />
+                  </span>
+                  <span>Settings</span>
                 </span>
-                <span>Settings</span>
-              </span>
-            </summary>
+              </summary>
 
-            <NavLink to="/categories">
-              <span className="nav-icon">
-                <DotIcon />
-              </span>
-              <span>Category</span>
-            </NavLink>
-            <NavLink to="/units">
-              <span className="nav-icon">
-                <UnitIcon />
-              </span>
-              <span>Unit</span>
-            </NavLink>
-            <NavLink to="/stores">
-              <span className="nav-icon">
-                <DotIcon />
-              </span>
-              <span>Store</span>
-            </NavLink>
-            <NavLink to="/brands">
-              <span className="nav-icon">
-                <DotIcon />
-              </span>
-              <span>Brand</span>
-            </NavLink>
-            <NavLink to="/styles">
-              <span className="nav-icon">
-                <DotIcon />
-              </span>
-              <span>Style</span>
-            </NavLink>
-            <NavLink to="/fabrics">
-              <span className="nav-icon">
-                <DotIcon />
-              </span>
-              <span>Fabric</span>
-            </NavLink>
-            <NavLink to="/seasons">
-              <span className="nav-icon">
-                <DotIcon />
-              </span>
-              <span>Season</span>
-            </NavLink>
-          </details>
+              <NavLink to="/categories">
+                <span className="nav-icon">
+                  <DotIcon />
+                </span>
+                <span>Category</span>
+              </NavLink>
+              <NavLink to="/units">
+                <span className="nav-icon">
+                  <DotIcon />
+                </span>
+                <span>Unit</span>
+              </NavLink>
+              <NavLink to="/stores">
+                <span className="nav-icon">
+                  <DotIcon />
+                </span>
+                <span>Store</span>
+              </NavLink>
+              <NavLink to="/brands">
+                <span className="nav-icon">
+                  <DotIcon />
+                </span>
+                <span>Brand</span>
+              </NavLink>
+              <NavLink to="/styles">
+                <span className="nav-icon">
+                  <DotIcon />
+                </span>
+                <span>Style</span>
+              </NavLink>
+              <NavLink to="/fabrics">
+                <span className="nav-icon">
+                  <DotIcon />
+                </span>
+                <span>Fabric</span>
+              </NavLink>
+              <NavLink to="/seasons">
+                <span className="nav-icon">
+                  <DotIcon />
+                </span>
+                <span>Season</span>
+              </NavLink>
+            </details>
           )}
         </nav>
       </aside>

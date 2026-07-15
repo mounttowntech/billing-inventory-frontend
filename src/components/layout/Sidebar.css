@@ -158,7 +158,6 @@ details a {
 .sidebar nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .sidebar a {
@@ -169,7 +168,6 @@ details a {
   text-decoration: none;
   padding: 9px 10px;
   border-radius: var(--radius);
-  margin-bottom: 4px;
   font-size: 14.5px;
   font-weight: 500;
   transition: var(--transition);

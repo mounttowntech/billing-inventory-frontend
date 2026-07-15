@@ -133,7 +133,7 @@
 }
 
 .stat-value {
-  font-size: 34px;
+  font-size: 24px;
   font-weight: 800;
   color: var(--dark-color);
   letter-spacing: -0.02em;

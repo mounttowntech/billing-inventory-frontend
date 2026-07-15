@@ -89,13 +89,11 @@ const ProductList = () => {
         <div className="product-table-wrapper">
           <table className="product-table">
             <thead>
-              <tr>
+              <tr className="product-table-wrapper">
                 <th>productCode</th>
                 <th>Image</th>
                 <th>productName</th>
                 <th>category</th>
-                <th>brand</th>
-                <th>fabric</th>
                 <th>season</th>
                 <th>style</th>
                 <th>gender</th>
@@ -112,9 +110,14 @@ const ProductList = () => {
                     <td>
                       {product.image ? (
                         <img
-                          src={`${IMAGE_URL}/${product.image}`}
+                          src={`${import.meta.env.VITE_API_BASE_URL}/${product.image}`}
                           alt={product.productName}
                           className="product-image"
+                          style={{
+                            width: 50,
+                            height: 50,
+                            objectFit: "cover",
+                          }}
                         />
                       ) : (
                         <span>No Image</span>
@@ -122,8 +125,6 @@ const ProductList = () => {
                     </td>
                     <td>{product.productName}</td>
                     <td>{product.category?.categoryName}</td>
-                    <td>{product.brand?.brandName}</td>
-                    <td>{product.fabric?.fabricName}</td>
                     <td>{product.season?.seasonName}</td>
                     <td>{product.style?.styleName}</td>
                     <td>{product.gender}</td>
@@ -162,7 +163,9 @@ const ProductList = () => {
                       <td colSpan={12}>
                         <table className="variant-table">
                           <thead>
-                            <tr>
+                            <tr className="variant-table-wrapper">
+                              <th>brand</th>
+                              <th>fabric</th>
                               <th>Color</th>
                               <th>Size</th>
                               <th>MRP</th>
@@ -176,6 +179,8 @@ const ProductList = () => {
                           <tbody>
                             {product.variants.map((variant, index) => (
                               <tr key={index}>
+                                <td>{product.brand?.brandName}</td>
+                                <td>{product.fabric?.fabricName}</td>
                                 <td>{variant.color}</td>
                                 <td>{variant.size}</td>
                                 <td>₹{variant.mrp}</td>
