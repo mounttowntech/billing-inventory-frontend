@@ -30,6 +30,8 @@ import AuditLog from "../pages/auditLog/AuditLog";
 import RolesPermission from "../pages/RolesPermission/RolesPermission";
 import SalesReturn from "../pages/SalesReturn/SalesReturn";
 import Unit from "../pages/Unit/Unit";
+import StockAdjustment from "../pages/StockAdjustment/StockAdjustment";
+import Alteration from "../pages/Alteration/Alteration";
 
 const AppRoutes = () => {
   return (
@@ -68,6 +70,8 @@ const AppRoutes = () => {
         <Route path="roles" element={<RolesPermission />} />
         <Route path="sales-return" element={<SalesReturn />} />
         <Route path="units" element={<Unit />} />
+        <Route path="stock-adjustment" element={<StockAdjustment />} />
+        <Route path="alteration" element={<Alteration />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
