@@ -280,6 +280,7 @@ const AddProductModal = ({
                 <Input
                   label="Product Code"
                   name="productCode"
+                  type="text"
                   placeholder="e.g. GRM-1001"
                   register={register}
                   error={errors.productCode?.message}
@@ -300,6 +301,7 @@ const AddProductModal = ({
                 <Input
                   label="Product Name"
                   name="productName"
+                  type="text"
                   placeholder="e.g. Classic Cotton Shirt"
                   register={register}
                   error={errors.productName?.message}

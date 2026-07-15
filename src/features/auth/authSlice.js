@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { loginApi, registerApi } from "./authService";
+import { loginApi, registerApi, getUsersApi } from "./authService";
 
 export const loginUser = createAsyncThunk(
   "auth/login",
@@ -22,6 +22,19 @@ export const registerUser = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Registration failed"
+      );
+    }
+  }
+);
+
+export const getUsers = createAsyncThunk(
+  "auth/getUsers",
+  async (_, thunkAPI) => {
+    try {
+      return await getUsersApi();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch users"
       );
     }
   }
@@ -74,7 +87,18 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      }).addCase(getUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
+      .addCase(getUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+      })
+      .addCase(getUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
