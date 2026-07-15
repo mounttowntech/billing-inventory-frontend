@@ -1,9 +1,19 @@
 import * as yup from "yup";
 
 export const productValidation = yup.object({
-  name: yup.string().required("Product name is required"),
-  sku: yup.string().required("SKU is required"),
+  productName: yup.string().required("Product name is required"),
   category: yup.string().required("Category is required"),
-  sellingPrice: yup.number().required("Selling price is required"),
   stock: yup.number().min(0, "Stock cannot be negative"),
+  variants: yup.array().of(
+    yup.object({
+      color: yup.string().required("Color is required"),
+      size: yup.string().required("Size is required"),
+      price: yup.number().required("Price is required"),
+      mrp: yup.number().required("MRP is required"),
+      sellingPrice: yup.number().required("Selling price is required"),
+      currentStock: yup.number().min(0, "Stock cannot be negative").required("Stock is required"),
+      skuCode: yup.string().required("SKU code is required"),
+      barcode: yup.string().required("Barcode is required"),
+    })
+  ),
 });

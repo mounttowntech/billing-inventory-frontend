@@ -1,0 +1,222 @@
+.page-container{
+
+padding:30px;
+
+}
+
+.page-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:25px;
+
+}
+
+.page-header h2{
+
+font-size:30px;
+
+font-weight:700;
+
+color:#0d3d39;
+
+}
+
+.btn-primary{
+
+background:#0c7b73;
+
+color:white;
+
+border:none;
+
+padding:12px 20px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+.table-card{
+
+background:white;
+
+border-radius:12px;
+
+padding:20px;
+
+box-shadow:0 5px 18px rgba(0,0,0,.05);
+
+}
+
+.table-toolbar{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-bottom:20px;
+
+}
+
+.entries{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.entries select{
+
+padding:10px;
+
+border-radius:8px;
+
+border:1px solid #d9e1e7;
+
+}
+
+.search-box{
+
+width:300px;
+
+padding:11px;
+
+border-radius:8px;
+
+border:1px solid #d9e1e7;
+
+}
+
+.custom-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+.custom-table thead{
+
+background:#f7f9fb;
+
+}
+
+.custom-table th{
+
+padding:16px;
+
+text-align:left;
+
+color:#335;
+
+font-size:14px;
+
+}
+
+.action-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.action-column button {
+  width: 80px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.btn-edit {
+  background: #0f766e;
+}
+
+.btn-edit:hover {
+  background: #115e59;
+}
+
+.btn-delete {
+  background: #dc2626;
+}
+
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+.custom-table td{
+
+padding:5px 16px 5px 16px;
+
+border-top:1px solid #edf1f4;
+
+}
+
+.status{
+
+padding:6px 12px;
+
+border-radius:30px;
+
+font-size:13px;
+
+}
+
+.active{
+
+background:#dcfce7;
+
+color:#15803d;
+
+}
+
+.pagination{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:20px;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.page-buttons{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.page-buttons button{
+    min-width:28px;
+    height:28px;
+    border:none;
+    border-radius:8px;
+    background:#edf2f7;
+    cursor:pointer;
+}
+
+.page-buttons button:hover{
+    background:#0f766e;
+    color:white;
+}
+
+.active-page{
+    background:#0f766e !important;
+    color:#fff;
+}
+
+.page-buttons button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}

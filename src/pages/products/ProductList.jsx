@@ -103,9 +103,9 @@ const ProductList = () => {
               </tr>
             </thead>
             <tbody>
-              {currentProducts.map((product) => (
+              {currentProducts.map((product, index) => (
                 <>
-                  <tr key={product._id}>
+                  <tr key={product?._id ?? index}>
                     <td>{product.productCode}</td>
                     <td>
                       {product.image ? (

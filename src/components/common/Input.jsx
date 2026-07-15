@@ -8,6 +8,8 @@ const Input = ({
   placeholder,
   register,
   error,
+  value,
+  onChange,
   disabled = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +26,8 @@ const Input = ({
           className="form-control"
           disabled={disabled}
           {...register(name)}
+          value={value}
+          onChange={onChange}
         />
 
         {isPassword && (

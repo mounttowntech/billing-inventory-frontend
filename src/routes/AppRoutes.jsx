@@ -34,6 +34,7 @@ import StockAdjustment from "../pages/StockAdjustment/StockAdjustment";
 import Alteration from "../pages/Alteration/Alteration";
 import Colors from "../pages/Colors/Colors";
 import Sizes from "../pages/sizes/Sizes";
+import UserLists from "../pages/users/UserLists";
 
 const AppRoutes = () => {
   return (
@@ -76,6 +77,7 @@ const AppRoutes = () => {
         <Route path="alterations" element={<Alteration />} />
         <Route path="colors" element={<Colors />} />
         <Route path="sizes" element={<Sizes />} />
+        <Route path="users" element={<UserLists />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
