@@ -1,89 +1,55 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { getPurchases } from "../../features/purchase/purchaseSlice";
 import "./Dashboard.css";
+import {
+  AddButton,
+  SaveButton,
+  PreviousButton,
+  NextButton,
+  EditButton,
+  DeleteButton,
+} from "../../components/Common/Button";
+import {
+  getFullDashboard,
+  getRecentTransactions,
+} from "../../features/Dashboard/GarmentDashboardSlice";
 
-const STAT_CARDS = [
-  {
-    key: "sales",
-    label: "Today Sales",
-    value: "\u20B982,00450",
-    trendValue: "12.4%",
-    trendLabel: "vs yesterday",
-    up: true,
-    accent: "blue",
-    icon: "bag",
-    spark: [24, 300, 40, 405, 208, 49, 500, 6, 0, 502, 44, 60, 50, 68, 602],
-  },
-  {
-    key: "purchase",
-    label: "Purchase order",
-    value: "\u20B943,200",
-    trendValue: "8.7%",
-    trendLabel: "vs yesterday",
-    up: true,
-    accent: "green",
-    icon: "cart",
-    spark: [200, 340, 260, 380, 800, 402, 602, 404, 506, 46, 38, 48, 600, 500, 406],
-  },
-  {
-    key: "lowstock",
-    label: "Low Stock",
-    value: "18",
-    trendValue: "3 items",
-    trendLabel: "vs yesterday",
-    up: false,
-    accent: "orange",
-    icon: "stack",
-    spark: [180, 320, 224, 400, 300, 460, 840, 500, 38, 540, 42, 580, 460, 620, 560],
-  },
-  {
-    key: "pnl",
-    label: "Profit and loss",
-    value: "\u20B919,650",
-    trendValue: "15.3%",
-    trendLabel: "vs yesterday",
-    up: true,
-    accent: "purple",
-    icon: "trend",
-    spark: [2, 36, 28, 42, 34, 480, 38, 54, 46, 60, 50, 606, 58, 72, 64],
-  },
-];
+import { dashboardFilterValidation } from "../../validations/Dashboardvalidation";
 
-const RECENT_SALES = [
-  {
-    id: "INV-8492",
-    customer: "James Mitchell",
-    date: "Oct 12, 2024",
-    total: 1240.0,
-    status: "Paid",
-  },
-  {
-    id: "INV-8491",
-    customer: "Sarah Connor",
-    date: "Oct 12, 2024",
-    total: 3820.0,
-    status: "Pending",
-  },
-  {
-    id: "INV-8490",
-    customer: "David Miller",
-    date: "Oct 11, 2024",
-    total: 850.5,
-    status: "Paid",
-  },
-  {
-    id: "INV-8489",
-    customer: "Wilson Store Corp",
-    date: "Oct 11, 2024",
-    total: 12940.0,
-    status: "Overdue",
-  },
-];
+/* ==========================================
+   Helpers
+========================================== */
 
-const formatUSD = (amount) =>
-  `$${amount.toLocaleString("en-US", {
+const formatINR = (amount = 0) =>
+  `\u20B9${Number(amount || 0).toLocaleString("en-IN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
+
+const formatDate = (date) =>
+  date
+    ? new Date(date).toLocaleDateString("en-IN", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      })
+    : "-";
+
+const toInputDate = (date) => new Date(date).toISOString().slice(0, 10);
+
+const defaultStartDate = () => {
+  const now = new Date();
+  return toInputDate(new Date(now.getFullYear(), now.getMonth(), 1));
+};
+
+const defaultEndDate = () => toInputDate(new Date());
+
+/* ==========================================
+   Icons
+========================================== */
 
 const ICONS = {
   bag: (
@@ -194,8 +160,10 @@ const DotsIcon = () => (
   </svg>
 );
 
-/** Smooth-ish sparkline built from a plain array of numbers. */
+/** Smooth-ish sparkline built from a plain array of numbers. Renders nothing if there isn't enough data. */
 const Sparkline = ({ data, accent, width = 240, height = 64 }) => {
+  if (!data || data.length < 2) return null;
+
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min || 1;
@@ -206,7 +174,6 @@ const Sparkline = ({ data, accent, width = 240, height = 64 }) => {
     return [x, y];
   });
 
-  // Build a gently-curved path through the points.
   const path = points.reduce((acc, [x, y], i) => {
     if (i === 0) return `M ${x} ${y}`;
     const [px, py] = points[i - 1];
@@ -246,27 +213,156 @@ const StatCard = ({ card }) => (
   </div>
 );
 
-const Dashboard = () => {
-  const [sales] = useState(RECENT_SALES);
+/* ==========================================
+   Build stat cards from real API data
+========================================== */
 
-  const statusClass = useMemo(
-    () => ({
-      Paid: "badge-paid",
-      Pending: "badge-pending",
-      Overdue: "badge-overdue",
-    }),
-    [],
-  );
+const buildStatCards = (summary, quickStats, salesOverview) => {
+  const salesSpark =
+    salesOverview?.thisMonth?.map((d) => d.total).filter((v) => v != null) ||
+    null;
+
+  return [
+    {
+      key: "sales",
+      label: "Total Sales",
+      value: formatINR(summary?.totalSales?.amount),
+      trendValue: `${Math.abs(summary?.totalSales?.changePercent || 0)}%`,
+      trendLabel: "vs previous period",
+      up: (summary?.totalSales?.changePercent || 0) >= 0,
+      accent: "blue",
+      icon: "bag",
+      spark: salesSpark,
+    },
+    {
+      key: "purchase",
+      label: "Total Purchases",
+      value: formatINR(summary?.totalPurchases?.amount),
+      trendValue: `${Math.abs(summary?.totalPurchases?.changePercent || 0)}%`,
+      trendLabel: "vs previous period",
+      up: (summary?.totalPurchases?.changePercent || 0) >= 0,
+      accent: "green",
+      icon: "cart",
+      spark: null,
+    },
+    {
+      key: "lowstock",
+      label: "Low Stock",
+      value: String(quickStats?.lowStockItems ?? 0),
+      trendValue: `${quickStats?.lowStockItems ?? 0} items`,
+      trendLabel: "need reorder",
+      up: false,
+      accent: "orange",
+      icon: "stack",
+      spark: null,
+    },
+    {
+      key: "pnl",
+      label: "Net Profit",
+      value: formatINR(summary?.netProfit?.amount),
+      trendValue: `${Math.abs(summary?.netProfit?.changePercent || 0)}%`,
+      trendLabel: "vs previous period",
+      up: (summary?.netProfit?.changePercent || 0) >= 0,
+      accent: "purple",
+      icon: "trend",
+      spark: null,
+    },
+  ];
+};
+
+const STATUS_CLASS_MAP = {
+  paid: "badge-paid",
+  received: "badge-paid",
+  pending: "badge-pending",
+  partial: "badge-pending",
+  overdue: "badge-overdue",
+  unpaid: "badge-overdue",
+};
+
+const Dashboard = () => {
+  const dispatch = useDispatch();
+
+  const {
+    summary,
+    salesOverview,
+    quickStats,
+    recentTransactions,
+    isLoading,
+    isError,
+    message,
+  } = useSelector((state) => state.dashboard);
+
+  const { register, handleSubmit } = useForm({
+    resolver: yupResolver(dashboardFilterValidation),
+    defaultValues: {
+      startDate: defaultStartDate(),
+      endDate: defaultEndDate(),
+    },
+  });
+
+  // ================= Load Data =================
+  useEffect(() => {
+    dispatch(getPurchases());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(
+      getFullDashboard({
+        startDate: defaultStartDate(),
+        endDate: defaultEndDate(),
+      }),
+    );
+  }, [dispatch]);
+
+  // ================= Filter Submit =================
+
+  const onApplyFilter = (values) => {
+    dispatch(getFullDashboard(values));
+  };
+
+  // ================= View All Transactions =================
+
+  const handleViewAll = () => {
+    dispatch(getRecentTransactions({ limit: 50 }));
+  };
 
   const handleAddSale = () => {
     console.log("Add new sale clicked");
   };
 
+  const statCards = useMemo(
+    () => buildStatCards(summary, quickStats, salesOverview),
+    [summary, quickStats, salesOverview],
+  );
+
+  // Only show "Sale" type rows in the Recent Sales table
+  const recentSales = useMemo(
+    () => (recentTransactions || []).filter((item) => item.type === "Sale"),
+    [recentTransactions],
+  );
+
   return (
     <div className="dashboard">
+      {/* ===== Date range filter ===== */}
+      <form className="dashboard-filter" onSubmit={handleSubmit(onApplyFilter)}>
+        <div className="filter-group">
+          <label htmlFor="startDate">From</label>
+          <input id="startDate" type="date" {...register("startDate")} />
+        </div>
+        <div className="filter-group">
+          <label htmlFor="endDate">To</label>
+          <input id="endDate" type="date" {...register("endDate")} />
+        </div>
+        <button type="submit" className="filter-apply-btn" disabled={isLoading}>
+          {isLoading ? "Loading..." : "Apply"}
+        </button>
+      </form>
+
+      {isError && message && <div className="dashboard-error">{message}</div>}
+
       {/* ===== Stat cards ===== */}
       <div className="stat-grid">
-        {STAT_CARDS.map((card) => (
+        {statCards.map((card) => (
           <StatCard card={card} key={card.key} />
         ))}
       </div>
@@ -277,12 +373,12 @@ const Dashboard = () => {
           <div>
             <h2 className="sales-title">Recent Sales</h2>
             <p className="sales-subtitle">
-              Monitoring your last 10 transactions
+              Monitoring your latest transactions
             </p>
           </div>
-          <button className="add-sale-btn" onClick={handleAddSale}>
-            <span className="add-sale-plus">+</span> Add New Sale
-          </button>
+          {/* <AddButton onClick={handleAddSale}>
+            <span>+</span> Add New Sale
+          </AddButton> */}
         </div>
 
         <div className="table-wrapper">
@@ -298,8 +394,8 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {sales.map((sale) => (
-                <tr key={sale.id}>
+              {recentSales.map((sale) => (
+                <tr key={sale.referenceNo}>
                   <td>
                     <div className="invoice-cell">
                       <span className="invoice-icon">
@@ -321,14 +417,19 @@ const Dashboard = () => {
                           />
                         </svg>
                       </span>
-                      <span className="invoice-id">{sale.id}</span>
+                      <span className="invoice-id">{sale.referenceNo}</span>
                     </div>
                   </td>
-                  <td>{sale.customer}</td>
-                  <td className="muted-cell">{sale.date}</td>
-                  <td className="total-cell">{formatUSD(sale.total)}</td>
+                  <td>{sale.party}</td>
+                  <td className="muted-cell">{formatDate(sale.date)}</td>
+                  <td className="total-cell">{formatINR(sale.amount)}</td>
                   <td>
-                    <span className={`badge ${statusClass[sale.status]}`}>
+                    <span
+                      className={`badge ${
+                        STATUS_CLASS_MAP[(sale.status || "").toLowerCase()] ||
+                        "badge-default"
+                      }`}
+                    >
                       <span className="badge-dot" />
                       {sale.status}
                     </span>
@@ -345,9 +446,9 @@ const Dashboard = () => {
         </div>
 
         <div className="sales-footer">
-          <button className="view-all-btn">
+          {/* <button className="view-all-btn" onClick={handleViewAll}>
             View All Transactions <span className="arrow">&rarr;</span>
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
