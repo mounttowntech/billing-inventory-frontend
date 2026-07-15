@@ -17,6 +17,8 @@ import {
   EditButton,
   DeleteButton,
   SaveButton,
+  PreviousButton,
+  NextButton,
   CancelButton,
 } from "../../components/Common/Button";
 
@@ -29,6 +31,14 @@ const Unit = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentUnits = units.slice(indexOfFirst, indexOfLast);
+  const totalPages =
+    units.length > 0 ? Math.ceil(units.length / itemsPerPage) : 1;
 
   const {
     register,
@@ -131,8 +141,8 @@ const Unit = () => {
         </thead>
 
         <tbody>
-          {units?.length > 0 ? (
-            units.map((unit, index) => (
+          {currentUnits?.length > 0 ? (
+            currentUnits.map((unit, index) => (
               <tr key={unit._id}>
                 <td>{index + 1}</td>
 
@@ -244,6 +254,27 @@ const Unit = () => {
           </div>
         </div>
       )}
+      <div className="pagination">
+        <PreviousButton
+          className="btn btn-page"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Previous
+        </PreviousButton>
+
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <NextButton
+          className="btn btn-page"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </NextButton>
+      </div>
     </div>
   );
 };

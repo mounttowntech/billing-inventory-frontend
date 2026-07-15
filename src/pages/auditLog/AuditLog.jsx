@@ -13,6 +13,8 @@ import "./AuditLog.css";
 import {
   AddButton,
   DeleteButton,
+  PreviousButton,
+  NextButton,
   EditButton,
   CancelButton,
   SaveButton,
@@ -25,6 +27,15 @@ const AuditLog = () => {
   const loggedInUser = JSON.parse(
     localStorage.getItem("billing_user") || "null",
   );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentAuditLogs = auditLogs.slice(indexOfFirst, indexOfLast);
+  const totalPages =
+    auditLogs.length > 0 ? Math.ceil(auditLogs.length / itemsPerPage) : 1;
+
   const {
     register,
     handleSubmit,
@@ -174,8 +185,8 @@ const AuditLog = () => {
           </thead>
 
           <tbody>
-            {auditLogs?.length > 0 ? (
-              auditLogs.map((log) => (
+            {currentAuditLogs?.length > 0 ? (
+              currentAuditLogs.map((log) => (
                 <tr key={log._id}>
                   <td>
                     {log.user
@@ -342,6 +353,27 @@ const AuditLog = () => {
           </div>
         </div>
       )}
+      <div className="pagination">
+        <PreviousButton
+          className="btn btn-page"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Previous
+        </PreviousButton>
+
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <NextButton
+          className="btn btn-page"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </NextButton>
+      </div>
     </div>
   );
 };

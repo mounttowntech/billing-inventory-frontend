@@ -16,6 +16,8 @@ import { alterationValidation } from "../../validations/AlterationValidation";
 import { fetchInvoices } from "../../features/Invoice/invoiceSlice";
 import {
   AddButton,
+  PreviousButton,
+  NextButton,
   EditButton,
   DeleteButton,
   SaveButton,
@@ -29,6 +31,14 @@ const Alteration = () => {
   const { invoices } = useSelector((state) => state.invoice);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentAlterations = alterations.slice(indexOfFirst, indexOfLast);
+  const totalPages =
+    alterations.length > 0 ? Math.ceil(alterations.length / itemsPerPage) : 1;
 
   const {
     register,
@@ -213,7 +223,7 @@ const Alteration = () => {
         </thead>
 
         <tbody>
-          {(alterations || []).map((item, index) => (
+          {(currentAlterations || []).map((item, index) => (
             <tr key={item._id}>
               <td>{index + 1}</td>
 
@@ -240,6 +250,27 @@ const Alteration = () => {
           ))}
         </tbody>
       </table>
+      <div className="pagination">
+        <PreviousButton
+          className="btn btn-page"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Previous
+        </PreviousButton>
+
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <NextButton
+          className="btn btn-page"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </NextButton>
+      </div>
     </div>
   );
 };

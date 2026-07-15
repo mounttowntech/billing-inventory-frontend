@@ -13,6 +13,8 @@ import { sizesValidation } from "../../validations/SizesValidation";
 import {
   AddButton,
   EditButton,
+  NextButton,
+  PreviousButton,
   DeleteButton,
   SaveButton,
   CancelButton,
@@ -24,6 +26,14 @@ const Sizes = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentSizes = sizes.slice(indexOfFirst, indexOfLast);
+  const totalPages =
+    sizes.length > 0 ? Math.ceil(sizes.length / itemsPerPage) : 1;
 
   const {
     register,
@@ -148,8 +158,8 @@ const Sizes = () => {
           </tr>
         </thead>
         <tbody>
-          {sizes.length ? (
-            sizes.map((s, i) => (
+          {currentSizes.length ? (
+            currentSizes.map((s, i) => (
               <tr key={s._id}>
                 <td>{i + 1}</td>
                 <td>{s.sizeCode}</td>
@@ -172,6 +182,28 @@ const Sizes = () => {
           )}
         </tbody>
       </table>
+
+      <div className="pagination">
+        <PreviousButton
+          className="btn btn-page"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Previous
+        </PreviousButton>
+
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <NextButton
+          className="btn btn-page"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </NextButton>
+      </div>
     </div>
   );
 };
