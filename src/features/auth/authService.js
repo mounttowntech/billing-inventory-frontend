@@ -20,3 +20,25 @@ export const getUsersApi = async () => {
     throw new Error("Failed to fetch users");
   }
 };
+
+//update user
+export const updateUserApi = async (id, data) => {
+  try {
+    const response = await API.put(`/users/update/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.log("error_response", error.response);
+    throw new Error("Failed to update user");
+  }
+};
+
+//delete user
+export const deleteUserApi = async (id) => {
+  try {
+    const response = await API.delete(`/users/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log("error_response", error.response);
+    throw new Error("Failed to delete user");
+  }
+};
