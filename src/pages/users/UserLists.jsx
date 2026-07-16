@@ -2,22 +2,33 @@ import "./UserLists.css";
 import { getUsers } from '../../features/auth/authSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Modal from "../../components/common/Modal";
+import UserForm from "../users/UserForm";
+import { fetchRoles } from "../../features/rolls/roleSlice";
+import { deleteUser } from "../../features/auth/authSlice";
+import toaster from "../../utils/toaster";
 
 export default function UserLists() {
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [mode, setMode] = useState("add"); // add | edit
   const { users: authUsers } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getUsers());
-    console.log(authUsers);
-    if (authUsers?.data) {
-      setUsers(authUsers.data);
-    }
-  }, [dispatch, authUsers]);
+    dispatch(fetchRoles());
+  }, [dispatch]);
+
+  useEffect(() => {
+  if (authUsers?.data) {
+    setUsers(authUsers.data);
+  }
+}, [authUsers]);
 
   const filteredUsers = users.filter((user) =>
   `${user.firstName} ${user.lastName} ${user.email} ${user.employeeCode}`
@@ -36,14 +47,34 @@ const currentUsers = filteredUsers.slice(
 const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
 
 
-console.log(users);
+// console.log(users);
+
+const handleDelete = async (user) => {
+  const ok = window.confirm(
+    `Delete ${user.firstName}?`
+  );
+
+  if (!ok) return;
+
+  await dispatch(deleteUser(user._id));
+  toaster.success("User deleted successfully!");
+  dispatch(getUsers());
+};
+
   return (
     <div className="page-container">
 
       <div className="page-header">
         <h2>User Lists</h2>
 
-        <button className="btn-primary">
+        <button 
+          className="btn-primary" 
+          onClick={() => {
+            setMode("add");
+            setSelectedUser(null);
+            setOpenModal(true)
+          }}
+        >
           + Add User
         </button>
       </div>
@@ -64,7 +95,7 @@ console.log(users);
           </div>
 
           <input
-            className="search-box"
+            className="user-search-box"
             placeholder="Search users..."
             value={search}
             onChange={(e) => {setSearch(e.target.value);setCurrentPage(1)}}
@@ -112,8 +143,16 @@ console.log(users);
 
               <td>
   <div className="action-column">
-    <button className="btn-edit">Edit</button>
-    <button className="btn-delete">Delete</button>
+    <button className="btn-edit" onClick={() => {
+      setMode("edit");
+      setSelectedUser(user);
+      setOpenModal(true);
+    }}>
+      Edit
+    </button>
+    <button className="btn-delete"  onClick={() => handleDelete(user)}>
+      Delete
+    </button>
   </div>
 </td>
 
@@ -174,6 +213,23 @@ console.log(users);
         </div>
 
       </div>
+
+      <Modal
+        open={openModal}
+        title={mode === "add" ? "Add User" : "Edit User"}
+        size="md"
+        onClose={() => setOpenModal(false)}
+      >
+        <UserForm
+          mode={mode}
+          user={selectedUser}
+          onClose={() => setOpenModal(false)}
+          onSuccess={() => {
+            setOpenModal(false);
+            dispatch(getUsers());
+          }}
+        />
+      </Modal>
 
     </div>
   );
