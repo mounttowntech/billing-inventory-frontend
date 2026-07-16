@@ -206,7 +206,7 @@
 }
 
 .modal-header {
-  background: var(--primary);
+  background: #fff;
   color: white;
   padding: 16px 22px;
   display: flex;

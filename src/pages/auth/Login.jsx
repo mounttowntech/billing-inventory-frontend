@@ -6,6 +6,7 @@ import { loginValidation } from "../../validations/loginValidation";
 import { loginUser } from "../../features/auth/authSlice";
 import Input from "../../components/common/Input";
 import "./Login.css";
+import toaster from "../../utils/toaster";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const Login = () => {
     const result = await dispatch(loginUser(data));
 
     if (loginUser.fulfilled.match(result)) {
+      toaster.success("Login successful!");
       navigate("/");
     }
   };
