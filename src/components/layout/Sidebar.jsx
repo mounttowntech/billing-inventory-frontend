@@ -22,6 +22,7 @@ import {
 } from "./SidebarIcons";
 import { hasPermission } from "../../utils/permission";
 import { useSelector } from "react-redux";
+import { getDashboardRoute } from "../../utils/getDashboardRoute";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
@@ -60,7 +61,7 @@ const Sidebar = () => {
 
         <nav onClick={closeSidebar}>
           {hasPermission(user, "dashboard") && (
-          <NavLink to="/" end>
+          <NavLink to={getDashboardRoute(user?.role?.roleName)} end>
             <span className="nav-icon">
               <DashboardIcon />
             </span>
