@@ -36,6 +36,7 @@ import Colors from "../pages/Colors/Colors";
 import Sizes from "../pages/sizes/Sizes";
 import UserLists from "../pages/users/UserLists";
 import ManagerDashboard from "../pages/dashboard/ManagerDashboard";
+import TaxList from "../pages/tax/TaxList";
 import CashierDashboard from "../pages/dashboard/CashierDashboard";
 import InventoryDashboard from "../pages/dashboard/InventoryDashboard";
 
@@ -81,6 +82,8 @@ const AppRoutes = () => {
         <Route path="colors" element={<Colors />} />
         <Route path="sizes" element={<Sizes />} />
         <Route path="users" element={<UserLists />} />
+        <Route path="ManagerDashboard" element={<ManagerDashboard />} />
+        <Route path="tax-settings" element={<TaxList />} />
         <Route path="managerDashboard" element={<ManagerDashboard />} />
         <Route path="cashierDashboard" element={<CashierDashboard />} />
         <Route path="inventoryDashboard" element={<InventoryDashboard />} />

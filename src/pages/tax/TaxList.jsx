@@ -1,81 +1,78 @@
-import "./UserLists.css";
-import { getUsers } from '../../features/auth/authSlice';
+import "./TaxList.css";
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from "../../components/common/Modal";
-import UserForm from "../users/UserForm";
-import { fetchRoles } from "../../features/rolls/roleSlice";
-import { deleteUser } from "../../features/auth/authSlice";
+import TaxForm from "../tax/TaxForm";
+import { getTaxes,deleteTax } from "../../features/tax/taxSlice";
 import toaster from "../../utils/toaster";
 
-export default function UserLists() {
+export default function TaxList() {
   const dispatch = useDispatch();
-  const [users, setUsers] = useState([]);
+  const [taxes, setTaxes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedTax, setSelectedTax] = useState(null);
   const [mode, setMode] = useState("add"); // add | edit
-  const { users: authUsers } = useSelector((state) => state.auth);
+  const { taxes: authTaxes } = useSelector((state) => state.tax);
 
   useEffect(() => {
-    dispatch(getUsers());
-    dispatch(fetchRoles());
+    dispatch(getTaxes());
   }, [dispatch]);
 
   useEffect(() => {
-  if (authUsers?.data) {
-    setUsers(authUsers.data);
+  if (authTaxes?.data) {
+    setTaxes(authTaxes.data);
   }
-}, [authUsers]);
+}, [authTaxes]);
 
-  const filteredUsers = users.filter((user) =>
-  `${user.firstName} ${user.lastName} ${user.email} ${user.employeeCode}`
+  const filteredTaxes = taxes.filter((tax) =>
+  `${tax.taxName} ${tax.taxCode}`
     .toLowerCase()
     .includes(search.toLowerCase())
 );
 
-const indexOfLastUser = currentPage * rowsPerPage;
-const indexOfFirstUser = indexOfLastUser - rowsPerPage;
+const indexOfLastTax = currentPage * rowsPerPage;
+const indexOfFirstTax = indexOfLastTax - rowsPerPage;
 
-const currentUsers = filteredUsers.slice(
-  indexOfFirstUser,
-  indexOfLastUser
+const currentTaxes = filteredTaxes.slice(
+  indexOfFirstTax,
+  indexOfLastTax
 );
 
-const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+const totalPages = Math.ceil(filteredTaxes.length / rowsPerPage);
 
 
-// console.log(users);
+// console.log(taxes);
 
-const handleDelete = async (user) => {
+const handleDelete = async (tax) => {
   const ok = window.confirm(
-    `Delete ${user.firstName}?`
+    `Delete ${tax.taxName}?`
   );
 
   if (!ok) return;
 
-  await dispatch(deleteUser(user._id));
-  toaster.success("User deleted successfully!");
-  dispatch(getUsers());
+  await dispatch(deleteTax(tax._id));
+  toaster.success("Tax deleted successfully!");
+  dispatch(getTaxes());
 };
 
   return (
     <div className="page-container">
 
       <div className="page-header">
-        <h2>User Lists</h2>
+        <h2>Tax Lists</h2>
 
         <button 
           className="btn-primary" 
           onClick={() => {
             setMode("add");
-            setSelectedUser(null);
+            setSelectedTax(null);
             setOpenModal(true)
           }}
         >
-          + Add User
+          + Add Tax
         </button>
       </div>
 
@@ -96,7 +93,7 @@ const handleDelete = async (user) => {
 
           <input
             className="user-search-box"
-            placeholder="Search users..."
+            placeholder="Search taxes..."
             value={search}
             onChange={(e) => {setSearch(e.target.value);setCurrentPage(1)}}
           />
@@ -109,35 +106,39 @@ const handleDelete = async (user) => {
 
             <tr>
               <th>#</th>
-              <th>Employee ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Role</th>
-              <th>Status</th>
+              <th>Tax Code</th>
+              <th>Tax Name</th>
+              <th>Tax Percentage</th>
+              <th>Tax Type</th>
+              <th>Is Active</th>
               <th>Action</th>
             </tr>
 
           </thead>
 
           <tbody>
-          {currentUsers?.map((user, index) => (
-            <tr key={user?._id ?? index}>
-              <td>{ indexOfFirstUser + index + 1}</td>
+            {currentTaxes.length === 0 ? (
+              <tr>
+                <td colSpan={7} style={{ textAlign: "center" }}>
+                  No taxes found.
+                </td>
+              </tr>
+            ) : (
+          currentTaxes?.map((tax, index) => (
+            <tr key={tax?._id ?? index}>
+              <td>{ indexOfFirstTax + index + 1}</td>
 
-              <td>{user?.employeeCode}</td>
+              <td>{tax?.taxCode}</td>
 
-              <td>{user?.firstName} {user?.lastName}</td>
+              <td>{tax?.taxName}</td>
 
-              <td>{user?.email}</td>
+              <td>{tax?.taxPercentage}</td>
 
-              <td>{user?.phone}</td>
-
-              <td>{user?.role?.roleName}</td>
+              <td>{tax?.taxType}</td>
 
               <td>
                 <span className="status active">
-                  {user?.status}
+                  {tax?.isActive ? "Active" : "Inactive"}
                 </span>
               </td>
 
@@ -145,19 +146,20 @@ const handleDelete = async (user) => {
   <div className="action-column">
     <button className="btn-edit" onClick={() => {
       setMode("edit");
-      setSelectedUser(user);
+      setSelectedTax(tax);
       setOpenModal(true);
     }}>
       Edit
     </button>
-    <button className="btn-delete"  onClick={() => handleDelete(user)}>
+    <button className="btn-delete"  onClick={() => handleDelete(tax)}>
       Delete
     </button>
   </div>
 </td>
 
             </tr>
-          ))}
+          ))
+        )}
           </tbody>
 
         </table>
@@ -165,9 +167,9 @@ const handleDelete = async (user) => {
         <div className="user-pagination">
 
           <p>
-            Showing {filteredUsers.length === 0 ? 0 : indexOfFirstUser + 1}
-            to {Math.min(indexOfLastUser, filteredUsers.length)}
-            of {filteredUsers.length} entries
+            Showing {filteredTaxes.length === 0 ? 0 : indexOfFirstTax + 1}
+            to {Math.min(indexOfLastTax, filteredTaxes.length)}
+            of {filteredTaxes.length} entries
           </p>
 
           <div className="page-buttons">
@@ -216,17 +218,17 @@ const handleDelete = async (user) => {
 
       <Modal
         open={openModal}
-        title={mode === "add" ? "Add User" : "Edit User"}
+        title={mode === "add" ? "Add Tax" : "Edit Tax"}
         size="md"
         onClose={() => setOpenModal(false)}
       >
-        <UserForm
+        <TaxForm
           mode={mode}
-          user={selectedUser}
+          tax={selectedTax}
           onClose={() => setOpenModal(false)}
           onSuccess={() => {
             setOpenModal(false);
-            dispatch(getUsers());
+            dispatch(getTaxes());
           }}
         />
       </Modal>
