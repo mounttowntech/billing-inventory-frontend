@@ -13,6 +13,14 @@
   margin-bottom: 20px;
 }
 
+.supplier-search-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
 .supplier-header h2 {
   margin: 0;
   font-size: 22px;
@@ -146,7 +154,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #2563eb;
+  
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 

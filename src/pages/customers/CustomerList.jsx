@@ -7,6 +7,7 @@ import {
   updateCustomer,
   deleteCustomer,
 } from "../../features/Customer/customerSlice";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   EditButton,
@@ -21,6 +22,7 @@ import CustomerValidation from "../../validations/CustomerValidation";
 
 const Customer = () => {
   const dispatch = useDispatch();
+
   const { customers } = useSelector((state) => state.customer);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -32,6 +34,12 @@ const Customer = () => {
 
   const [editId, setEditId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [search, setSearch] = useState("");
+  const filteredCustomers = currentCustomers.filter((customer) =>
+    customer.customerName.toLowerCase().includes(search.toLowerCase()),
+  );
+
   const {
     register,
     handleSubmit,
@@ -70,15 +78,25 @@ const Customer = () => {
 
   return (
     <div className="customer-container">
-      <AddButton
-        onClick={() => {
-          setEditId(null);
-          reset();
-          setShowModal(true);
-        }}
-      >
-        Add Customer
-      </AddButton>
+      <div className="customer-header">
+        <h2>Customer List</h2>
+      </div>
+      <div className="customer-search-buttons">
+        <SearchBox
+          placeholder="Search Fabric..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <AddButton
+          onClick={() => {
+            setEditId(null);
+            reset();
+            setShowModal(true);
+          }}
+        >
+          Add Customer
+        </AddButton>
+      </div>
 
       {showModal && (
         <div className="modal-overlay">
@@ -133,7 +151,7 @@ const Customer = () => {
         </thead>
 
         <tbody>
-          {currentCustomers.map((customer, index) => (
+          {filteredCustomers.map((customer, index) => (
             <tr key={customer._id}>
               <td>{indexOfFirst + index + 1}</td>
               <td>{customer.customerCode}</td>

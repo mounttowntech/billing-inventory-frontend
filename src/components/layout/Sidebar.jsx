@@ -222,7 +222,7 @@ const Sidebar = () => {
            <NavLink to="/stock-ledger">
             <span className="nav-icon">
               <POSIcon />
-            </span>
+            </span> 
             <span>Stock Ledger</span>
           </NavLink>
           <NavLink to="/stock-adjustments">

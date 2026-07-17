@@ -135,7 +135,7 @@ select {
 
 input:focus,
 select:focus {
-  border-color: #2563eb;
+  
 }
 
 .error {

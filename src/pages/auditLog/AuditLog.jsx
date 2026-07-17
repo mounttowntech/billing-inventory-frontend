@@ -10,6 +10,7 @@ import {
   deleteAuditLog,
 } from "../../features/auditLog/auditLogSlice";
 import "./AuditLog.css";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   DeleteButton,
@@ -19,6 +20,7 @@ import {
   CancelButton,
   SaveButton,
 } from "../../components/Common/Button";
+
 const AuditLog = () => {
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
@@ -35,6 +37,15 @@ const AuditLog = () => {
   const currentAuditLogs = auditLogs.slice(indexOfFirst, indexOfLast);
   const totalPages =
     auditLogs.length > 0 ? Math.ceil(auditLogs.length / itemsPerPage) : 1;
+
+  const [search, setSearch] = useState("");
+  const filteredAuditLogs = currentAuditLogs.filter(
+    (log) =>
+      log.module?.toLowerCase().includes(search.toLowerCase()) ||
+      log.action?.toLowerCase().includes(search.toLowerCase()) ||
+      log.recordId?.toLowerCase().includes(search.toLowerCase()) ||
+      log.ipAddress?.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const {
     register,
@@ -152,22 +163,31 @@ const AuditLog = () => {
 
   return (
     <div className="auditlog-container">
-      <h2 className="auditlog-header">Audit Logs</h2>
-      <AddButton
-        onClick={() => {
-          reset();
-          if (loggedInUser) {
-            setValue(
-              "user",
-              `${loggedInUser.firstName} ${loggedInUser.lastName}`,
-            );
-          }
-          setEditId(null);
-          setShowForm(true);
-        }}
-      >
-        Add Audit Log
-      </AddButton>{" "}
+      <div className="auditlog-header">
+        <h2 className="auditlog-header">Audit Logs</h2>
+      </div>
+      <div className="auditlog-buttons">
+        <SearchBox
+          placeholder="Search Audit Logs..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <AddButton
+          onClick={() => {
+            reset();
+            if (loggedInUser) {
+              setValue(
+                "user",
+                `${loggedInUser.firstName} ${loggedInUser.lastName}`,
+              );
+            }
+            setEditId(null);
+            setShowForm(true);
+          }}
+        >
+          Add Audit Log
+        </AddButton>
+      </div>
       <div className="auditlog-table-wrapper">
         <table className="auditlog-table">
           <thead>
@@ -185,8 +205,8 @@ const AuditLog = () => {
           </thead>
 
           <tbody>
-            {currentAuditLogs?.length > 0 ? (
-              currentAuditLogs.map((log) => (
+            {filteredAuditLogs?.length > 0 ? (
+              filteredAuditLogs.map((log) => (
                 <tr key={log._id}>
                   <td>
                     {log.user

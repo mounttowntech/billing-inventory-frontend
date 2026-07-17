@@ -1,0 +1,292 @@
+
+.stockledger-container {
+  width: 100%;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.stockledger-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.stockledger-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.stockledger-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* ===========================
+   Table
+=========================== */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.stockledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1200px;
+}
+
+.stockledger-table th {
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.stockledger-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.stockledger-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.stockledger-table td small {
+  color: #6b7280;
+}
+
+/* ===========================
+   Action Buttons
+=========================== */
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===========================
+   Pagination
+=========================== */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.page-info {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ===========================
+   Modal
+=========================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.stockledger-modal {
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  animation: popup .25s ease;
+}
+
+@keyframes popup {
+  from{
+    transform: scale(.9);
+    opacity:0;
+  }
+  to{
+    transform: scale(1);
+    opacity:1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  padding: 15px 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* ===========================
+   Form
+=========================== */
+
+.stockledger-form {
+  display: grid;
+  grid-template-columns: repeat(2,1fr );
+  gap: 10px;
+  padding: 20px;
+}
+
+.stock-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.stock-form-group label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.stock-form-group input,
+.stock-form-group select,
+.stock-form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: .2s;
+  box-sizing: border-box;
+}
+
+.stock-form-group textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.stock-form-group input:focus,
+.stock-form-group select:focus,
+.stock-form-group textarea:focus {
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+.stock-form-group p {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+.form-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* ===========================
+   Scrollbar
+=========================== */
+
+.stockledger-modal::-webkit-scrollbar,
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.stockledger-modal::-webkit-scrollbar-thumb,
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 10px;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width: 992px) {
+
+  .stockledger-form {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .stockledger-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stockledger-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .form-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .stockledger-container {
+    padding: 15px;
+  }
+
+  .stockledger-header h2 {
+    font-size: 22px;
+  }
+
+  .stockledger-table {
+    min-width: 1100px;
+  }
+
+  .stockledger-modal {
+    width: 95%;
+  }
+}

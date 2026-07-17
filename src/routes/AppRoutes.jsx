@@ -39,6 +39,8 @@ import ManagerDashboard from "../pages/dashboard/ManagerDashboard";
 import TaxList from "../pages/tax/TaxList";
 import CashierDashboard from "../pages/dashboard/CashierDashboard";
 import InventoryDashboard from "../pages/dashboard/InventoryDashboard";
+import CustomerAddress from "../pages/CustomerAddress/CustomerAddress";
+import StockLedger from "../pages/StockLedger/StockLedger";
 
 const AppRoutes = () => {
   return (
@@ -87,6 +89,9 @@ const AppRoutes = () => {
         <Route path="managerDashboard" element={<ManagerDashboard />} />
         <Route path="cashierDashboard" element={<CashierDashboard />} />
         <Route path="inventoryDashboard" element={<InventoryDashboard />} />
+        <Route path="ManagerDashboard" element={<ManagerDashboard />} />
+        <Route path="customer-addresses" element={<CustomerAddress />} />
+        <Route path="stock-ledger" element={<StockLedger />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

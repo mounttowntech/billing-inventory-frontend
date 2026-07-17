@@ -67,14 +67,17 @@
   transition: .3s;
 }
 
-.colors-toolbar input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
-}
-
 /* ===========================
    Table
 =========================== */
+
+.colors-actions {
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  align-items: center;
+}
 
 .colors-table {
   width: 100%;
@@ -89,8 +92,15 @@
   background: var(--primary);
 }
 
+.colors-actions {
+  display: flex !important;
+  gap: 8px;
+  align-items: center;
+}
+
 .colors-table thead th {
-  color: var(--secondary-color);
+  background: var(--color-primary) !important;
+  color: var(--white);
   padding: 15px;
   font-size: 12px !important;
   text-align: left;

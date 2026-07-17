@@ -7,6 +7,7 @@ import {
   updateStyle,
   deleteStyle,
 } from "../../features/style/styleSlice";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   EditButton,
@@ -35,6 +36,10 @@ const Style = () => {
   const totalPages =
     styles.length > 0 ? Math.ceil(styles.length / itemsPerPage) : 1;
 
+  const [search, setSearch] = useState("");
+  const filteredStyles = currentStyles.filter((style) =>
+    style.styleName.toLowerCase().includes(search.toLowerCase()),
+  );
   const {
     register,
     handleSubmit,
@@ -99,7 +104,13 @@ const Style = () => {
     <div className="style-container">
       <div className="style-header">
         <h2>Style Management</h2>
-
+      </div>
+      <div className="style-actions">
+        <SearchBox
+          placeholder="Search Styles..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           onClick={() => {
             reset();
@@ -166,8 +177,8 @@ const Style = () => {
           </thead>
 
           <tbody>
-            {currentStyles.length > 0 ? (
-              currentStyles.map((style, index) => (
+            {filteredStyles.length > 0 ? (
+              filteredStyles.map((style, index) => (
                 <tr key={style._id}>
                   <td data-label="S.No">{indexOfFirst + index + 1}</td>
                   <td data-label="Style Name">{style.styleName}</td>

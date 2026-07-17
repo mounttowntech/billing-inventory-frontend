@@ -206,7 +206,7 @@
 .salesreturn-form-group input:focus,
 .salesreturn-form-group textarea:focus,
 .salesreturn-form-group select:focus {
-  border-color: #2563eb;
+  
   box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
 }
 

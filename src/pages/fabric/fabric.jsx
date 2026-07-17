@@ -8,6 +8,7 @@ import {
   updateFabric,
   deleteFabric,
 } from "../../features/fabric/fabricSlice";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   EditButton,
@@ -22,7 +23,7 @@ const Fabric = () => {
   const [errors, setErrors] = useState({});
   const { fabrics, loading, error } = useSelector((state) => state.fabric);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 3;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentFabrics = fabrics.slice(indexOfFirst, indexOfLast);
@@ -35,6 +36,12 @@ const Fabric = () => {
 
   const [editId, setEditId] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredFabrics = currentFabrics.filter((fabric) =>
+    fabric.fabricName.toLowerCase().includes(search.toLowerCase()),
+  );
+
   useEffect(() => {
     dispatch(getFabrics());
   }, [dispatch]);
@@ -111,18 +118,24 @@ const Fabric = () => {
   return (
     <div className="fabric-container">
       <h2 className="fabric-title">Fabric Management</h2>
+      <div className="fabric-actions">
+        <SearchBox
+          placeholder="Search Fabric..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-      <AddButton
-        onClick={() => {
-          setEditId("");
-          setFabricName("");
-          setFabricCode("");
-          setShowModal(true);
-        }}
-      >
-        Add Fabric
-      </AddButton>
-
+        <AddButton
+          onClick={() => {
+            setEditId("");
+            setFabricName("");
+            setFabricCode("");
+            setShowModal(true);
+          }}
+        >
+          Add Fabric
+        </AddButton>
+      </div>
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -185,7 +198,7 @@ const Fabric = () => {
             </thead>
 
             <tbody>
-              {currentFabrics.map((fabric, index) => (
+              {filteredFabrics.map((fabric, index) => (
                 <tr key={fabric._id}>
                   <td>{indexOfFirst + index + 1}</td>
 

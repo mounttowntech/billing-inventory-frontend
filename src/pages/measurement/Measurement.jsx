@@ -3,7 +3,6 @@ import "./Measurement.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import { measurementValidation } from "../../validations/MeasurementValidation";
 
 import {
@@ -23,6 +22,7 @@ import {
   EditButton,
   DeleteButton,
 } from "../../components/Common/Button";
+import SearchBox from "../../components/Common/SearchBox";
 
 const Measurement = () => {
   const dispatch = useDispatch();
@@ -35,21 +35,31 @@ const Measurement = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [measurementData, setMeasurementData] = useState([]);
+  const [search, setSearch] = useState("");
 
   // ================= Pagination =================
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 3;
 
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
 
+  console.log("measurements is:", measurements);
   const currentMeasurements = measurements.slice(indexOfFirst, indexOfLast);
 
   const totalPages =
     measurements.length > 0 ? Math.ceil(measurements.length / itemsPerPage) : 1;
 
+  console.log("currentMeasurements is:", measurementData);
+  const filteredMeasurements = measurementData.filter((measurement) =>
+    measurement.customer?.customerName
+      .toLowerCase()
+      .includes(search.toLowerCase()),
+  );
+  console.log("filteredMeasurements is:", filteredMeasurements);
   const {
     register,
     handleSubmit,
@@ -60,7 +70,6 @@ const Measurement = () => {
   });
 
   // ================= Load Data =================
-  const [measurementData, setMeasurementData] = useState([]);
 
   useEffect(() => {
     dispatch(getMeasurements())
@@ -157,7 +166,13 @@ const Measurement = () => {
     <div className="measurement-container">
       <div className="measurement-header">
         <h2>Measurement Management</h2>
-
+      </div>
+      <div className="measurement-actions">
+        <SearchBox
+          placeholder="Search Measurements..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           onClick={() => {
             setEditingId(null);
@@ -357,7 +372,7 @@ const Measurement = () => {
                 </td>
               </tr>
             ) : (
-              measurementData.map((measurement) => (
+              filteredMeasurements.map((measurement) => (
                 <tr key={measurement._id}>
                   <td>{measurement.customer?.customerName || "-"}</td>
 

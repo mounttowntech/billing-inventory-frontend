@@ -13,6 +13,13 @@
   align-items: center;
 }
 
+.season-actions{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0px !important;
+}
+
 .season-table {
   width: 100%;
   border-collapse: collapse;

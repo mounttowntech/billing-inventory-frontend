@@ -17,6 +17,21 @@
   overflow-x: hidden;
 }
 
+.product-actions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.product-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
 /* ===== MAIN PRODUCT TABLE ===== */
 .product-table {
   width: 100%;

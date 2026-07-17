@@ -7,6 +7,7 @@ import {
   updateSeason,
   deleteSeason,
 } from "../../features/season/seasonSlice";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   EditButton,
@@ -28,13 +29,20 @@ const Season = () => {
   const [editId, setEditId] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1;
+  const itemsPerPage = 3;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentSeasons = seasons.slice(indexOfFirst, indexOfLast);
 
   const totalPages =
     seasons.length > 0 ? Math.ceil(seasons.length / itemsPerPage) : 1;
+
+  const [search, setSearch] = useState("");
+
+  const filteredSeasons = currentSeasons.filter((season) =>
+    season.seasonName.toLowerCase().includes(search.toLowerCase()),
+  );
+
   useEffect(() => {
     dispatch(getSeasons());
   }, [dispatch]);
@@ -109,6 +117,13 @@ const Season = () => {
     <div className="season-container">
       <div className="season-header">
         <h2>Season Management</h2>
+      </div>
+      <div className="season-actions">
+        <SearchBox
+          placeholder="Search Fabric..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           onClick={() => {
             setEditId("");
@@ -182,8 +197,8 @@ const Season = () => {
         </thead>
 
         <tbody>
-          {currentSeasons.length > 0 ? (
-            currentSeasons.map((season, index) => (
+          {filteredSeasons.length > 0 ? (
+            filteredSeasons.map((season, index) => (
               <tr key={season._id}>
                 <td>{indexOfFirst + index + 1}</td>
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import SearchBox from "../../components/Common/SearchBox";
 import {
   getUnits,
   createUnit,
@@ -40,6 +40,11 @@ const Unit = () => {
   const totalPages =
     units.length > 0 ? Math.ceil(units.length / itemsPerPage) : 1;
 
+  const [search, setSearch] = useState("");
+
+  const filteredUnits = currentUnits.filter((unit) =>
+    unit.name.toLowerCase().includes(search.toLowerCase()),
+  );
   const {
     register,
     handleSubmit,
@@ -110,6 +115,13 @@ const Unit = () => {
     <div className="unit-container">
       <div className="unit-header">
         <h2>Unit Management</h2>
+      </div>
+      <div className="unit-actions">
+        <SearchBox
+          placeholder="Search Unit..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
         <AddButton
           onClick={() => {
@@ -141,8 +153,8 @@ const Unit = () => {
         </thead>
 
         <tbody>
-          {currentUnits?.length > 0 ? (
-            currentUnits.map((unit, index) => (
+          {filteredUnits?.length > 0 ? (
+            filteredUnits.map((unit, index) => (
               <tr key={unit._id}>
                 <td>{index + 1}</td>
 

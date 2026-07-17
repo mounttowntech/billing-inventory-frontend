@@ -13,7 +13,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
 }
 
 .store-header h2 {
@@ -120,7 +120,6 @@
 .form-group textarea {
   width: 100%;
   padding: 11px 14px;
-  border: 1px solid #d9d9d9;
   border-radius: 8px;
   outline: none;
   font-size: 14px;
@@ -131,8 +130,16 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, .15);
+}
+
+.store-search-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
 .form-group textarea {

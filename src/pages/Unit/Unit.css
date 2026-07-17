@@ -37,8 +37,8 @@
 }
 
 .unit-table th {
-  background: #f5f7fb;
-  color: #222;
+  background: var(--color-primary) !important;
+  color: white;
   font-size: 14px;
   font-weight: 600;
   padding: 12px;
@@ -132,6 +132,13 @@
   color: #222;
 }
 
+.unit-actions {
+  display: flex;
+  gap: 512px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .close-btn {
   border: none;
   background: transparent;
@@ -187,7 +194,7 @@
 .unit-form-group input:focus,
 .unit-form-group textarea:focus,
 .unit-form-group select:focus {
-  border-color: #2563eb;
+  
   box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
 }
 
