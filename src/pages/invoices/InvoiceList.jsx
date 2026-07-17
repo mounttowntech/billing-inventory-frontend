@@ -20,6 +20,7 @@ import {
   SaveButton,
   DeleteButton,
 } from "../../components/Common/Button";
+import SearchBox from "../../components/Common/SearchBox";
 
 const Invoice = () => {
   const dispatch = useDispatch();
@@ -27,14 +28,20 @@ const Invoice = () => {
   const { customers } = useSelector((state) => state.customer);
   const { products } = useSelector((state) => state.product);
   const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1;
+  const itemsPerPage = 3;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentInvoices = invoices.slice(indexOfFirst, indexOfLast);
   const totalPages =
     invoices.length > 0 ? Math.ceil(invoices.length / itemsPerPage) : 1;
+
+  console.log("Current Invoices:", currentInvoices);
+  const filteredInvoices = currentInvoices.filter((invoice) =>
+    (invoice.invoiceNo || "").toLowerCase().includes(search.toLowerCase()),
+  );
 
   const {
     register,
@@ -142,7 +149,13 @@ const Invoice = () => {
     <div className="invoice-container">
       <div className="invoice-header">
         <h2>Invoice Management</h2>
-
+      </div>
+      <div className="invoice-actions">
+        <SearchBox
+          placeholder="Search Fabric..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton className="add-btn" onClick={() => setShowModal(true)}>
           + Add Invoice
         </AddButton>
@@ -305,14 +318,14 @@ const Invoice = () => {
                   Loading...
                 </td>
               </tr>
-            ) : currentInvoices.length === 0 ? (
+            ) : filteredInvoices.length === 0 ? (
               <tr>
                 <td colSpan="12" style={{ textAlign: "center" }}>
                   No Invoices Found
                 </td>
               </tr>
             ) : (
-              currentInvoices.map((invoice) => (
+              filteredInvoices.map((invoice) => (
                 <tr key={invoice._id}>
                   <td>{invoice.invoiceNo}</td>
 

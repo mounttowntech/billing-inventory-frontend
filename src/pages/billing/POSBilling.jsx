@@ -122,7 +122,7 @@ export default function POSPage() {
       <section className="products-panel">
         <div className="products-card">
           <div className="search-bar">
-            <Icon name="search" className="search-icon" />
+            {/* <Icon name="search" className="search-icon" /> */}
             <input
               type="text"
               className="search-input"

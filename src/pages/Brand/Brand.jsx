@@ -7,6 +7,7 @@ import {
   updateBrand,
   deleteBrand,
 } from "../../features/Brand/brandSlice";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   EditButton,
@@ -158,9 +159,8 @@ const Brand = () => {
         </div>
       )}
 
-      <div className="search-box">
-        <input
-          type="text"
+      <div className="brand-actions">
+        <SearchBox
           placeholder="Search Brand..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}

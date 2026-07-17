@@ -3,6 +3,7 @@ import "./Sizes.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   getSizes,
   createSize,
@@ -28,12 +29,18 @@ const Sizes = () => {
   const [editId, setEditId] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
+  const itemsPerPage = 2;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentSizes = sizes.slice(indexOfFirst, indexOfLast);
   const totalPages =
     sizes.length > 0 ? Math.ceil(sizes.length / itemsPerPage) : 1;
+
+  const [search, setSearch] = useState("");
+
+  const filteredSizes = currentSizes.filter((size) =>
+    size.sizeName.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const {
     register,
@@ -81,6 +88,13 @@ const Sizes = () => {
     <div className="sizes-container">
       <div className="page-header">
         <h2>Size Management</h2>
+      </div>
+      <div className="size-actions">
+        <SearchBox
+          placeholder="Search Size..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           onClick={() => {
             reset({ status: true });
@@ -158,8 +172,8 @@ const Sizes = () => {
           </tr>
         </thead>
         <tbody>
-          {currentSizes.length ? (
-            currentSizes.map((s, i) => (
+          {filteredSizes.length ? (
+            filteredSizes.map((s, i) => (
               <tr key={s._id}>
                 <td>{i + 1}</td>
                 <td>{s.sizeCode}</td>

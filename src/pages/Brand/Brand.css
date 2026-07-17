@@ -42,31 +42,18 @@
   font-weight: 700;
 }
 
-/* ---------- Search box ---------- */
-
-.search-box {
-  clear: both;
-  margin: 20px 0 !important;
-}
-
-.search-box input {
-  width: 100%;
-  max-width: 320px;
-  padding: 10px 14px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  outline: none;
-  font-size: 14px;
-}
-
-.search-box input:focus {
-  border-color: var(--color-primary);
-}
 
 /* ---------- Table ---------- */
 
 .table-wrapper {
   overflow-x: auto;
+}
+
+.brand-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .brand-table {

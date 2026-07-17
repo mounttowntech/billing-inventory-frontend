@@ -17,6 +17,7 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { categoryValidation } from "../../validations/categoryValidation";
+import SearchBox from "../../components/Common/SearchBox";
 
 const CategoryOptions = ({ value, onChange }) => {
   const dispatch = useDispatch();
@@ -24,11 +25,18 @@ const CategoryOptions = ({ value, onChange }) => {
   const itemsPerPage = 2;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
-  const { categories = [], loading } = useSelector((state) => state.category);
+  const { categories = [] } = useSelector((state) => state.category);
   const currentCategories = categories.slice(indexOfFirst, indexOfLast);
   const totalPages =
     categories.length > 0 ? Math.ceil(categories.length / itemsPerPage) : 1;
   const [showModal, setShowModal] = useState(false);
+
+  const [search, setSearch] = useState("");
+
+  const filteredCategories = currentCategories.filter((category) =>
+    category.categoryName.toLowerCase().includes(search.toLowerCase()),
+  );
+
   const {
     register,
     handleSubmit,
@@ -131,17 +139,21 @@ const CategoryOptions = ({ value, onChange }) => {
           </div>
         </div>
       )}
-
       <br />
-      <AddButton
-        onClick={() => {
-          setShowModal(true);
-        }}
-      >
-        Add Category
-      </AddButton>
-      {loading && <p>Loading...</p>}
-
+      <div className="category-actions">
+        <SearchBox
+          placeholder="Search Category..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <AddButton
+          onClick={() => {
+            setShowModal(true);
+          }}
+        >
+          Add Category
+        </AddButton>
+      </div>
       <table border="1" cellPadding="8" width="100%" className="category-table">
         <thead>
           <tr>
@@ -152,7 +164,7 @@ const CategoryOptions = ({ value, onChange }) => {
         </thead>
 
         <tbody>
-          {currentCategories.map((category, index) => (
+          {filteredCategories.map((category, index) => (
             <tr key={category._id}>
               <td>{indexOfFirst + index + 1}</td>
               <td>{category.categoryName}</td>

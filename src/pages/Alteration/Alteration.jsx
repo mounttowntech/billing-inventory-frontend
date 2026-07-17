@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getCustomers } from "../../features/Customer/customerSlice";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   getAlterations,
   createAlteration,
@@ -31,14 +32,32 @@ const Alteration = () => {
   const { invoices } = useSelector((state) => state.invoice);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
-
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
   const itemsPerPage = 3;
+
+  const filteredAlterations = alterations.filter((item) => {
+    const keyword = search.trim().toLowerCase();
+
+    return (
+      item.productName?.toLowerCase().includes(keyword) ||
+      item.customer?.customerName?.toLowerCase().includes(keyword) ||
+      item.invoice?.invoiceNo?.toLowerCase().includes(keyword) ||
+      item.alterationType?.toLowerCase().includes(keyword) ||
+      item.status?.toLowerCase().includes(keyword)
+    );
+  });
+
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentAlterations = alterations.slice(indexOfFirst, indexOfLast);
-  const totalPages =
-    alterations.length > 0 ? Math.ceil(alterations.length / itemsPerPage) : 1;
+
+  const currentAlterations = filteredAlterations.slice(
+    indexOfFirst,
+    indexOfLast,
+  );
+
+  const totalPages = Math.ceil(filteredAlterations.length / itemsPerPage) || 1;
 
   const {
     register,
@@ -62,6 +81,10 @@ const Alteration = () => {
   useEffect(() => {
     dispatch(fetchInvoices());
   }, [dispatch]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   useEffect(() => {
     dispatch(getAlterations());
@@ -116,7 +139,13 @@ const Alteration = () => {
     <div className="alteration-container">
       <div className="page-header">
         <h2>Alteration Management</h2>
-
+      </div>
+      <div className="alteration-actions">
+        <SearchBox
+          placeholder="Search alterations..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           onClick={() => {
             reset();
@@ -225,7 +254,7 @@ const Alteration = () => {
         <tbody>
           {(currentAlterations || []).map((item, index) => (
             <tr key={item._id}>
-              <td>{index + 1}</td>
+              <td>{indexOfFirst + index + 1}</td>
 
               <td>{item.customer?.customerName}</td>
 

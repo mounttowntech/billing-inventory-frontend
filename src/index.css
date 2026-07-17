@@ -234,26 +234,6 @@ tr:hover td {
   color: #374151;
 }
 
-/* ===== FORM ELEMENTS ===== */
-input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: var(--transition);
-}
-
-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-input::placeholder {
-  color: #9ca3af;
-}
-
 button {
   padding: 11px 20px;
   cursor: pointer;

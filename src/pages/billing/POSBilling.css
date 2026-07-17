@@ -84,36 +84,6 @@
   margin-bottom: 24px;
 }
 
-.search-input {
-  width: 100%;
-  padding: 16px 20px 16px 48px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: var(--primary-color-15);
-  color: var(--dark-color);
-  font-size: 15px;
-  outline: none;
-  transition: box-shadow 0.15s ease;
-}
-
-.search-input::placeholder {
-  color: var(--muted-text);
-}
-
-.search-input:focus {
-  box-shadow: 0 0 0 3px var(--primary-color-10);
-}
-
-.search-icon {
-  position: absolute;
-  left: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  color: var(--muted-text);
-  pointer-events: none;
-}
 
 /* ---------- Category filters ---------- */
 .category-list {
@@ -556,11 +526,6 @@
 
   .bill-value--total {
     font-size: 20px;
-  }
-
-  .search-input {
-    font-size: 14px;
-    padding: 14px 16px 14px 44px;
   }
 
   .category-pill {

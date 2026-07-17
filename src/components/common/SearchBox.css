@@ -1,0 +1,16 @@
+
+/* ---------- Search box ---------- */
+
+.search-box {
+  clear: both;
+}
+
+.search-box input {
+  width: 100%;
+  max-width: 320px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+}
+

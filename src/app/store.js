@@ -22,6 +22,7 @@ import dashboardReducer from "../features/Dashboard/GarmentDashboardSlice";
 import alterationReducer from "../features/alteration/alterationSlice";
 import sizesReducer from "../features/Sizes/sizesSlice";
 import colorsReducer from "../features/color/colorSlice";
+import customerAddressReducer from "../features/customerAddress/customerAddressSlice";
 
 export const store = configureStore({
   reducer: {
@@ -48,5 +49,6 @@ export const store = configureStore({
     alteration: alterationReducer,
     sizes: sizesReducer,
     colors: colorsReducer,
+    customerAddresses: customerAddressReducer,
   },
 });

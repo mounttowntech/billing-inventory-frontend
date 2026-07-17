@@ -25,9 +25,18 @@
   table-layout: auto;
 }
 
+.auditlog-buttons{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+  margin-bottom:15px;
+}
+
 .auditlog-table th {
-  background: #f8fafc;
-  color: #0f4c5c;
+  background: var(--color-primary) !important;
+  color: var(--white);
   font-size: 14px;
   font-weight: 600;
   text-align: left;
@@ -131,7 +140,7 @@
 
 .audit-form-group input:focus,
 .audit-form-group textarea:focus {
-  border-color: #2563eb;
+  
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 

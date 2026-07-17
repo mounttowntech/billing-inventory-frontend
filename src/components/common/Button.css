@@ -32,12 +32,12 @@
 }
 
 .btn-delete {
-  background:#A3282E ;
+  background:#A3282E !important;
   color: #fff;
 }
 
 .btn-delete:hover {
-  background:#A3282E ;
+  background:#A3282E !important;
 }
 
 .btn-cancel {

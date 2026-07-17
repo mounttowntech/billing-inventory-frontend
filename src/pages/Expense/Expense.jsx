@@ -10,6 +10,7 @@ import {
   deleteExpense,
 } from "../../features/expense/expenseSlice";
 import "./Expense.css";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   SaveButton,
@@ -36,6 +37,11 @@ const Expense = () => {
   const currentExpenses = expenses.slice(indexOfFirst, indexOfLast);
   const totalPages =
     expenses.length > 0 ? Math.ceil(expenses.length / itemsPerPage) : 1;
+
+  const [search, setSearch] = useState("");
+  const filteredExpenses = currentExpenses.filter((expense) =>
+    expense.title.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const {
     register,
@@ -117,7 +123,13 @@ const Expense = () => {
     <div className="expense-container">
       <div className="expense-header">
         <h2>Expense Management</h2>
-
+      </div>
+      <div className="expense-search-buttons">
+        <SearchBox
+          placeholder="Search Expenses..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           className="add-btn"
           onClick={() => {
@@ -137,6 +149,7 @@ const Expense = () => {
           + Add Expense
         </AddButton>
       </div>
+
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="expense-modal" onClick={(e) => e.stopPropagation()}>

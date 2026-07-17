@@ -16,7 +16,7 @@ import {
 import { getProducts } from "../../features/Product/productSlice";
 
 import { stockAdjustmentValidation } from "../../validations/StockAdjustmentValidation";
-
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   EditButton,
@@ -27,7 +27,7 @@ import {
 
 const StockAdjustment = () => {
   const dispatch = useDispatch();
-
+  const [search, setSearch] = useState("");
   // ================= Redux =================
 
   const { stockAdjustments, isLoading } = useSelector(
@@ -35,6 +35,11 @@ const StockAdjustment = () => {
   );
 
   const { products } = useSelector((state) => state.product);
+  const filteredStockAdjustments = stockAdjustments.filter((adjustment) =>
+    (adjustment.product?.name || "")
+      .toLowerCase()
+      .includes(search.toLowerCase()),
+  );
 
   const {
     register,
@@ -59,8 +64,6 @@ const StockAdjustment = () => {
   const [showForm, setShowForm] = useState(false);
 
   const [editId, setEditId] = useState(null);
-
-  const [search, setSearch] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -245,21 +248,20 @@ const StockAdjustment = () => {
 
   return (
     <div className="stock-adjustment-page">
-      <h2>Stock Adjustments</h2>
       <div className="stock-adjustment-header">
-        <div className="stock-adjustment-header-actions">
-          <input
-            type="text"
-            className="search-box"
-            placeholder="Search by product, SKU, type or reason..."
-            value={search}
-            style={{ width: "300px", padding: "8px", borderRadius: "4px" }}
-            onChange={handleSearchChange}
-          />
+        <div className="stock-header">
+          <h2>Stock Adjustments</h2>
         </div>
-        <AddButton onClick={handleAdd} label="Add Adjustment">
-          <span className="add-icon">+</span> Add Adjustment
-        </AddButton>
+        <div className="stock-adjustment-header-actions">
+          <SearchBox
+            placeholder="Search Measurements..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <AddButton onClick={handleAdd} label="Add Adjustment">
+            <span className="add-icon">+</span> Add Adjustment
+          </AddButton>
+        </div>
       </div>
 
       {showForm && (
@@ -419,7 +421,7 @@ const StockAdjustment = () => {
       </div>
 
       {totalPages > 1 && (
-        <div className="pagination">
+        <div className="pagination-stock-adjustment">
           <button
             disabled={currentPage === 1}
             onClick={() => paginate(currentPage - 1)}

@@ -19,6 +19,13 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
+.category-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .category-title {
   text-align: center;
   margin-bottom: 25px;
@@ -116,7 +123,7 @@
   border-radius: 6px;
   width: 60px;
   font-size: 11px;
-  background: var(--color-primary-hover);
+  background: #115e59;
   color: var(--color-white);
   cursor: pointer;
 }

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { storeValidation } from "../../validations/StoreValidation";
-
+import SearchBox from "../../components/Common/SearchBox";
 import {
   getStores,
   createStore,
@@ -36,6 +36,11 @@ const Store = () => {
   const currentStores = stores.slice(indexOfFirst, indexOfLast);
   const totalPages =
     stores.length > 0 ? Math.ceil(stores.length / itemsPerPage) : 1;
+
+  const [search, setSearch] = useState("");
+  const filteredStores = currentStores.filter((store) =>
+    store.storeName.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const {
     register,
@@ -135,7 +140,13 @@ const Store = () => {
     <div className="store-container">
       <div className="store-header">
         <h2>Store Management</h2>
-
+      </div>
+      <div className="store-search-buttons">
+        <SearchBox
+          placeholder="Search Supplier..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           className="add-btn"
           onClick={() => {
@@ -327,14 +338,14 @@ const Store = () => {
                   Loading...
                 </td>
               </tr>
-            ) : currentStores.length === 0 ? (
+            ) : filteredStores.length === 0 ? (
               <tr>
                 <td colSpan="8" style={{ textAlign: "center" }}>
                   No Stores Found
                 </td>
               </tr>
             ) : (
-              currentStores.map((store) => (
+              filteredStores.map((store) => (
                 <tr key={store._id}>
                   <td>{store.storeCode}</td>
 

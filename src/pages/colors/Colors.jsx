@@ -23,6 +23,7 @@ import {
   SaveButton,
   CancelButton,
 } from "../../components/Common/Button";
+import SearchBox from "../../components/Common/SearchBox";
 
 const Colors = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,9 @@ const Colors = () => {
   const totalPages =
     colors.length > 0 ? Math.ceil(colors.length / itemsPerPage) : 1;
 
+  const filteredColors = currentColors.filter((item) =>
+    item.colorName?.toLowerCase().includes(search.toLowerCase()),
+  );
   const {
     register,
     handleSubmit,
@@ -57,10 +61,6 @@ const Colors = () => {
   useEffect(() => {
     dispatch(getColors());
   }, [dispatch]);
-
-  const filteredColors = colors.filter((item) =>
-    item.colorName?.toLowerCase().includes(search.toLowerCase()),
-  );
 
   const onSubmit = (data) => {
     data.status = data.status === "true" || data.status === true;
@@ -116,7 +116,14 @@ const Colors = () => {
     <div className="colors-container">
       <div className="colors-header">
         <h2>Color Management</h2>
+      </div>
 
+      <div className="colors-actions">
+        <SearchBox
+          placeholder="Search Colors..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           onClick={() => {
             reset({
@@ -134,15 +141,6 @@ const Colors = () => {
         </AddButton>
       </div>
 
-      <div className="colors-toolbar">
-        <input
-          type="text"
-          placeholder="Search Color..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-
       <table className="colors-table">
         <thead>
           <tr>
@@ -156,8 +154,8 @@ const Colors = () => {
         </thead>
 
         <tbody>
-          {currentColors.length > 0 ? (
-            currentColors.map((color) => (
+          {filteredColors.length > 0 ? (
+            filteredColors.map((color) => (
               <tr key={color._id}>
                 <td>{color.colorCode}</td>
                 <td>{color.colorName}</td>

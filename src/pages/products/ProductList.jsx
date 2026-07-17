@@ -8,6 +8,7 @@ import {
   getProducts,
   deleteProduct,
 } from "../../features/product/productSlice";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   EditButton,
@@ -23,6 +24,7 @@ const ProductList = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [expandedProduct, setExpandedProduct] = useState(null);
   const [category, setCategory] = useState("");
+  const [search, setSearch] = useState("");
   const dispatch = useDispatch();
 
   const { products } = useSelector((state) => state.product);
@@ -35,6 +37,9 @@ const ProductList = () => {
 
   const totalPages =
     products.length > 0 ? Math.ceil(products.length / itemsPerPage) : 1;
+  const filteredProducts = currentProducts.filter((product) =>
+    product.productName.toLowerCase().includes(search.toLowerCase()),
+  );
 
   useEffect(() => {
     dispatch(getProducts());
@@ -66,7 +71,15 @@ const ProductList = () => {
   return (
     <>
       <div className="product-container">
-        <div className="dash-actions">
+        <div className="product-actions-header">
+          <h2>Product Management</h2>
+        </div>
+        <div className="product-actions">
+          <SearchBox
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
           <AddButton onClick={() => setShowAddProduct(true)}>
             + Add Product
           </AddButton>

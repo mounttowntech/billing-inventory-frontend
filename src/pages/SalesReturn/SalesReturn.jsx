@@ -11,9 +11,10 @@ import {
 } from "../../features/salesReturn/salesReturnSlice";
 
 import { salesReturnValidation } from "../../validations/SalesReturnValidation";
-
+import SearchBox from "../../components/Common/SearchBox";
 import "./SalesReturn.css";
-
+import { fetchInvoices } from "../../features/Invoice/invoiceSlice";
+import { getCustomers } from "../../features/Customer/customerSlice";
 import {
   AddButton,
   EditButton,
@@ -26,10 +27,11 @@ import {
 
 const SalesReturn = () => {
   const dispatch = useDispatch();
-
+  const { customers = [] } = useSelector((state) => state.customer || {});
+  const { invoices = [] } = useSelector((state) => state.invoice || {});
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
-
+  const [search, setSearch] = useState("");
   const { salesReturns, isLoading } = useSelector((state) => state.salesReturn);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,11 +41,17 @@ const SalesReturn = () => {
   const currentSalesReturns = salesReturns.slice(indexOfFirst, indexOfLast);
   const totalPages =
     salesReturns.length > 0 ? Math.ceil(salesReturns.length / itemsPerPage) : 1;
+  console.log("customers are the ", customers);
+
+  const filteredSalesReturn = currentSalesReturns.filter((item) =>
+    (item.productName || "").toLowerCase().includes(search.toLowerCase()),
+  );
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(salesReturnValidation),
@@ -55,6 +63,14 @@ const SalesReturn = () => {
       reason: "",
     },
   });
+  const selectedCustomer = watch("customer");
+  const filteredInvoices = invoices.filter(
+    (invoice) => invoice.customer?._id === selectedCustomer,
+  );
+  useEffect(() => {
+    dispatch(fetchInvoices());
+    dispatch(getCustomers());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getSalesReturns());
@@ -124,7 +140,11 @@ const SalesReturn = () => {
     <div className="salesreturn-container">
       <div className="salesreturn-header">
         <h2>Sales Return Management</h2>
-
+        <SearchBox
+          placeholder="Search sales..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <AddButton
           onClick={() => {
             reset({
@@ -213,19 +233,29 @@ const SalesReturn = () => {
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="salesreturn-form-group">
-                <label>Invoice</label>
-
-                <input type="text" {...register("invoice")} />
-
-                <p>{errors.invoice?.message}</p>
+                <label>Customer</label>
+                <select {...register("customer")}>
+                  <option value="">Select Customer</option>
+                  {customers.map((customer) => (
+                    <option key={customer._id} value={customer._id}>
+                      {customer.customerName}
+                    </option>
+                  ))}
+                </select>
+                <p>{errors.customer?.message}</p>
               </div>
 
               <div className="salesreturn-form-group">
-                <label>Customer</label>
-
-                <input type="text" {...register("customer")} />
-
-                <p>{errors.customer?.message}</p>
+                <label>Invoice</label>
+                <select {...register("invoice")}>
+                  <option value="">Select Invoice</option>
+                  {filteredInvoices.map((invoice) => (
+                    <option key={invoice._id} value={invoice._id}>
+                      {invoice.invoiceNumber || invoice.invoiceNo}
+                    </option>
+                  ))}
+                </select>
+                <p>{errors.invoice?.message}</p>
               </div>
 
               <div className="salesreturn-form-group">

@@ -10,6 +10,7 @@ import {
   updateSupplier,
   deleteSupplier,
 } from "../../features/supplier/supplierSlice";
+import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   SaveButton,
@@ -30,12 +31,17 @@ const Supplier = () => {
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1;
+  const itemsPerPage = 2;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentSuppliers = suppliers.slice(indexOfFirst, indexOfLast);
   const totalPages =
     suppliers.length > 0 ? Math.ceil(suppliers.length / itemsPerPage) : 1;
+
+  const [search, setSearch] = useState("");
+  const filteredSuppliers = currentSuppliers.filter((supplier) =>
+    supplier.supplierName.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const {
     register,
@@ -118,8 +124,14 @@ const Supplier = () => {
     <div className="supplier-container">
       <div className="supplier-header">
         <h2>Supplier Management</h2>
-
-        <AddButton onClick={openAddModal}>+ Add Supplier</AddButton>
+      </div>
+      <div className="supplier-search-buttons">
+        <SearchBox
+          placeholder="Search Suppliers..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <AddButton onClick={openAddModal}>Add Supplier</AddButton>
       </div>
 
       {error && <div className="supplier-error-banner">{error}</div>}
@@ -263,8 +275,8 @@ const Supplier = () => {
             </thead>
 
             <tbody>
-              {currentSuppliers.length > 0 ? (
-                currentSuppliers.map((supplier) => (
+              {filteredSuppliers.length > 0 ? (
+                filteredSuppliers.map((supplier) => (
                   <tr key={supplier._id}>
                     <td>{supplier.supplierCode}</td>
                     <td>{supplier.supplierName}</td>

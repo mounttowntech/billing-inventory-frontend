@@ -63,6 +63,13 @@
   box-shadow: var(--shadow-sm);
 }
 
+.style-actions{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;

@@ -14,9 +14,16 @@
   border-radius: 12px;
 }
 
+.customer-search-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .customer-header {
   display: flex;
-  justify-content: center;
+  justify-content: start;
   margin-bottom: 20px;
 }
 
@@ -121,7 +128,7 @@ tbody tr:hover {
 }
 
 .modal input:focus {
-  border-color: #2563eb;
+  
 }
 
 .modal p {

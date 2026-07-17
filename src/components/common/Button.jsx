@@ -7,7 +7,7 @@ export const AddButton = ({ children, onClick, type = "button" }) => {
       {children}
     </button>
   );
-};
+};  
 
 export const EditButton = ({ children = "Edit", onClick }) => {
   return (

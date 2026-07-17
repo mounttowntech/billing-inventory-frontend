@@ -2,6 +2,9 @@
   width: 96%;
   margin: 20px auto;
   font-family: "Poppins", sans-serif;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .roles-top {
@@ -41,7 +44,7 @@
 
 .roles-table th {
   font-weight: 600;
-  color: #374151;
+  color: white;
 }
 
 .roles-table tbody tr:hover {
