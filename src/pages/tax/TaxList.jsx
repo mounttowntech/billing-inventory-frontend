@@ -1,9 +1,9 @@
 import "./TaxList.css";
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "../../components/common/Modal";
 import TaxForm from "../tax/TaxForm";
-import { getTaxes,deleteTax } from "../../features/tax/taxSlice";
+import { getTaxes, deleteTax } from "../../features/tax/taxSlice";
 import toaster from "../../utils/toaster";
 
 export default function TaxList() {
@@ -22,54 +22,47 @@ export default function TaxList() {
   }, [dispatch]);
 
   useEffect(() => {
-  if (authTaxes?.data) {
-    setTaxes(authTaxes.data);
-  }
-}, [authTaxes]);
+    if (authTaxes?.data) {
+      setTaxes(authTaxes.data);
+    }
+  }, [authTaxes]);
 
   const filteredTaxes = taxes.filter((tax) =>
-  `${tax.taxName} ${tax.taxCode}`
-    .toLowerCase()
-    .includes(search.toLowerCase())
-);
-
-const indexOfLastTax = currentPage * rowsPerPage;
-const indexOfFirstTax = indexOfLastTax - rowsPerPage;
-
-const currentTaxes = filteredTaxes.slice(
-  indexOfFirstTax,
-  indexOfLastTax
-);
-
-const totalPages = Math.ceil(filteredTaxes.length / rowsPerPage);
-
-
-// console.log(taxes);
-
-const handleDelete = async (tax) => {
-  const ok = window.confirm(
-    `Delete ${tax.taxName}?`
+    `${tax.taxName} ${tax.taxCode}`
+      .toLowerCase()
+      .includes(search.toLowerCase()),
   );
 
-  if (!ok) return;
+  const indexOfLastTax = currentPage * rowsPerPage;
+  const indexOfFirstTax = indexOfLastTax - rowsPerPage;
 
-  await dispatch(deleteTax(tax._id));
-  toaster.success("Tax deleted successfully!");
-  dispatch(getTaxes());
-};
+  const currentTaxes = filteredTaxes.slice(indexOfFirstTax, indexOfLastTax);
+
+  const totalPages = Math.ceil(filteredTaxes.length / rowsPerPage);
+
+  // console.log(taxes);
+
+  const handleDelete = async (tax) => {
+    const ok = window.confirm(`Delete ${tax.taxName}?`);
+
+    if (!ok) return;
+
+    await dispatch(deleteTax(tax._id));
+    toaster.success("Tax deleted successfully!");
+    dispatch(getTaxes());
+  };
 
   return (
     <div className="page-container">
-
       <div className="page-header">
         <h2>Tax Lists</h2>
 
-        <button 
-          className="btn-primary" 
+        <button
+          className="btn-primary"
           onClick={() => {
             setMode("add");
             setSelectedTax(null);
-            setOpenModal(true)
+            setOpenModal(true);
           }}
         >
           + Add Tax
@@ -77,11 +70,15 @@ const handleDelete = async (tax) => {
       </div>
 
       <div className="table-card">
-
         <div className="table-toolbar">
-
           <div className="entries">
-            <select value={rowsPerPage} onChange={(e) => {setRowsPerPage(Number(e.target.value)); setCurrentPage(1);}}>
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
               <option value={5}>5</option>
               <option value={10}>10</option>
               <option value={25}>25</option>
@@ -95,15 +92,15 @@ const handleDelete = async (tax) => {
             className="user-search-box"
             placeholder="Search taxes..."
             value={search}
-            onChange={(e) => {setSearch(e.target.value);setCurrentPage(1)}}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
           />
-
         </div>
 
         <table className="custom-table">
-
           <thead>
-
             <tr>
               <th>#</th>
               <th>Tax Code</th>
@@ -113,7 +110,6 @@ const handleDelete = async (tax) => {
               <th>Is Active</th>
               <th>Action</th>
             </tr>
-
           </thead>
 
           <tbody>
@@ -124,48 +120,51 @@ const handleDelete = async (tax) => {
                 </td>
               </tr>
             ) : (
-          currentTaxes?.map((tax, index) => (
-            <tr key={tax?._id ?? index}>
-              <td>{ indexOfFirstTax + index + 1}</td>
+              currentTaxes?.map((tax, index) => (
+                <tr key={tax?._id ?? index}>
+                  <td>{indexOfFirstTax + index + 1}</td>
 
-              <td>{tax?.taxCode}</td>
+                  <td>{tax?.taxCode}</td>
 
-              <td>{tax?.taxName}</td>
+                  <td>{tax?.taxName}</td>
 
-              <td>{tax?.taxPercentage}</td>
+                  <td>{tax?.taxPercentage}</td>
 
-              <td>{tax?.taxType}</td>
+                  <td>{tax?.taxType}</td>
 
-              <td>
-                <span className="status active">
-                  {tax?.isActive ? "Active" : "Inactive"}
-                </span>
-              </td>
+                  <td>
+                    <span className="status active">
+                      {tax?.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
 
-              <td>
-  <div className="action-column">
-    <button className="btn-edit" onClick={() => {
-      setMode("edit");
-      setSelectedTax(tax);
-      setOpenModal(true);
-    }}>
-      Edit
-    </button>
-    <button className="btn-delete"  onClick={() => handleDelete(tax)}>
-      Delete
-    </button>
-  </div>
-</td>
-
-            </tr>
-          ))
-        )}
+                  <td>
+                    <div className="action-column">
+                      <button
+                        className="btn-edit"
+                        onClick={() => {
+                          setMode("edit");
+                          setSelectedTax(tax);
+                          setOpenModal(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleDelete(tax)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
-
         </table>
 
         <div className="user-pagination">
-
           <p>
             Showing {filteredTaxes.length === 0 ? 0 : indexOfFirstTax + 1}
             to {Math.min(indexOfLastTax, filteredTaxes.length)}
@@ -173,47 +172,45 @@ const handleDelete = async (tax) => {
           </p>
 
           <div className="page-buttons">
-  <button
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage(1)}
-  >
-    &laquo;
-  </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
 
-  <button
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage(currentPage - 1)}
-  >
-    &lsaquo;
-  </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
 
-  {Array.from({ length: totalPages }, (_, i) => (
-    <button
-      key={i}
-      className={currentPage === i + 1 ? "active-page" : ""}
-      onClick={() => setCurrentPage(i + 1)}
-    >
-      {i + 1}
-    </button>
-  ))}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
 
-  <button
-    disabled={currentPage === totalPages}
-    onClick={() => setCurrentPage(currentPage + 1)}
-  >
-    &rsaquo;
-  </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
 
-  <button
-    disabled={currentPage === totalPages}
-    onClick={() => setCurrentPage(totalPages)}
-  >
-    &raquo;
-  </button>
-</div>
-
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
         </div>
-
       </div>
 
       <Modal
@@ -232,7 +229,6 @@ const handleDelete = async (tax) => {
           }}
         />
       </Modal>
-
     </div>
   );
 }
