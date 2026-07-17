@@ -41,6 +41,7 @@ import CashierDashboard from "../pages/dashboard/CashierDashboard";
 import InventoryDashboard from "../pages/dashboard/InventoryDashboard";
 import CustomerAddress from "../pages/CustomerAddress/CustomerAddress";
 import StockLedger from "../pages/StockLedger/StockLedger";
+import DashboardRedirect from "../routes/DashboardRedirect";
 
 const AppRoutes = () => {
   return (
@@ -56,7 +57,8 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Dashboard />} />
+        <Route index element={<DashboardRedirect />} />
+        <Route path="admin-dashboard" element={<Dashboard />} />
         <Route path="products" element={<ProductList />} />
         <Route path="products/create" element={<ProductForm />} />
         <Route path="customers" element={<CustomerList />} />
@@ -84,14 +86,12 @@ const AppRoutes = () => {
         <Route path="colors" element={<Colors />} />
         <Route path="sizes" element={<Sizes />} />
         <Route path="users" element={<UserLists />} />
-        <Route path="ManagerDashboard" element={<ManagerDashboard />} />
         <Route path="tax-settings" element={<TaxList />} />
-        <Route path="managerDashboard" element={<ManagerDashboard />} />
-        <Route path="cashierDashboard" element={<CashierDashboard />} />
-        <Route path="inventoryDashboard" element={<InventoryDashboard />} />
-        <Route path="ManagerDashboard" element={<ManagerDashboard />} />
         <Route path="customer-addresses" element={<CustomerAddress />} />
         <Route path="stock-ledger" element={<StockLedger />} />
+        <Route path="manager-dashboard" element={<ManagerDashboard />} />
+        <Route path="cashier-dashboard" element={<CashierDashboard />} />
+        <Route path="inventory-dashboard" element={<InventoryDashboard />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

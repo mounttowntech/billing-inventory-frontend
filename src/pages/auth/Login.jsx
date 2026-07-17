@@ -7,6 +7,7 @@ import { loginUser } from "../../features/auth/authSlice";
 import Input from "../../components/common/Input";
 import "./Login.css";
 import toaster from "../../utils/toaster";
+import { getDashboardRoute } from "../../utils/getDashboardRoute";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -22,13 +23,20 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
-    const result = await dispatch(loginUser(data));
+  const result = await dispatch(loginUser(data));
 
-    if (loginUser.fulfilled.match(result)) {
-      toaster.success("Login successful!");
-      navigate("/");
-    }
-  };
+  if (loginUser.fulfilled.match(result)) {
+
+    toaster.success("Login successful!");
+
+    const role =
+      result.payload.user.role.roleName;
+
+    navigate(getDashboardRoute(role), {
+      replace: true,
+    });
+  }
+};
 
   return (
     <div className="login-page">
