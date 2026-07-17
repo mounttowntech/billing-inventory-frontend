@@ -3,15 +3,15 @@ const Select = ({
   name,
   register,
   error,
-  value,
-  onChange,
+  // value,
+  // onChange,
   options = [],
   placeholder = "Select option",
   optionValue = "_id",
   optionLabel = "label",
 }) => {
   console.log("Select options:", options);
-  console.log("Select value:", value);
+  // console.log("Select value:", value);
   return (
     <div className="form-group">
       {label && <label>{label}</label>}
@@ -19,8 +19,8 @@ const Select = ({
       <select
         {...register(name)}
         className="form-control"
-        value={value}
-        onChange={onChange}
+        // value={value}
+        // onChange={onChange}
       >
         <option value="">{placeholder}</option>
 
