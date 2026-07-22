@@ -7,7 +7,7 @@ const Select = ({
   onChange,
   options = [],
   placeholder = "Select option",
-  optionValue = "_id",
+  optionValue = "value",
   optionLabel = "label",
 }) => {
   console.log("Select options:", options);

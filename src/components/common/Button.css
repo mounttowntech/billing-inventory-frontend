@@ -14,7 +14,6 @@
   background: var(--color-primary);
   float: inline-end;
   width: fit-content;
-  margin-bottom: 15px !important;
 }
 
 .btn-add:hover,

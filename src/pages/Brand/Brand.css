@@ -47,6 +47,18 @@
 
 .table-wrapper {
   overflow-x: auto;
+  max-height: 880px;
+}
+
+
+.table-toolbar{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-bottom:20px;
+
 }
 
 .brand-actions {
@@ -177,6 +189,21 @@
   font-family: inherit;
   margin-top: 6px;
 }
+
+
+.entries{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.entries select{
+padding:10px;
+border-radius:8px;
+border:1px solid #d9e1e7;
+
+}
+
 
 .brand-form input:focus,
 .brand-form textarea:focus {
