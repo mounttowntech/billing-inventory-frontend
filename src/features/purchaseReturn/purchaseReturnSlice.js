@@ -79,7 +79,7 @@ const purchaseReturnSlice = createSlice({
 
       .addCase(updatePurchaseReturn.fulfilled, (state, action) => {
         const index = state.purchases.findIndex(
-          (purchase) => purchase._id === action.payload._id,
+          (item) => item._id === action.payload._id,
         );
 
         if (index !== -1) {
