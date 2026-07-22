@@ -81,6 +81,8 @@
 .table-wrapper {
   width: 100%;              /* fits inside .purchase-container, no overflow of parent */
   max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   max-height: 500px;        /* adjust to taste */
   overflow-x: auto;         /* horizontal scrollbar lives here now */
   overflow-y: auto;
