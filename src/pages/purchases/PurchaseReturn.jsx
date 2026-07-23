@@ -94,8 +94,8 @@ const PurchaseReturn = () => {
     setEditingId(item._id);
 
     setValue("returnNo", item.returnNo);
-    setValue("purchase", item.purchase);
-    setValue("supplier", item.supplier);
+    setValue("purchase", item.purchase ? item.purchase._id : "");
+    setValue("supplier", item.supplier ? item.supplier._id : "");
     setValue(
       "returnDate",
       item.returnDate ? item.returnDate.substring(0, 10) : "",
@@ -119,9 +119,9 @@ const PurchaseReturn = () => {
           id: editingId,
           purchase: data,
         }),
-      );
+      ).unwrap();
     } else {
-      dispatch(createPurchaseReturn(data));
+      dispatch(createPurchaseReturn(data)).unwrap();
     }
     dispatch(getPurchasesReturn());
     setShowModal(false);
@@ -131,12 +131,12 @@ const PurchaseReturn = () => {
   };
 
   const purchaseOptions = purchases.map((purchase) => ({
-    value: purchase._id,
+    _id: purchase._id,
     label: purchase.purchaseNo,
   }));
 
   const supplierOptions = suppliers.map((supplier) => ({
-    value: supplier._id,
+    _id: supplier._id,
     label: supplier.supplierName,
   }));
 
@@ -203,9 +203,9 @@ const PurchaseReturn = () => {
 
                     <td>{item.returnNo}</td>
 
-                    <td>{item.purchase || "-"}</td>
+                    <td>{item.purchase?.purchaseNo || "-"}</td>
 
-                    <td>{item.supplier || "-"}</td>
+                    <td>{item.supplier?.supplierName || "-"}</td>
 
                     <td>
                       {item.returnDate

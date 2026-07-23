@@ -42,6 +42,7 @@ import InventoryDashboard from "../pages/dashboard/InventoryDashboard";
 import CustomerAddress from "../pages/CustomerAddress/CustomerAddress";
 import StockLedger from "../pages/StockLedger/StockLedger";
 import DashboardRedirect from "../routes/DashboardRedirect";
+import PaymentList from "../pages/payments/PaymentList";
 import PurchaseReturn from "../pages/purchases/PurchaseReturn";
 
 const AppRoutes = () => {
@@ -93,6 +94,7 @@ const AppRoutes = () => {
         <Route path="manager-dashboard" element={<ManagerDashboard />} />
         <Route path="cashier-dashboard" element={<CashierDashboard />} />
         <Route path="inventory-dashboard" element={<InventoryDashboard />} />
+        <Route path="payments" element={<PaymentList />} />
         <Route path="purchase-return" element={<PurchaseReturn />} />
       </Route>
 

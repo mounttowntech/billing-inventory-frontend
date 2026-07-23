@@ -25,6 +25,7 @@ import colorsReducer from "../features/color/colorSlice";
 import customerAddressReducer from "../features/customerAddress/customerAddressSlice";
 import taxReducer from "../features/tax/taxSlice";
 import stockLedgerReducer from "../features/stockLedger/stockLedgerSlice";
+import paymentReducer from "../features/payment/paymentSlice";
 import purchaseReturnReducer from "../features/purchaseReturn/purchaseReturnSlice";
 
 export const store = configureStore({
@@ -55,6 +56,7 @@ export const store = configureStore({
     customerAddresses: customerAddressReducer,
     tax: taxReducer,
     stockLedger: stockLedgerReducer,
+    payment: paymentReducer,
     purchaseReturn: purchaseReturnReducer,
   },
 });
