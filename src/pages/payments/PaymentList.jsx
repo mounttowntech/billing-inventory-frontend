@@ -1,9 +1,12 @@
 import "./PaymentList.css";
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "../../components/common/Modal";
 import PaymentForm from "../payments/PaymentForm";
-import { getPayments, deletePayment } from "../../features/payment/paymentSlice";
+import {
+  getPayments,
+  deletePayment,
+} from "../../features/payment/paymentSlice";
 import toaster from "../../utils/toaster";
 import { getCustomers } from "../../features/Customer/customerSlice";
 import { getSuppliers } from "../../features/Supplier/supplierSlice";
@@ -34,60 +37,56 @@ export default function PaymentList() {
   }, [dispatch]);
 
   useEffect(() => {
-  if (authPayments?.data) {
-    setPayments(authPayments.data);
-  }
-}, [authPayments]);
+    if (authPayments?.data) {
+      setPayments(authPayments.data);
+    }
+  }, [authPayments]);
 
   const filteredPayments = payments.filter((payment) =>
-  `${payment.paymentName} ${payment.paymentCode}`
-    .toLowerCase()
-    .includes(search.toLowerCase())
-);
-
-const indexOfLastPayment = currentPage * rowsPerPage;
-const indexOfFirstPayment = indexOfLastPayment - rowsPerPage;
-
-const currentPayments = filteredPayments.slice(
-  indexOfFirstPayment,
-  indexOfLastPayment
-);
-
-const totalPages = Math.ceil(filteredPayments.length / rowsPerPage);
-
-
-// console.log(payments);
-
-const handleDelete = async (payment) => {
-  const ok = window.confirm(
-    `Delete ${payment.paymentName}?`
+    `${payment.paymentName} ${payment.paymentCode}`
+      .toLowerCase()
+      .includes(search.toLowerCase()),
   );
 
-  if (!ok) return;
+  const indexOfLastPayment = currentPage * rowsPerPage;
+  const indexOfFirstPayment = indexOfLastPayment - rowsPerPage;
 
-  await dispatch(deletePayment(payment._id));
-  toaster.success("Payment deleted successfully!");
-  dispatch(getPayments());
-};
+  const currentPayments = filteredPayments.slice(
+    indexOfFirstPayment,
+    indexOfLastPayment,
+  );
 
-console.log("customers", customers);
-console.log("suppliers", suppliers);
-console.log("invoices", invoices);
-console.log("purchases", purchases);
-console.log("cuurrentPayments", currentPayments);
+  const totalPages = Math.ceil(filteredPayments.length / rowsPerPage);
+
+  // console.log(payments);
+
+  const handleDelete = async (payment) => {
+    const ok = window.confirm(`Delete ${payment.paymentName}?`);
+
+    if (!ok) return;
+
+    await dispatch(deletePayment(payment._id));
+    toaster.success("Payment deleted successfully!");
+    dispatch(getPayments());
+  };
+
+  console.log("customers", customers);
+  console.log("suppliers", suppliers);
+  console.log("invoices", invoices);
+  console.log("purchases", purchases);
+  console.log("cuurrentPayments", currentPayments);
 
   return (
     <div className="page-container">
-
       <div className="page-header">
         <h2>Payment Lists</h2>
 
-        <button 
-          className="btn-primary" 
+        <button
+          className="btn-primary"
           onClick={() => {
             setMode("add");
             setSelectedPayment(null);
-            setOpenModal(true)
+            setOpenModal(true);
           }}
         >
           + Add Payment
@@ -95,11 +94,15 @@ console.log("cuurrentPayments", currentPayments);
       </div>
 
       <div className="table-card">
-
         <div className="table-toolbar">
-
           <div className="entries">
-            <select value={rowsPerPage} onChange={(e) => {setRowsPerPage(Number(e.target.value)); setCurrentPage(1);}}>
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
               <option value={5}>5</option>
               <option value={10}>10</option>
               <option value={25}>25</option>
@@ -113,15 +116,15 @@ console.log("cuurrentPayments", currentPayments);
             className="user-search-box"
             placeholder="Search payments..."
             value={search}
-            onChange={(e) => {setSearch(e.target.value);setCurrentPage(1)}}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
           />
-
         </div>
 
         <table className="custom-table">
-
           <thead>
-
             <tr>
               <th>#</th>
               <th>Payment No</th>
@@ -133,7 +136,6 @@ console.log("cuurrentPayments", currentPayments);
               <th>Payment Status</th>
               <th>Action</th>
             </tr>
-
           </thead>
 
           <tbody>
@@ -144,100 +146,106 @@ console.log("cuurrentPayments", currentPayments);
                 </td>
               </tr>
             ) : (
-          currentPayments?.map((payment, index) => (
-            <tr key={payment?._id ?? index}>
-              <td>{ indexOfFirstPayment + index + 1}</td>
+              currentPayments?.map((payment, index) => (
+                <tr key={payment?._id ?? index}>
+                  <td>{indexOfFirstPayment + index + 1}</td>
 
-              <td>{payment?.paymentNo}</td>
+                  <td>{payment?.paymentNo}</td>
 
-              <td>{payment?.type}</td>
+                  <td>{payment?.type}</td>
 
-              <td>{payment?.customerSupplier}</td>
+                  <td>
+                    {payment.customer?.customerName ||
+                      payment.supplier?.supplierName ||
+                      "-"}
+                  </td>
 
-              <td>{payment?.amount}</td>
+                  <td>{payment?.amount}</td>
 
-              <td>{payment?.paymentMethod}</td>
+                  <td>{payment?.paymentMethod}</td>
 
-              <td>{payment?.paymentDate}</td>
+                  <td>{payment?.paymentDate}</td>
 
-              <td>
-                <span className="status active">
-                  {payment?.paymentStatus ? "Active" : "Inactive"}
-                </span>
-              </td>
+                  <td>
+                    <span className="status active">
+                      {payment?.paymentStatus ? "Active" : "Inactive"}
+                    </span>
+                  </td>
 
-              <td>
-  <div className="action-column">
-    <button className="btn-edit" onClick={() => {
-      setMode("edit");
-      setSelectedPayment(payment);
-      setOpenModal(true);
-    }}>
-      Edit
-    </button>
-    <button className="btn-delete"  onClick={() => handleDelete(payment)}>
-      Delete
-    </button>
-  </div>
-</td>
-
-            </tr>
-          ))
-        )}
+                  <td>
+                    <div className="action-column">
+                      <button
+                        className="btn-edit"
+                        onClick={() => {
+                          setMode("edit");
+                          setSelectedPayment(payment);
+                          setOpenModal(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleDelete(payment)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
-
         </table>
 
         <div className="user-pagination">
-
           <p>
-            Showing {filteredPayments.length === 0 ? 0 : indexOfFirstPayment + 1}
+            Showing{" "}
+            {filteredPayments.length === 0 ? 0 : indexOfFirstPayment + 1}
             to {Math.min(indexOfLastPayment, filteredPayments.length)}
             of {filteredPayments.length} entries
           </p>
 
           <div className="page-buttons">
-  <button
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage(1)}
-  >
-    &laquo;
-  </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
 
-  <button
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage(currentPage - 1)}
-  >
-    &lsaquo;
-  </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
 
-  {Array.from({ length: totalPages }, (_, i) => (
-    <button
-      key={i}
-      className={currentPage === i + 1 ? "active-page" : ""}
-      onClick={() => setCurrentPage(i + 1)}
-    >
-      {i + 1}
-    </button>
-  ))}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
 
-  <button
-    disabled={currentPage === totalPages}
-    onClick={() => setCurrentPage(currentPage + 1)}
-  >
-    &rsaquo;
-  </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
 
-  <button
-    disabled={currentPage === totalPages}
-    onClick={() => setCurrentPage(totalPages)}
-  >
-    &raquo;
-  </button>
-</div>
-
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
         </div>
-
       </div>
 
       <Modal
@@ -260,7 +268,6 @@ console.log("cuurrentPayments", currentPayments);
           purchases={purchases}
         />
       </Modal>
-
     </div>
   );
 }
