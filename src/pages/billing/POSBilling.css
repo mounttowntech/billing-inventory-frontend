@@ -84,6 +84,37 @@
   margin-bottom: 24px;
 }
 
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-text);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--light-color);
+  font-size: 15px;
+  color: var(--dark-color);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.search-input:focus {
+  border-color: var(--primary-color);
+}
+
+.search-input::placeholder {
+  color: var(--muted-text);
+}
+
+/* If you uncomment the <Icon name="search" /> in the JSX,
+   add `padding-left: 44px;` to .search-input to clear it. */
 
 /* ---------- Category filters ---------- */
 .category-list {
@@ -101,6 +132,7 @@
   color: var(--dark-color);
   font-size: 15px;
   font-weight: 500;
+  width: max-content;
   cursor: pointer;
   white-space: nowrap;
   transition:
@@ -128,6 +160,8 @@
 
 .product-card {
   display: flex;
+  position: relative;
+  overflow: hidden;
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
@@ -160,7 +194,7 @@
   min-height: 120px; /* fallback in case width/aspect-ratio don't resolve */
   border-radius: var(--radius-sm);
   background: var(--light-color);
-  margin-bottom: 8px;
+  margin-top: 21px;
   overflow: hidden; /* clips the image to the rounded square */
   display: flex;
   align-items: center;
@@ -262,6 +296,10 @@
   background: var(--danger-color);
 }
 
+.quick-action-label {
+  text-align: left;
+}
+
 /* ==========================================================
    RIGHT PANEL — CURRENT BILL
    ========================================================== */
@@ -284,21 +322,6 @@
   margin-bottom: 18px;
 }
 
-.bill-menu-btn {
-  background: none;
-  border: none;
-  padding: 4px;
-  cursor: pointer;
-  color: var(--muted-text);
-  display: flex;
-  align-items: center;
-}
-
-.bill-menu-btn .icon {
-  width: 20px;
-  height: 20px;
-}
-
 .bill-divider {
   border: none;
   border-top: 1px solid var(--border-color);
@@ -310,6 +333,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 4px 0;
+  gap: 12px;
+}
+
+.bill-row--customer {
+  padding: 8px 0;
 }
 
 .bill-label {
@@ -321,6 +349,7 @@
   font-size: 15px;
   font-weight: 600;
   color: var(--dark-color);
+  white-space: nowrap;
 }
 
 .bill-value--discount {
@@ -350,6 +379,56 @@
   font-size: 24px;
   font-weight: 800;
   color: var(--heading-text);
+}
+
+/* ---------- Empty cart state ---------- */
+.empty-cart {
+  text-align: center;
+  color: var(--muted-text);
+  font-size: 14px;
+  padding: 24px 0;
+  margin: 0;
+}
+
+/* ---------- Cart quantity stepper ---------- */
+.qty-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.qty-buttons button {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--white-color);
+  color: var(--dark-color);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.qty-buttons button:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-color-10);
+}
+
+.qty-buttons span {
+  min-width: 18px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 /* ---------- Received amount ---------- */
@@ -532,4 +611,54 @@
     padding: 10px 16px;
     font-size: 14px;
   }
+}
+
+.qty-overlay {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: var(--radius-pill);
+  z-index: 10;
+}
+
+.qty-btn {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  color: var(--white-color);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.qty-btn:hover {
+  background: var(--dark-color);
+  transform: scale(1.08);
+}
+
+.qty-btn:active {
+  transform: scale(0.95);
+}
+
+.qty-overlay span {
+  min-width: 14px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dark-color);
 }

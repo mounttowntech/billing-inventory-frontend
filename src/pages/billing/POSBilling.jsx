@@ -10,15 +10,8 @@ import img8 from "../../assets/cargo.jpg";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../../features/product/productSlice";
-
-const CATEGORIES = [
-  "All Items",
-  "Shirts",
-  "Jeans",
-  "T-Shirts",
-  "Sarees",
-  "Kids Wear",
-];
+import { fetchCategories } from "../../features/category/categorySlice";
+import noImage from "../../assets/no-image.png";
 
 const QUICK_ACTIONS = [
   { id: "hold", label: "Hold Bills", icon: "pause", variant: "blue" },
@@ -99,13 +92,17 @@ export default function POSPage() {
   const [activeCategory, setActiveCategory] = useState("All Items");
   const [searchTerm, setSearchTerm] = useState("");
   const [receivedAmount, setReceivedAmount] = useState("500");
+  const [cart, setCart] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState("Walk-in");
+  const { categories } = useSelector((state) => state.category);
 
-  // ---- Bill calculations (replace with real cart state as needed) ----
-  const billItems = [{ label: "Product*2", amount: 450 }];
-  const subTotal = billItems.reduce((sum, item) => sum + item.amount, 0);
+  const subTotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
   const gstRate = 0.05;
   const gstAmount = subTotal * gstRate;
-  const discount = 20;
+  const discount = 0;
   const grandTotal = subTotal + gstAmount - discount;
   const received = parseFloat(receivedAmount) || 0;
   const returnAmount = received - grandTotal;
@@ -115,7 +112,59 @@ export default function POSPage() {
 
   useEffect(() => {
     dispatch(getProducts());
+    dispatch(fetchCategories());
   }, [dispatch]);
+
+  const addToCart = (product) => {
+    const price =
+      product.variants?.[0]?.sellingPrice || product.variants?.[0]?.mrp || 0;
+
+    setCart((prev) => {
+      const existing = prev.find((item) => item._id === product._id);
+
+      if (existing) {
+        return prev.map((item) =>
+          item._id === product._id
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+              }
+            : item,
+        );
+      }
+
+      return [
+        ...prev,
+        {
+          _id: product._id,
+          name: product.productName,
+          price,
+          quantity: 1,
+        },
+      ];
+    });
+  };
+
+  const removeFromCart = (product) => {
+    setCart((prev) => {
+      const existing = prev.find((item) => item._id === product._id);
+
+      if (!existing) return prev;
+
+      if (existing.quantity === 1) {
+        return prev.filter((item) => item._id !== product._id);
+      }
+
+      return prev.map((item) =>
+        item._id === product._id
+          ? {
+              ...item,
+              quantity: item.quantity - 1,
+            }
+          : item,
+      );
+    });
+  };
 
   return (
     <div className="pos-page">
@@ -133,15 +182,17 @@ export default function POSPage() {
           </div>
 
           <div className="category-list">
-            {CATEGORIES.map((category) => (
+            {categories?.map((category) => (
               <button
-                key={category}
+                key={category._id}
                 className={`category-pill ${
-                  activeCategory === category ? "category-pill--active" : ""
+                  activeCategory === category.categoryName
+                    ? "category-pill--active"
+                    : ""
                 }`}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => setActiveCategory(category.categoryName)}
               >
-                {category}
+                {category.categoryName}
               </button>
             ))}
           </div>
@@ -162,14 +213,35 @@ export default function POSPage() {
 
                 const matchesCategory =
                   activeCategory === "All Items" ||
-                  product.category?.categoryName === activeCategory;
+                  product.category?.categoryName?.trim().toLowerCase() ===
+                    activeCategory.trim().toLowerCase();
 
                 return matchesSearch && matchesCategory;
               })
               .map((product) => (
-                <button key={product.id} className="product-card">
+                <div key={product._id} className="product-card">
+                  <div className="qty-overlay">
+                    <button
+                      className="qty-btn"
+                      onClick={() => removeFromCart(product)}
+                    >
+                      -
+                    </button>
+
+                    <button
+                      className="qty-btn"
+                      onClick={() => addToCart(product)}
+                    >
+                      +
+                    </button>
+                  </div>
+
                   <div className="product-image">
-                    <img src={product.image} alt={product.productName} />
+                    {product.image ? (
+                      <img src={product.image} alt={product.productName} />
+                    ) : (
+                      <img src={noImage} alt="No Image" />
+                    )}
                   </div>
 
                   <p className="product-name">{product.productName}</p>
@@ -180,12 +252,11 @@ export default function POSPage() {
                       product.variants?.[0]?.mrp ??
                       0}
                   </p>
-                </button>
+                </div>
               ))}
           </div>
         </div>
 
-        {/* Quick actions */}
         <div className="quick-actions-card">
           <h3 className="quick-actions-title">Quick Actions</h3>
           <div className="quick-actions-grid">
@@ -211,9 +282,6 @@ export default function POSPage() {
         <div className="bill-card">
           <div className="bill-header">
             <h2 className="bill-title">Current Bill</h2>
-            <button className="bill-menu-btn" aria-label="More options">
-              <Icon name="dots" />
-            </button>
           </div>
 
           <div className="bill-row bill-row--customer">
@@ -222,13 +290,24 @@ export default function POSPage() {
           </div>
           <hr className="bill-divider" />
 
-          <div className="bill-row">
-            <span className="bill-label">{billItems[0].label}</span>
-            <span className="bill-value">₹{billItems[0].amount}</span>
-          </div>
+          {cart.length === 0 ? (
+            <p className="empty-cart">No Products Added</p>
+          ) : (
+            cart.map((item) => (
+              <div className="bill-row" key={item._id}>
+                <span className="bill-label">
+                  {item.name} × {item.quantity}
+                </span>
+
+                <span className="bill-value">
+                  ₹{(item.price * item.quantity).toFixed(2)}
+                </span>
+              </div>
+            ))
+          )}
           <div className="bill-row">
             <span className="bill-label">GST (5%)</span>
-            <span className="bill-value">₹{gstAmount.toFixed(1)}</span>
+            <span className="bill-value">₹{gstAmount.toFixed(2)}</span>
           </div>
           <div className="bill-row">
             <span className="bill-label">Customer</span>
@@ -245,7 +324,7 @@ export default function POSPage() {
             </span>
           </div>
 
-          <div className="received-amount">
+          {/* <div className="received-amount">
             <label className="bill-label" htmlFor="received-amount-input">
               Received Amount
             </label>
@@ -256,12 +335,12 @@ export default function POSPage() {
               value={receivedAmount}
               onChange={(e) => setReceivedAmount(e.target.value)}
             />
-          </div>
+          </div> */}
 
-          <div className="return-amount">
+          {/* <div className="return-amount">
             <span className="return-label">Return Amount</span>
             <span className="return-value">₹{returnAmount.toFixed(2)}</span>
-          </div>
+          </div> */}
 
           <button className="pay-btn" type="button">
             <Icon name="printer" />

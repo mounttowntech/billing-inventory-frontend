@@ -44,7 +44,7 @@
 details summary {
   list-style: none;
   cursor: pointer;
-  padding: 12px 14px;
+  padding: 10px 14px;
   display: flex;
   margin-bottom: 4px;
   align-items: center;
@@ -82,14 +82,19 @@ details summary::-webkit-details-marker {
 }
 
 details summary::after {
-  content: "▸";
-  font-size: 24px;
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--sidebar-text);
+  border-bottom: 2px solid var(--sidebar-text);
+  transform: rotate(45deg);
   transition: transform 0.3s ease;
-  padding:5px 0px 0px 0px;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 details[open] summary::after {
-  transform: rotate(90deg);
+  transform: rotate(-135deg);
 }
 
 details a {
