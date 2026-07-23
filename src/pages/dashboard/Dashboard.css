@@ -422,6 +422,21 @@ tbody tr:last-child td {
   font-size: 15px;
 }
 
+form.dashboard-filter {
+    display: flex;
+    padding: 10px;
+    gap: 15px;
+}
+
+button.filter-apply-btn {
+    height: 41px;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    padding: 10px;
+    left: 0;
+}
+
 /* ============================================================
    RESPONSIVE
 ============================================================ */

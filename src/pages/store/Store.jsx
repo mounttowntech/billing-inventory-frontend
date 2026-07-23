@@ -320,6 +320,7 @@ const Store = () => {
         <table className="store-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>Store Code</th>
               <th>Store Name</th>
               <th>GST Number</th>
@@ -347,6 +348,7 @@ const Store = () => {
             ) : (
               filteredStores.map((store) => (
                 <tr key={store._id}>
+                  <td>{indexOfFirst + filteredStores.indexOf(store) + 1}</td>
                   <td>{store.storeCode}</td>
 
                   <td>{store.storeName}</td>

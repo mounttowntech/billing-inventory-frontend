@@ -50,10 +50,10 @@ body {
   justify-content: space-between;
 }
 
-.page-content {
+/* .page-content {
   flex: 1;
   padding: 20px;
-}
+} */
 
 .footer {
   background: #fff;

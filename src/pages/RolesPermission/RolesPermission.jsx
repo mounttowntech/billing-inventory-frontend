@@ -154,8 +154,9 @@ const RolesPermission = () => {
       <table className="roles-table">
         <thead>
           <tr>
+            <th>#</th>
             <th>Role Name</th>
-            <th>Permissions</th>
+            {/* <th>Permissions</th> */}
             <th>Created At</th>
             <th>Actions</th>
           </tr>
@@ -165,9 +166,10 @@ const RolesPermission = () => {
           {roles?.length > 0 ? (
             roles.map((role) => (
               <tr key={role._id}>
+                <td>{roles.indexOf(role) + 1}</td>
                 <td>{role.roleName}</td>
 
-                <td>
+                {/* <td>
                   {role.permissions?.map((permission, index) => (
                     <div key={index} className="permission-row">
                       <strong>{permission.module}</strong> :{" "}
@@ -181,7 +183,7 @@ const RolesPermission = () => {
                         .join(", ")}
                     </div>
                   ))}
-                </td>
+                </td> */}
 
                 <td>{new Date(role.createdAt).toLocaleString("en-IN")}</td>
 

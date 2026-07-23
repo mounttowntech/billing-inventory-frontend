@@ -144,6 +144,7 @@ const Colors = () => {
       <table className="colors-table">
         <thead>
           <tr>
+            <th>#</th>
             <th>Color Code</th>
             <th>Color Name</th>
             <th>Hex Code</th>
@@ -157,6 +158,7 @@ const Colors = () => {
           {filteredColors.length > 0 ? (
             filteredColors.map((color) => (
               <tr key={color._id}>
+                <td>{colors.indexOf(color) + 1}</td>
                 <td>{color.colorCode}</td>
                 <td>{color.colorName}</td>
                 <td>{color.hexCode}</td>

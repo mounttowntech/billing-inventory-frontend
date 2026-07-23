@@ -103,6 +103,7 @@ const ProductList = () => {
           <table className="product-table">
             <thead>
               <tr className="product-table-wrapper">
+                <th>#</th>
                 <th>productCode</th>
                 <th>Image</th>
                 <th>productName</th>
@@ -119,6 +120,7 @@ const ProductList = () => {
               {currentProducts.map((product, index) => (
                 <>
                   <tr key={product?._id ?? index}>
+                    <td>{indexOfFirst + index + 1}</td>
                     <td>{product.productCode}</td>
                     <td>
                       {product.image ? (

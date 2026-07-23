@@ -31,7 +31,7 @@ const AuditLog = () => {
   );
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
+  const itemsPerPage = 5;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentAuditLogs = auditLogs.slice(indexOfFirst, indexOfLast);
@@ -192,6 +192,7 @@ const AuditLog = () => {
         <table className="auditlog-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>User</th>
               <th>Module</th>
               <th>Action</th>
@@ -208,6 +209,7 @@ const AuditLog = () => {
             {filteredAuditLogs?.length > 0 ? (
               filteredAuditLogs.map((log) => (
                 <tr key={log._id}>
+                  <td>{indexOfFirst + filteredAuditLogs.indexOf(log) + 1}</td>
                   <td>
                     {log.user
                       ? `${log.user.firstName} ${log.user.lastName}`

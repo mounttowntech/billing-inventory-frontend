@@ -262,6 +262,7 @@ const Supplier = () => {
           <table className="supplier-table">
             <thead>
               <tr>
+                <th>#</th>
                 <th>Supplier Code</th>
                 <th>Supplier Name</th>
                 <th>Contact Person</th>
@@ -278,6 +279,7 @@ const Supplier = () => {
               {filteredSuppliers.length > 0 ? (
                 filteredSuppliers.map((supplier) => (
                   <tr key={supplier._id}>
+                    <td>{indexOfFirst + filteredSuppliers.indexOf(supplier) + 1}</td>
                     <td>{supplier.supplierCode}</td>
                     <td>{supplier.supplierName}</td>
                     <td>{supplier.contactPerson}</td>

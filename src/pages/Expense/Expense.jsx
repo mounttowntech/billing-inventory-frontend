@@ -31,7 +31,7 @@ const Expense = () => {
   const [editingId, setEditingId] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1;
+  const itemsPerPage = 5;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentExpenses = expenses.slice(indexOfFirst, indexOfLast);
@@ -240,6 +240,7 @@ const Expense = () => {
         <table className="expense-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>Expense No</th>
               <th>Title</th>
               <th>Category</th>
@@ -266,6 +267,7 @@ const Expense = () => {
             ) : (
               currentExpenses.map((expense) => (
                 <tr key={expense._id}>
+                  <td>{indexOfFirst + currentExpenses.indexOf(expense) + 1}</td>
                   <td>{expense.expenseNo}</td>
 
                   <td>{expense.title}</td>
