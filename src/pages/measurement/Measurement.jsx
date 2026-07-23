@@ -343,6 +343,7 @@ const Measurement = () => {
         <table className="purchase-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>Customer</th>
               <th>Phone</th>
               <th>Chest</th>
@@ -374,6 +375,7 @@ const Measurement = () => {
             ) : (
               filteredMeasurements.map((measurement) => (
                 <tr key={measurement._id}>
+                  <td>{measurementData.indexOf(measurement) + 1}</td>
                   <td>{measurement.customer?.customerName || "-"}</td>
 
                   <td>{measurement.customer?.phone || "-"}</td>
