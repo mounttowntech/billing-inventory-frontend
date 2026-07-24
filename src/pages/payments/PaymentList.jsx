@@ -37,8 +37,9 @@ export default function PaymentList() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (authPayments?.data) {
-      setPayments(authPayments.data);
+    console.log("data has been loaded in console: ", authPayments);
+    if (authPayments) {
+      setPayments(authPayments);
     }
   }, [authPayments]);
 

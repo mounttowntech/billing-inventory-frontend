@@ -1,7 +1,19 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllPayments, createPaymentApi, updatePaymentApi, deletePaymentApi  } from "./paymentService";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-//get all payments
+import {
+  getAllPayments,
+  getPaymentByIdApi,
+  createPaymentApi,
+  verifyPaymentApi,
+  refundPaymentApi,
+  updatePaymentApi,
+  deletePaymentApi,
+} from "./paymentService";
+
+// ==========================================
+// Get All
+// ==========================================
+
 export const getPayments = createAsyncThunk(
   "payment/getPayments",
   async (_, thunkAPI) => {
@@ -9,11 +21,32 @@ export const getPayments = createAsyncThunk(
       return await getAllPayments();
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to fetch payments"
+        error.response?.data?.message || error.message,
       );
     }
-  }
+  },
 );
+
+// ==========================================
+// Get By Id
+// ==========================================
+
+export const getPaymentById = createAsyncThunk(
+  "payment/getPaymentById",
+  async (id, thunkAPI) => {
+    try {
+      return await getPaymentByIdApi(id);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message,
+      );
+    }
+  },
+);
+
+// ==========================================
+// Create Payment
+// ==========================================
 
 export const createPayment = createAsyncThunk(
   "payment/createPayment",
@@ -22,13 +55,49 @@ export const createPayment = createAsyncThunk(
       return await createPaymentApi(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to create payment"
+        error.response?.data?.message || error.message,
       );
     }
-  }
+  },
 );
 
+// ==========================================
+// Verify Payment
+// ==========================================
 
+export const verifyPayment = createAsyncThunk(
+  "payment/verifyPayment",
+  async (orderId, thunkAPI) => {
+    try {
+      return await verifyPaymentApi(orderId);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message,
+      );
+    }
+  },
+);
+
+// ==========================================
+// Refund Payment
+// ==========================================
+
+export const refundPayment = createAsyncThunk(
+  "payment/refundPayment",
+  async ({ paymentId, refundAmount }, thunkAPI) => {
+    try {
+      return await refundPaymentApi(paymentId, refundAmount);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message,
+      );
+    }
+  },
+);
+
+// ==========================================
+// Update
+// ==========================================
 
 export const updatePayment = createAsyncThunk(
   "payment/updatePayment",
@@ -37,88 +106,122 @@ export const updatePayment = createAsyncThunk(
       return await updatePaymentApi(id, data);
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update payment"
+        error.response?.data?.message || error.message,
       );
     }
-  }
+  },
 );
 
-//delete payment
+// ==========================================
+// Delete
+// ==========================================
+
 export const deletePayment = createAsyncThunk(
   "payment/deletePayment",
   async (id, thunkAPI) => {
     try {
-      return await deletePaymentApi(id);
+      await deletePaymentApi(id);
+      return id;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to delete payment"
+        error.response?.data?.message || error.message,
       );
     }
-  }
+  },
 );
+
+// ==========================================
+// Slice
+// ==========================================
+
+const initialState = {
+  payments: [],
+  payment: null,
+  loading: false,
+  error: null,
+};
 
 const paymentSlice = createSlice({
   name: "payment",
-  initialState: {
-    payments: [],
-    loading: false,
-    error: null,
-  },
+  initialState,
 
   reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.token = null;
-      localStorage.removeItem("billing_user");
-      localStorage.removeItem("billing_token");
+    clearPayment(state) {
+      state.payment = null;
+      state.error = null;
     },
   },
 
   extraReducers: (builder) => {
-    builder.addCase(getPayments.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+    builder
+
+      // ============================
+      // Get Payments
+      // ============================
+
       .addCase(getPayments.fulfilled, (state, action) => {
         state.loading = false;
-        state.payments = action.payload;
+        state.payments = action.payload.data || [];
       })
-      .addCase(getPayments.rejected, (state, action) => {
+
+      // ============================
+      // Get Payment By Id
+      // ============================
+
+      .addCase(getPaymentById.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-      }).addCase(updatePayment.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.payment = action.payload.data;
       })
-      .addCase(updatePayment.fulfilled, (state) => {
+
+      // ============================
+      // Create Payment
+      // ============================
+
+      .addCase(createPayment.fulfilled, (state, action) => {
         state.loading = false;
+        state.payment = action.payload.data;
       })
-      .addCase(updatePayment.rejected, (state, action) => {
+
+      // ============================
+      // Verify Payment
+      // ============================
+
+      .addCase(verifyPayment.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-      }).addCase(deletePayment.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.payment = action.payload.data;
       })
-      .addCase(deletePayment.fulfilled, (state) => {
+
+      // ============================
+      // Refund Payment
+      // ============================
+
+      .addCase(refundPayment.fulfilled, (state, action) => {
         state.loading = false;
+        state.payment = action.payload.data;
       })
-      .addCase(deletePayment.rejected, (state, action) => {
+
+      // ============================
+      // Update Payment
+      // ============================
+
+      .addCase(updatePayment.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-      }).addAsyncThunk(createPayment.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.payment = action.payload.data;
       })
-      .addCase(createPayment.fulfilled, (state) => {
+
+      // ============================
+      // Delete Payment
+      // ============================
+
+      .addCase(deletePayment.fulfilled, (state, action) => {
         state.loading = false;
-      })
-      .addCase(createPayment.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.payments = state.payments.filter(
+          (payment) => payment._id !== action.payload,
+        );
       });
   },
 });
 
-export const { logout } = paymentSlice.actions;
+export const { clearPayment } = paymentSlice.actions;
+
 export default paymentSlice.reducer;

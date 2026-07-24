@@ -12,6 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../../features/product/productSlice";
 import { fetchCategories } from "../../features/category/categorySlice";
 import noImage from "../../assets/no-image.png";
+import { load } from "@cashfreepayments/cashfree-js";
+import {
+  createPayment,
+  verifyPayment,
+} from "../../features/payment/paymentSlice";
 
 const QUICK_ACTIONS = [
   { id: "hold", label: "Hold Bills", icon: "pause", variant: "blue" },
@@ -89,6 +94,7 @@ const Icon = ({ name, className = "" }) => {
 };
 
 export default function POSPage() {
+  const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
   const [activeCategory, setActiveCategory] = useState("All Items");
   const [searchTerm, setSearchTerm] = useState("");
   const [receivedAmount, setReceivedAmount] = useState("500");
@@ -166,6 +172,59 @@ export default function POSPage() {
     });
   };
 
+  const handlePayment = async () => {
+    try {
+      if (cart.length === 0) {
+        alert("Cart is empty");
+        return;
+      }
+
+      const cashfree = await load({
+        mode: "sandbox",
+      });
+
+      const result = await dispatch(
+        createPayment({
+          type: "sale",
+
+          amount: grandTotal,
+
+          customer: selectedCustomer?._id,
+
+          customerName: selectedCustomer?.customerName || "Walk-in",
+
+          customerEmail: selectedCustomer?.email || "customer@gmail.com",
+
+          customerPhone: selectedCustomer?.phone || "9999999999",
+
+          remarks: "POS Billing",
+        }),
+      ).unwrap();
+
+      const paymentSessionId = result.data.paymentSessionId;
+
+      const orderId = result.data.cashfreeOrderId;
+
+      const checkout = await cashfree.checkout({
+        paymentSessionId,
+        redirectTarget: "_modal",
+      });
+
+      console.log(checkout);
+
+      const verify = await dispatch(verifyPayment(orderId)).unwrap();
+
+      if (verify.data.paymentStatus === "completed") {
+        alert("Payment Successful");
+      } else {
+        alert("Payment Failed");
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error.message);
+    }
+  };
+
   return (
     <div className="pos-page">
       <section className="products-panel">
@@ -238,7 +297,10 @@ export default function POSPage() {
 
                   <div className="product-image">
                     {product.image ? (
-                      <img src={product.image} alt={product.productName} />
+                      <img
+                        src={`${IMAGE_BASE_URL}/${product.image}`}
+                        alt={product.productName}
+                      />
                     ) : (
                       <img src={noImage} alt="No Image" />
                     )}
@@ -324,25 +386,7 @@ export default function POSPage() {
             </span>
           </div>
 
-          {/* <div className="received-amount">
-            <label className="bill-label" htmlFor="received-amount-input">
-              Received Amount
-            </label>
-            <input
-              id="received-amount-input"
-              type="number"
-              className="received-input"
-              value={receivedAmount}
-              onChange={(e) => setReceivedAmount(e.target.value)}
-            />
-          </div> */}
-
-          {/* <div className="return-amount">
-            <span className="return-label">Return Amount</span>
-            <span className="return-value">₹{returnAmount.toFixed(2)}</span>
-          </div> */}
-
-          <button className="pay-btn" type="button">
+          <button className="pay-btn" type="button" onClick={handlePayment}>
             <Icon name="printer" />
             <span>Pay &amp; Print Bill</span>
           </button>
