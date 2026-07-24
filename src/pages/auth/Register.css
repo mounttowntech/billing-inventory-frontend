@@ -26,7 +26,6 @@ body {
   text-decoration: none;
   padding: 12px;
   border-radius: 8px;
-  margin-bottom: 5px;
 }
 
 .sidebar a.active,
@@ -50,10 +49,10 @@ body {
   justify-content: space-between;
 }
 
-.page-content {
+/* .page-content {
   flex: 1;
   padding: 20px;
-}
+} */
 
 .footer {
   background: #fff;

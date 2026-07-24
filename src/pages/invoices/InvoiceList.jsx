@@ -296,6 +296,7 @@ const Invoice = () => {
         <table className="purchase-table">
           <thead>
             <tr>
+              <th>#</th>
               <th className="supplier-column">Invoice No</th>
               <th className="supplier-column-sku">SKU Code</th>
               <th className="supplier-column">Product Name</th>
@@ -327,6 +328,7 @@ const Invoice = () => {
             ) : (
               filteredInvoices.map((invoice) => (
                 <tr key={invoice._id}>
+                  <td>{indexOfFirst + filteredInvoices.indexOf(invoice) + 1}</td>
                   <td>{invoice.invoiceNo}</td>
 
                   <td className="supplier-column-sku">

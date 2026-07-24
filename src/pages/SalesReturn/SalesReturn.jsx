@@ -167,6 +167,7 @@ const SalesReturn = () => {
         <table className="salesreturn-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>Invoice</th>
               <th>Customer</th>
               <th>Return Date</th>
@@ -180,6 +181,7 @@ const SalesReturn = () => {
             {currentSalesReturns?.length > 0 ? (
               currentSalesReturns.map((item) => (
                 <tr key={item._id}>
+                  <td>{indexOfFirst + currentSalesReturns.indexOf(item) + 1}</td>
                   <td>
                     {typeof item.invoice === "object"
                       ? item.invoice?.invoiceNumber || item.invoice?._id

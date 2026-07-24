@@ -1,46 +1,69 @@
 import API from "../../services/api";
 
+// ==========================================
+// Get All Payments
+// ==========================================
 
-//get all payments
 export const getAllPayments = async () => {
-  try {
   const response = await API.get("/payments/all");
   return response.data;
-  } catch (error) {
-    console.log("error_response", error.response);
-    throw new Error("Failed to fetch payments");
-  }
 };
 
-//create payment
+// ==========================================
+// Get Payment By Id
+// ==========================================
+
+export const getPaymentByIdApi = async (id) => {
+  const response = await API.get(`/payments/${id}`);
+  return response.data;
+};
+
+// ==========================================
+// Create Cashfree Payment
+// ==========================================
+
 export const createPaymentApi = async (data) => {
-  try {
-    const response = await API.post("/payments/create", data);
-    return response.data;
-  } catch (error) {
-    console.log("error_response", error.response);
-    throw new Error("Failed to create payment");
-  }
+  const response = await API.post("/payments/create", data);
+  return response.data;
 };
 
-//update payment
+// ==========================================
+// Verify Payment
+// ==========================================
+
+export const verifyPaymentApi = async (orderId) => {
+  const response = await API.post(`/payments/verify/${orderId}`);
+  return response.data;
+};
+
+// ==========================================
+// Refund Payment
+// ==========================================
+
+export const refundPaymentApi = async (paymentId, refundAmount) => {
+  const response = await API.post(`/payments/refund/${paymentId}`, {
+    refundAmount,
+  });
+
+  return response.data;
+};
+
+// ==========================================
+// Update Payment
+// ==========================================
+
 export const updatePaymentApi = async (id, data) => {
-  try {
-    const response = await API.put(`/payments/update/${id}`, data);
-    return response.data;
-  } catch (error) {
-    console.log("error_response", error.response);
-    throw new Error("Failed to update payment");
-  }
+  const response = await API.put(`/payments/${id}`, data);
+
+  return response.data;
 };
 
-//delete payment
+// ==========================================
+// Delete Payment
+// ==========================================
+
 export const deletePaymentApi = async (id) => {
-  try {
-    const response = await API.delete(`/payments/delete/${id}`);
-    return response.data;
-  } catch (error) {
-    console.log("error_response", error.response);
-    throw new Error("Failed to delete payment");
-  }
+  const response = await API.delete(`/payments/${id}`);
+
+  return response.data;
 };

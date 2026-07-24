@@ -256,6 +256,7 @@ const Purchase = () => {
         <table className="purchase-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>Purchase No</th>
               <th className="supplier-actions">Supplier Code</th>
               <th className="supplier-column">Supplier Name</th>
@@ -274,6 +275,7 @@ const Purchase = () => {
             {currentPurchases.length > 0 ? (
               currentPurchases.map((purchase) => (
                 <tr key={purchase._id}>
+                  <td>{indexOfFirst + currentPurchases.indexOf(purchase) + 1}</td>
                   <td>{purchase.purchaseNo}</td>
                   <td>{purchase.supplier?.supplierCode}</td>
                   <td className="supplier-column">

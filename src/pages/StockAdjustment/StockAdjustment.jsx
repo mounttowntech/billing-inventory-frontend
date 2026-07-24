@@ -368,6 +368,7 @@ const StockAdjustment = () => {
         <table className="stock-adjustment-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>Adjustment No</th>
               <th>Product</th>
               <th>SKU Code</th>
@@ -393,6 +394,7 @@ const StockAdjustment = () => {
             ) : (
               currentRows.map((item) => (
                 <tr key={item._id}>
+                  <td>{indexOfFirstRow + currentRows.indexOf(item) + 1}</td>
                   <td>{item.adjustmentNo}</td>
                   <td>{item.product?.productName || "-"}</td>
                   <td>{item.skuCode}</td>
