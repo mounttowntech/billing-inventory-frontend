@@ -6,7 +6,6 @@ import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ProductList from "../pages/products/ProductList";
-import ProductForm from "../pages/products/ProductForm";
 import CustomerList from "../pages/customers/CustomerList";
 import CustomerForm from "../pages/customers/CustomerForm";
 import POSBilling from "../pages/billing/POSBilling";
@@ -62,7 +61,6 @@ const AppRoutes = () => {
         <Route index element={<DashboardRedirect />} />
         <Route path="admin-dashboard" element={<Dashboard />} />
         <Route path="products" element={<ProductList />} />
-        <Route path="products/create" element={<ProductForm />} />
         <Route path="customers" element={<CustomerList />} />
         <Route path="customers/create" element={<CustomerForm />} />
         <Route path="billing" element={<POSBilling />} />

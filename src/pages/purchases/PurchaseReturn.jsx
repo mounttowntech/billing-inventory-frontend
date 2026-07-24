@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
 
 import "./PurchaseReturn.css";
 
@@ -15,16 +14,13 @@ import { getPurchases } from "../../features/purchase/purchaseSlice";
 import { getSuppliers } from "../../features/supplier/supplierSlice";
 
 import SearchBox from "../../components/common/SearchBox";
-import Input from "../../components/common/Input";
-import Select from "../../components/common/Select";
 
 import {
   AddButton,
   EditButton,
   DeleteButton,
-  SaveButton,
-  CancelButton,
 } from "../../components/Common/Button";
+import PurchaseReturnForm from "./PurchaseReturnForm";
 
 const PurchaseReturn = () => {
   const dispatch = useDispatch();
@@ -35,19 +31,12 @@ const PurchaseReturn = () => {
   const { purchases } = useSelector((state) => state.purchase);
   const { suppliers } = useSelector((state) => state.supplier);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
   const [search, setSearch] = useState("");
 
   const [showModal, setShowModal] = useState(false);
 
   const [editingId, setEditingId] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -84,26 +73,21 @@ const PurchaseReturn = () => {
   const totalPages = Math.ceil(filteredPurchaseReturns.length / entriesPerPage);
 
   const openAddModal = () => {
-    reset();
     setEditingId(null);
+    setEditingItem(null);
     setShowModal(true);
   };
 
   const handleEdit = (item) => {
-    console.log("Editing Purchase Return:", item);
     setEditingId(item._id);
-
-    setValue("returnNo", item.returnNo);
-    setValue("purchase", item.purchase ? item.purchase._id : "");
-    setValue("supplier", item.supplier ? item.supplier._id : "");
-    setValue(
-      "returnDate",
-      item.returnDate ? item.returnDate.substring(0, 10) : "",
-    );
-    setValue("refundAmount", item.refundAmount);
-    setValue("reason", item.reason);
-
+    setEditingItem(item);
     setShowModal(true);
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setEditingId(null);
+    setEditingItem(null);
   };
 
   const handleDelete = (id) => {
@@ -112,7 +96,7 @@ const PurchaseReturn = () => {
     }
   };
 
-  const onSubmit = (data) => {
+  const handleFormSubmit = (data) => {
     if (editingId) {
       dispatch(
         updatePurchaseReturn({
@@ -125,9 +109,8 @@ const PurchaseReturn = () => {
     }
     dispatch(getPurchasesReturn());
     setShowModal(false);
-    reset();
     setEditingId(null);
-    console.log(data);
+    setEditingItem(null);
   };
 
   const purchaseOptions = purchases.map((purchase) => ({
@@ -200,21 +183,15 @@ const PurchaseReturn = () => {
                 currentPurchaseReturns.map((item, index) => (
                   <tr key={item._id}>
                     <td>{indexOfFirst + index + 1}</td>
-
                     <td>{item.returnNo}</td>
-
                     <td>{item.purchase?.purchaseNo || "-"}</td>
-
                     <td>{item.supplier?.supplierName || "-"}</td>
-
                     <td>
                       {item.returnDate
                         ? new Date(item.returnDate).toLocaleDateString()
                         : "-"}
                     </td>
-
                     <td>₹ {item.refundAmount}</td>
-
                     <td>{item.reason}</td>
 
                     <td className="action-buttons">
@@ -255,110 +232,14 @@ const PurchaseReturn = () => {
       </div>
 
       {showModal && (
-        <div
-          className="modal-overlay"
-          onClick={() => {
-            setShowModal(false);
-            setEditingId(null);
-            reset();
-          }}
-        >
-          <div
-            className="purchase-return-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h3>
-                {editingId ? "Edit Purchase Return" : "Add Purchase Return"}
-              </h3>
-            </div>
-
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="form-grid">
-                <Input
-                  label="Return No"
-                  name="returnNo"
-                  register={register}
-                  error={errors.returnNo}
-                  validation={{
-                    required: "Return No is required",
-                  }}
-                />
-
-                <Select
-                  label="Purchase"
-                  name="purchase"
-                  register={register}
-                  error={errors.purchase}
-                  options={purchaseOptions}
-                  validation={{
-                    required: "Purchase is required",
-                  }}
-                />
-
-                <Select
-                  label="Supplier"
-                  name="supplier"
-                  register={register}
-                  error={errors.supplier}
-                  options={supplierOptions}
-                  validation={{
-                    required: "Supplier is required",
-                  }}
-                />
-
-                <Input
-                  type="date"
-                  label="Return Date"
-                  name="returnDate"
-                  register={register}
-                  error={errors.returnDate}
-                  validation={{
-                    required: "Return Date is required",
-                  }}
-                />
-
-                <Input
-                  type="number"
-                  label="Refund Amount"
-                  name="refundAmount"
-                  register={register}
-                  error={errors.refundAmount}
-                  validation={{
-                    required: "Refund Amount is required",
-                  }}
-                />
-
-                <Input
-                  label="Reason"
-                  name="reason"
-                  register={register}
-                  error={errors.reason}
-                  validation={{
-                    required: "Reason is required",
-                  }}
-                />
-              </div>
-
-              <div className="modal-buttons">
-                <CancelButton
-                  type="button"
-                  onClick={() => {
-                    setShowModal(false);
-                    setEditingId(null);
-                    reset();
-                  }}
-                >
-                  Cancel
-                </CancelButton>
-
-                <SaveButton type="submit">
-                  {editingId ? "Update" : "Save"}
-                </SaveButton>
-              </div>
-            </form>
-          </div>
-        </div>
+        <PurchaseReturnForm
+          item={editingItem}
+          editId={editingId}
+          purchaseOptions={purchaseOptions}
+          supplierOptions={supplierOptions}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCancel}
+        />
       )}
     </>
   );

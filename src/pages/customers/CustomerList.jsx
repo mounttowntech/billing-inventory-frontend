@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./CustomerList.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,13 +12,12 @@ import {
   AddButton,
   EditButton,
   DeleteButton,
-  CancelButton,
-  PreviousButton,
   NextButton,
 } from "../../components/Common/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CustomerValidation from "../../validations/CustomerValidation";
+import CustomerForm from "./CustomerForm";
 
 const Customer = () => {
   const dispatch = useDispatch();
@@ -98,45 +97,17 @@ const Customer = () => {
         </AddButton>
       </div>
 
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>{editId ? "Update Customer" : "Add Customer"}</h2>
-
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <input
-                placeholder="Customer Code"
-                {...register("customerCode")}
-              />
-              <p>{errors.customerCode?.message}</p>
-
-              <input
-                placeholder="Customer Name"
-                {...register("customerName")}
-              />
-              <p>{errors.customerName?.message}</p>
-
-              <input placeholder="Phone" {...register("phone")} />
-              <p>{errors.phone?.message}</p>
-
-              <input placeholder="Email" {...register("email")} />
-              <p>{errors.email?.message}</p>
-
-              <button type="submit">{editId ? "Update" : "Save"}</button>
-
-              <CancelButton
-                onClick={() => {
-                  setShowModal(false);
-                  setEditId(null);
-                  reset();
-                }}
-              >
-                Cancel
-              </CancelButton>
-            </form>
-          </div>
-        </div>
-      )}
+      <CustomerForm
+        showModal={showModal}
+        setShowModal={setShowModal}
+        editId={editId}
+        setEditId={setEditId}
+        register={register}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        errors={errors}
+        reset={reset}
+      />
 
       <table border="1" className="customer-table">
         <thead>

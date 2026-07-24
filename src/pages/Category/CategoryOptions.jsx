@@ -11,13 +11,9 @@ import {
   AddButton,
   EditButton,
   DeleteButton,
-  SaveButton,
-  CancelButton,
 } from "../../components/Common/Button";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { categoryValidation } from "../../validations/categoryValidation";
 import SearchBox from "../../components/Common/SearchBox";
+import CategoryForm from "./CategoryForm";
 
 const CategoryOptions = ({ value, onChange }) => {
   const dispatch = useDispatch();
@@ -30,36 +26,14 @@ const CategoryOptions = ({ value, onChange }) => {
   const totalPages =
     categories.length > 0 ? Math.ceil(categories.length / itemsPerPage) : 1;
   const [showModal, setShowModal] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [editingCategory, setEditingCategory] = useState(null);
 
   const [search, setSearch] = useState("");
 
   const filteredCategories = currentCategories.filter((category) =>
     category.categoryName.toLowerCase().includes(search.toLowerCase()),
   );
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(categoryValidation),
-    defaultValues: {
-      categoryName: "",
-    },
-  });
-  const [editId, setEditId] = useState(null);
-
-  const handleEdit = (category) => {
-    setEditId(category._id);
-
-    reset({
-      categoryName: category.categoryName,
-    });
-    setValue("categoryName", category.categoryName);
-    setShowModal(true);
-  };
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -74,7 +48,7 @@ const CategoryOptions = ({ value, onChange }) => {
     }
   }, [categories, currentPage]);
 
-  const onSubmit = (data) => {
+  const handleFormSubmit = (data) => {
     if (editId) {
       dispatch(
         updateCategory({
@@ -83,17 +57,34 @@ const CategoryOptions = ({ value, onChange }) => {
         }),
       ).then(() => {
         dispatch(fetchCategories());
-        reset();
         setEditId(null);
+        setEditingCategory(null);
         setShowModal(false);
       });
     } else {
       dispatch(createCategory(data)).then(() => {
         dispatch(fetchCategories());
-        reset();
         setShowModal(false);
       });
     }
+  };
+
+  const handleEdit = (category) => {
+    setEditId(category._id);
+    setEditingCategory(category);
+    setShowModal(true);
+  };
+
+  const handleAdd = () => {
+    setEditId(null);
+    setEditingCategory(null);
+    setShowModal(true);
+  };
+
+  const handleCancel = () => {
+    setEditId(null);
+    setEditingCategory(null);
+    setShowModal(false);
   };
 
   const handleDelete = (id) => {
@@ -109,35 +100,12 @@ const CategoryOptions = ({ value, onChange }) => {
       <h2>Category Management</h2>
 
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>{editId ? "Update Category" : "Add Category"}</h2>
-
-            <input
-              type="text"
-              placeholder="Enter Category"
-              {...register("categoryName")}
-              className="category-input"
-            />
-
-            <p className="error-text">{errors.categoryName?.message}</p>
-
-            <div className="modal-buttons">
-              <SaveButton onClick={handleSubmit((data) => onSubmit(data))}>
-                {editId ? "Update" : "Add"}
-              </SaveButton>
-              <CancelButton
-                onClick={() => {
-                  reset();
-                  setEditId(null);
-                  setShowModal(false);
-                }}
-              >
-                Cancel
-              </CancelButton>
-            </div>
-          </div>
-        </div>
+        <CategoryForm
+          category={editingCategory}
+          editId={editId}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCancel}
+        />
       )}
       <br />
       <div className="category-actions">
@@ -146,13 +114,7 @@ const CategoryOptions = ({ value, onChange }) => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <AddButton
-          onClick={() => {
-            setShowModal(true);
-          }}
-        >
-          Add Category
-        </AddButton>
+        <AddButton onClick={handleAdd}>Add Category</AddButton>
       </div>
       <table border="1" cellPadding="8" width="100%" className="category-table">
         <thead>
@@ -171,7 +133,6 @@ const CategoryOptions = ({ value, onChange }) => {
 
               <td className="action-buttons">
                 <EditButton onClick={() => handleEdit(category)} />
-
                 <DeleteButton onClick={() => handleDelete(category._id)} />
               </td>
             </tr>

@@ -13,13 +13,13 @@ import {
 import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
-  SaveButton,
   PreviousButton,
   NextButton,
   CancelButton,
   EditButton,
   DeleteButton,
 } from "../../components/Common/Button";
+import SupplierForm from "./SupplierForm";
 
 const Supplier = () => {
   const dispatch = useDispatch();
@@ -136,94 +136,17 @@ const Supplier = () => {
 
       {error && <div className="supplier-error-banner">{error}</div>}
 
-      {showModal && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="supplier-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{editId ? "Edit Supplier" : "Add Supplier"}</h3>
-
-              <button className="close-btn" onClick={closeModal}>
-                ×
-              </button>
-            </div>
-
-            <form className="supplier-form" onSubmit={handleSubmit(onSubmit)}>
-              <div className="form-group">
-                <label>Supplier Name</label>
-                <input {...register("supplierName")} />
-                <span>{errors.supplierName?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Contact Person</label>
-                <input {...register("contactPerson")} />
-                <span>{errors.contactPerson?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Phone</label>
-                <input {...register("phone")} />
-                <span>{errors.phone?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Email</label>
-                <input {...register("email")} />
-                <span>{errors.email?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>GST Number</label>
-                <input {...register("gstNumber")} />
-                <span>{errors.gstNumber?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Address</label>
-                <textarea rows="3" {...register("address")} />
-                <span>{errors.address?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>City</label>
-                <input {...register("city")} />
-                <span>{errors.city?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>State</label>
-                <input {...register("state")} />
-                <span>{errors.state?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Pincode</label>
-                <input {...register("pincode")} />
-                <span>{errors.pincode?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Opening Balance</label>
-                <input type="number" {...register("openingBalance")} />
-                <span>{errors.openingBalance?.message}</span>
-              </div>
-
-              <div className="form-buttons">
-                <CancelButton onClick={closeModal}>Cancel</CancelButton>
-                <SaveButton disabled={isSubmitting || loading}>
-                  {editId
-                    ? isSubmitting || loading
-                      ? "Updating..."
-                      : "Update Supplier"
-                    : isSubmitting || loading
-                      ? "Saving..."
-                      : "Save Supplier"}
-                </SaveButton>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <SupplierForm
+        showModal={showModal}
+        closeModal={closeModal}
+        editId={editId}
+        register={register}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        errors={errors}
+        isSubmitting={isSubmitting}
+        loading={loading}
+      />
 
       {deleteTarget && (
         <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
@@ -279,7 +202,9 @@ const Supplier = () => {
               {filteredSuppliers.length > 0 ? (
                 filteredSuppliers.map((supplier) => (
                   <tr key={supplier._id}>
-                    <td>{indexOfFirst + filteredSuppliers.indexOf(supplier) + 1}</td>
+                    <td>
+                      {indexOfFirst + filteredSuppliers.indexOf(supplier) + 1}
+                    </td>
                     <td>{supplier.supplierCode}</td>
                     <td>{supplier.supplierName}</td>
                     <td>{supplier.contactPerson}</td>

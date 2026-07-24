@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import "./RolesPermission.css";
@@ -18,9 +18,8 @@ import {
   AddButton,
   EditButton,
   DeleteButton,
-  SaveButton,
-  CancelButton,
 } from "../../components/Common/Button";
+import RolesPermissionForm from "./RolesPermissionForm";
 
 const modules = [
   "Dashboard",
@@ -69,10 +68,6 @@ const RolesPermission = () => {
   useEffect(() => {
     dispatch(getRoles());
   }, [dispatch]);
-
-  if (isLoading) {
-    return <h3>Loading...</h3>;
-  }
 
   const onSubmit = (data) => {
     if (editId) {
@@ -126,6 +121,11 @@ const RolesPermission = () => {
       });
     }
   };
+
+  if (isLoading) {
+    return <h3>Loading...</h3>;
+  }
+
   return (
     <div className="roles-container">
       <h2 className="roles-header">Roles & Permissions</h2>
@@ -202,122 +202,19 @@ const RolesPermission = () => {
         </tbody>
       </table>
 
-      {showForm && (
-        <div className="modal-overlay">
-          <div className="roles-modal">
-            <div className="roles-modal-header">
-              <h3>{editId ? "Update Role" : "Add Role"}</h3>
-
-              <button className="close-btn" onClick={() => setShowForm(false)}>
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="form-group">
-                <label>Role Name</label>
-
-                <input type="text" {...register("roleName")} />
-
-                <p>{errors.roleName?.message}</p>
-              </div>
-
-              <table className="permission-table">
-                <thead>
-                  <tr>
-                    <th>Module</th>
-                    <th>Create</th>
-                    <th>Read</th>
-                    <th>Update</th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {modules.map((module, index) => (
-                    <tr key={module}>
-                      <td>{module}</td>
-
-                      <td>
-                        <Controller
-                          control={control}
-                          name={`permissions.${index}.create`}
-                          render={({ field }) => (
-                            <input
-                              type="checkbox"
-                              checked={field.value}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                          )}
-                        />
-                      </td>
-
-                      <td>
-                        <Controller
-                          control={control}
-                          name={`permissions.${index}.read`}
-                          render={({ field }) => (
-                            <input
-                              type="checkbox"
-                              checked={field.value}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                          )}
-                        />
-                      </td>
-
-                      <td>
-                        <Controller
-                          control={control}
-                          name={`permissions.${index}.update`}
-                          render={({ field }) => (
-                            <input
-                              type="checkbox"
-                              checked={field.value}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                          )}
-                        />
-                      </td>
-
-                      <td>
-                        <Controller
-                          control={control}
-                          name={`permissions.${index}.delete`}
-                          render={({ field }) => (
-                            <input
-                              type="checkbox"
-                              checked={field.value}
-                              onChange={(e) => field.onChange(e.target.checked)}
-                            />
-                          )}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <div className="roles-form-buttons">
-                <SaveButton type="submit">
-                  {editId ? "Update Role" : "Add Role"}
-                </SaveButton>
-
-                <CancelButton
-                  type="button"
-                  onClick={() => {
-                    reset();
-                    setEditId(null);
-                    setShowForm(false);
-                  }}
-                >
-                  Cancel
-                </CancelButton>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <RolesPermissionForm
+        showForm={showForm}
+        setShowForm={setShowForm}
+        modules={modules}
+        register={register}
+        control={control}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        errors={errors}
+        reset={reset}
+        setEditId={setEditId}
+        editId={editId}
+      />
     </div>
   );
 };

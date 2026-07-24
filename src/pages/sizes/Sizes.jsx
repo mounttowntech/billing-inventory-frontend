@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Sizes.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import SearchBox from "../../components/Common/SearchBox";
 import {
   getSizes,
@@ -10,16 +8,14 @@ import {
   editSize,
   removeSize,
 } from "../../features/Sizes/sizesSlice";
-import { sizesValidation } from "../../validations/SizesValidation";
 import {
   AddButton,
   EditButton,
   NextButton,
   PreviousButton,
   DeleteButton,
-  SaveButton,
-  CancelButton,
 } from "../../components/Common/Button";
+import SizeForm from "./SizeForm";
 
 const Sizes = () => {
   const dispatch = useDispatch();
@@ -27,6 +23,7 @@ const Sizes = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [editingSize, setEditingSize] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
@@ -42,23 +39,11 @@ const Sizes = () => {
     size.sizeName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(sizesValidation),
-    defaultValues: { status: true },
-  });
-
   useEffect(() => {
     dispatch(getSizes());
   }, [dispatch]);
 
-  const onSubmit = (data) => {
-    data.status = data.status === "true" || data.status === true;
+  const handleFormSubmit = (data) => {
     if (editId) {
       dispatch(editSize({ id: editId, sizeData: data })).then(() =>
         dispatch(getSizes()),
@@ -66,16 +51,27 @@ const Sizes = () => {
     } else {
       dispatch(createSize(data)).then(() => dispatch(getSizes()));
     }
-    reset({ status: true });
     setEditId(null);
+    setEditingSize(null);
     setShowForm(false);
   };
 
   const handleEdit = (item) => {
     setEditId(item._id);
+    setEditingSize(item);
     setShowForm(true);
-    Object.keys(item).forEach((k) => setValue(k, item[k]));
-    setValue("status", item.status ? "true" : "false");
+  };
+
+  const handleAdd = () => {
+    setEditId(null);
+    setEditingSize(null);
+    setShowForm(true);
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setEditId(null);
+    setEditingSize(null);
   };
 
   const handleDelete = (id) => {
@@ -95,66 +91,16 @@ const Sizes = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <AddButton
-          onClick={() => {
-            reset({ status: true });
-            setEditId(null);
-            setShowForm(true);
-          }}
-        >
-          Add Size
-        </AddButton>
+        <AddButton onClick={handleAdd}>Add Size</AddButton>
       </div>
 
       {showForm && (
-        <div className="modal-overlay" onClick={() => setShowForm(false)}>
-          <form
-            className="size-form"
-            onClick={(e) => e.stopPropagation()}
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <h2>{editId ? "Edit Size" : "Add Size"}</h2>
-
-            <input placeholder="Size Code" {...register("sizeCode")} />
-            <p>{errors.sizeCode?.message}</p>
-
-            <input placeholder="Size Name" {...register("sizeName")} />
-            <p>{errors.sizeName?.message}</p>
-
-            <input
-              type="number"
-              placeholder="Display Order"
-              {...register("displayOrder")}
-            />
-            <p>{errors.displayOrder?.message}</p>
-
-            <input type="number" placeholder="Chest" {...register("chest")} />
-            <p>{errors.chest?.message}</p>
-
-            <input type="number" placeholder="Waist" {...register("waist")} />
-            <p>{errors.waist?.message}</p>
-
-            <input type="number" placeholder="Hip" {...register("hip")} />
-            <p>{errors.hip?.message}</p>
-
-            <select {...register("status")}>
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </select>
-
-            <div className="form-buttons">
-              <SaveButton type="submit" />
-              <CancelButton
-                type="button"
-                onClick={() => {
-                  reset({ status: true });
-                  setShowForm(false);
-                  setEditId(null);
-                }}
-              />
-            </div>
-          </form>
-        </div>
+        <SizeForm
+          size={editingSize}
+          editId={editId}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCancel}
+        />
       )}
 
       <table className="size-table">

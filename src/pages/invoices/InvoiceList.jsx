@@ -17,10 +17,10 @@ import {
   PreviousButton,
   NextButton,
   EditButton,
-  SaveButton,
   DeleteButton,
 } from "../../components/Common/Button";
 import SearchBox from "../../components/Common/SearchBox";
+import InvoiceForm from "./InvoiceForm";
 
 const Invoice = () => {
   const dispatch = useDispatch();
@@ -38,7 +38,6 @@ const Invoice = () => {
   const totalPages =
     invoices.length > 0 ? Math.ceil(invoices.length / itemsPerPage) : 1;
 
-  console.log("Current Invoices:", currentInvoices);
   const filteredInvoices = currentInvoices.filter((invoice) =>
     (invoice.invoiceNo || "").toLowerCase().includes(search.toLowerCase()),
   );
@@ -52,6 +51,8 @@ const Invoice = () => {
   } = useForm({
     resolver: yupResolver(invoiceValidation),
   });
+
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -72,20 +73,12 @@ const Invoice = () => {
   );
 
   const onSubmit = async (data) => {
-    console.log("onSubmit called");
-
-    console.log("Form Data:", data);
     const invoiceData = {
       customer: data.customer,
-
       discountAmount: Number(data.discountAmount || 0),
-
       paidAmount: Number(data.paidAmount || 0),
-
       paymentMethod: data.paymentMethod,
-
       remarks: data.remarks,
-
       items: [
         {
           product: data.product,
@@ -94,7 +87,6 @@ const Invoice = () => {
         },
       ],
     };
-    console.log("Sending:", invoiceData);
 
     let result;
 
@@ -109,7 +101,6 @@ const Invoice = () => {
       result = await dispatch(createInvoice(invoiceData));
     }
 
-    console.log(result);
     if (!result.error) {
       reset();
       setEditingId(null);
@@ -117,8 +108,6 @@ const Invoice = () => {
       dispatch(fetchInvoices());
     }
   };
-
-  const [editingId, setEditingId] = useState(null);
 
   const handleEdit = (invoice) => {
     setEditingId(invoice._id);
@@ -140,7 +129,6 @@ const Invoice = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Delete this invoice?")) {
       await dispatch(deleteInvoice(id));
-
       dispatch(fetchInvoices());
     }
   };
@@ -161,136 +149,18 @@ const Invoice = () => {
         </AddButton>
       </div>
 
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="purchase-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Add Invoice</h3>
-
-              <button className="close-btn" onClick={() => setShowModal(false)}>
-                ×
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit(onSubmit)} className="purchase-form">
-              <div className="form-group">
-                <label>Customer</label>
-
-                <select {...register("customer")}>
-                  <option value="">Select Customer</option>
-
-                  {customers.map((customer) => (
-                    <option key={customer._id} value={customer._id}>
-                      {customer.customerCode} - {customer.customerName}
-                    </option>
-                  ))}
-                </select>
-
-                <span>{errors.customer?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Product</label>
-
-                <select {...register("product")}>
-                  <option value="">Select Product</option>
-
-                  {products.map((product) => (
-                    <option key={product._id} value={product._id}>
-                      {product.productName}
-                    </option>
-                  ))}
-                </select>
-
-                <span>{errors.product?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>SKU Code</label>
-
-                <select {...register("skuCode")}>
-                  <option value="">Select SKU</option>
-
-                  {selectedProduct?.variants?.map((variant) => (
-                    <option key={variant.skuCode} value={variant.skuCode}>
-                      {variant.skuCode}
-                    </option>
-                  ))}
-                </select>
-
-                <span>{errors.skuCode?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Quantity</label>
-
-                <input
-                  type="number"
-                  placeholder="Quantity"
-                  {...register("quantity")}
-                />
-
-                <span>{errors.quantity?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Discount Amount</label>
-
-                <input
-                  type="number"
-                  placeholder="Discount"
-                  defaultValue={0}
-                  {...register("discountAmount")}
-                />
-
-                <span>{errors.discountAmount?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Paid Amount</label>
-
-                <input
-                  type="number"
-                  placeholder="Paid Amount"
-                  defaultValue={0}
-                  {...register("paidAmount")}
-                />
-
-                <span>{errors.paidAmount?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Payment Method</label>
-
-                <select {...register("paymentMethod")}>
-                  <option value="">Select Payment Method</option>
-                  <option value="cash">Cash</option>
-                  <option value="upi">UPI</option>
-                  <option value="card">Card</option>
-                  <option value="wallet">Wallet</option>
-                  <option value="credit">Credit</option>
-                </select>
-
-                <span>{errors.paymentMethod?.message}</span>
-              </div>
-
-              <div className="form-group">
-                <label>Remarks</label>
-
-                <textarea
-                  rows="3"
-                  placeholder="Remarks"
-                  {...register("remarks")}
-                />
-              </div>
-
-              <SaveButton type="submit">
-                {editingId ? "Update Invoice" : "Save Invoice"}
-              </SaveButton>
-            </form>
-          </div>
-        </div>
-      )}
+      <InvoiceForm
+        showModal={showModal}
+        setShowModal={setShowModal}
+        customers={customers}
+        products={products}
+        selectedProduct={selectedProduct}
+        register={register}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        errors={errors}
+        editingId={editingId}
+      />
 
       <div className="table-wrapper">
         <table className="purchase-table">
@@ -328,7 +198,9 @@ const Invoice = () => {
             ) : (
               filteredInvoices.map((invoice) => (
                 <tr key={invoice._id}>
-                  <td>{indexOfFirst + filteredInvoices.indexOf(invoice) + 1}</td>
+                  <td>
+                    {indexOfFirst + filteredInvoices.indexOf(invoice) + 1}
+                  </td>
                   <td>{invoice.invoiceNo}</td>
 
                   <td className="supplier-column-sku">
