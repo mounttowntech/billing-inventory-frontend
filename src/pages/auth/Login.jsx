@@ -62,9 +62,14 @@ const Login = () => {
         <div className="login-actions">
           <button type="submit">Login</button>
 
-          <Link to="/register" className="register-link">
-            New to Register? Click here
-          </Link>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+            <Link to="/forget-password" className="register-link">
+              Forgot Password?
+            </Link>
+            <Link to="/register" className="register-link">
+              New to Register? Click here
+            </Link>
+          </div>
         </div>
       </form>
     </div>

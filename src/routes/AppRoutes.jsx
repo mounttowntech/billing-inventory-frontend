@@ -4,6 +4,7 @@ import ProtectedRoute from "../components/common/ProtectedRoute";
 
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
+import ForgetPassword from "../pages/forgetpassword/forgetpassword";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ProductList from "../pages/products/ProductList";
 import ProductForm from "../pages/products/ProductForm";
@@ -44,12 +45,15 @@ import StockLedger from "../pages/StockLedger/StockLedger";
 import DashboardRedirect from "../routes/DashboardRedirect";
 import PaymentList from "../pages/payments/PaymentList";
 import PurchaseReturn from "../pages/purchases/PurchaseReturn";
+import Forgetpassword from "../pages/forgetpassword/forgetpassword";
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forget-password" element={<ForgetPassword />} />
+      <Route path="/forgot-password" element={<ForgetPassword />} />
 
       <Route
         path="/"
@@ -96,6 +100,7 @@ const AppRoutes = () => {
         <Route path="inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="payments" element={<PaymentList />} />
         <Route path="purchase-return" element={<PurchaseReturn />} />
+        <Route path="forgetpassword" element={<Forgetpassword />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

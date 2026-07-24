@@ -1,0 +1,992 @@
+/* ==========================================================================
+   REPORT DASHBOARD — STYLES
+   --------------------------------------------------------------------------
+   All selectors are scoped with the "rpx-" prefix (Report Page X) so this
+   stylesheet is safe to drop next to other pages / other component styles
+   without any class-name collisions. Nothing here uses a framework or a
+   pre-processor — plain CSS with custom properties (variables) so the
+   palette and spacing can be tuned from one place.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap");
+
+/* ------------------------------ DESIGN TOKENS ----------------------------- */
+.rpx-dashboard {
+  /* ---- brand palette (as supplied) ---- */
+  --rpx-light-purple: #ece9fb;
+  --rpx-blue: #05d5ff;
+  --rpx-dark-blue: #080e22;
+  --rpx-deep-blue: #3c5dfe;
+  --rpx-purple: #9d55f7;
+
+  /* short aliases used throughout this file */
+  --rpx-lightpurple: var(--rpx-light-purple);
+  --rpx-darkblue: var(--rpx-dark-blue);
+  --rpx-deepblue: var(--rpx-deep-blue);
+
+  /* ---- neutrals derived for surfaces / borders / muted text ---- */
+  --rpx-surface: #ffffff;
+  --rpx-page-bg: #f4f5fb;
+  --rpx-border: #e6e6f2;
+  --rpx-text-primary: var(--rpx-dark-blue);
+  --rpx-text-secondary: #6b7089;
+  --rpx-text-muted: #9498ac;
+
+  /* semantic (kept minimal — only used for the "growth" up-indicator,
+     which conventionally reads as positive/green in every dashboard) */
+  --rpx-positive: #17a673;
+
+  /* ---- spacing / radius scale ---- */
+  --rpx-radius-sm: 8px;
+  --rpx-radius-md: 12px;
+  --rpx-radius-lg: 18px;
+  --rpx-gap: 20px;
+
+  /* ---- type ---- */
+  --rpx-font: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+
+  font-family: var(--rpx-font);
+  background: var(--rpx-page-bg);
+  color: var(--rpx-text-primary);
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rpx-gap);
+  overflow-x: hidden;
+
+  /* This page is designed to be dropped into an app shell that already has
+     its own fixed sidebar + top header (like the WonderBill layout). That
+     means the space actually available to this component is NOT the same
+     as the browser viewport width — @media queries can't see that, they
+     only look at the window. Container queries fix this: everything below
+     reacts to the width of THIS box (.rpx-dashboard-container), so the
+     grid/columns/tables collapse correctly no matter how wide the sidebar
+     next to it is. */
+}
+
+/* Wrap element that establishes the container-query context. Give the
+   dashboard's parent (the page's main content area) `display:block` and
+   no fixed width — this component fills whatever space is left next to
+   the sidebar. */
+.rpx-dashboard-container {
+  container-type: inline-size;
+  container-name: rpxdash;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.rpx-dashboard *,
+.rpx-dashboard *::before,
+.rpx-dashboard *::after {
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* --------------------------- STYLE ISOLATION GUARD -------------------------
+   When this component is dropped into an existing app shell, that app
+   usually has its own global rules for bare elements — `button { ... }`,
+   `table thead { ... }`, `ul { ... }`, etc. Those rules can win over ours
+   and cause exactly the symptoms you saw: the Export Report button getting
+   squeezed/clipped, or the table header picking up the app's brand teal
+   instead of our palette. This block resets raw elements back to a neutral
+   baseline *before* our own rules apply, so the dashboard always renders
+   the same regardless of what CSS already exists on the page. */
+:where(
+  .rpx-dashboard button,
+  .rpx-dashboard table,
+  .rpx-dashboard thead,
+  .rpx-dashboard tbody,
+  .rpx-dashboard tfoot,
+  .rpx-dashboard tr,
+  .rpx-dashboard th,
+  .rpx-dashboard td,
+  .rpx-dashboard ul,
+  .rpx-dashboard li,
+  .rpx-dashboard a
+) {
+  all: revert;
+  box-sizing: border-box;
+  font-family: inherit;
+  margin: 0;
+}
+.rpx-dashboard button {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* ------------------------------ SHARED PANEL ------------------------------ */
+.rpx-panel {
+  background: var(--rpx-surface);
+  border: 1px solid var(--rpx-border);
+  border-radius: var(--rpx-radius-lg);
+  box-shadow:
+    0 1px 2px rgba(8, 14, 34, 0.04),
+    0 8px 24px rgba(8, 14, 34, 0.03);
+}
+
+.rpx-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.rpx-panel-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--rpx-text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.rpx-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rpx-deep-blue);
+  text-decoration: none;
+}
+.rpx-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------- ICONS ---------------------------------- */
+.rpx-icon-12 {
+  width: 12px;
+  height: 12px;
+}
+.rpx-icon-14 {
+  width: 14px;
+  height: 14px;
+}
+.rpx-icon-16 {
+  width: 16px;
+  height: 16px;
+}
+.rpx-icon-18 {
+  width: 18px;
+  height: 18px;
+}
+.rpx-icon-20 {
+  width: 20px;
+  height: 20px;
+}
+
+/* ----------------------------------- HEADER --------------------------------- */
+.rpx-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px 24px;
+  min-width: 0;
+}
+
+.rpx-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 240px;
+}
+
+.rpx-field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rpx-text-primary);
+}
+
+.rpx-date-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--rpx-surface);
+  border: 1px solid var(--rpx-border);
+  border-radius: var(--rpx-radius-sm);
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rpx-text-primary);
+  cursor: pointer;
+  width: 100%;
+  max-width: 320px;
+  min-width: 0;
+}
+.rpx-date-select:hover {
+  border-color: var(--rpx-deep-blue);
+}
+.rpx-date-select svg:first-child {
+  color: var(--rpx-deep-blue);
+  flex-shrink: 0;
+}
+.rpx-date-select-chevron {
+  margin-left: auto;
+  color: var(--rpx-text-muted);
+  flex-shrink: 0;
+}
+
+/* label text truncates instead of wrapping onto a second line and pushing
+   the chevron / card height around */
+.rpx-date-select > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.rpx-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* buttons keep their full label and never clip — if there isn't room
+   they drop to their own row instead (see container query below) */
+.rpx-header-right .rpx-btn {
+  flex-shrink: 0;
+}
+
+/* -------------------------------- BUTTONS ----------------------------------- */
+.rpx-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px;
+  border-radius: var(--rpx-radius-sm);
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    opacity 0.15s ease,
+    transform 0.05s ease;
+  white-space: nowrap !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box;
+  line-height: 1.2;
+}
+.rpx-btn:active {
+  transform: translateY(1px);
+}
+
+.rpx-btn-ghost {
+  background: var(--rpx-surface);
+  border-color: var(--rpx-border);
+  color: var(--rpx-deep-blue);
+}
+.rpx-btn-ghost:hover {
+  background: var(--rpx-light-purple);
+}
+
+.rpx-btn-primary {
+  background: var(--rpx-dark-blue);
+  color: #ffffff;
+}
+.rpx-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.rpx-btn-outline-block {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 16px;
+  background: var(--rpx-surface);
+  border-color: var(--rpx-border);
+  color: var(--rpx-deep-blue);
+}
+.rpx-btn-outline-block:hover {
+  background: var(--rpx-light-purple);
+}
+
+.rpx-mini-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--rpx-surface);
+  border: 1px solid var(--rpx-border);
+  border-radius: var(--rpx-radius-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--rpx-text-primary);
+  cursor: pointer;
+}
+.rpx-mini-select:hover {
+  border-color: var(--rpx-deep-blue);
+}
+
+/* -------------------------------- ACCENTS ----------------------------------- */
+/* background-tint accents (icon chips) */
+.rpx-accent-blue {
+  background: color-mix(in srgb, var(--rpx-blue) 18%, white);
+  color: #0398b8;
+}
+.rpx-accent-deepblue {
+  background: color-mix(in srgb, var(--rpx-deep-blue) 14%, white);
+  color: var(--rpx-deep-blue);
+}
+.rpx-accent-purple {
+  background: color-mix(in srgb, var(--rpx-purple) 16%, white);
+  color: var(--rpx-purple);
+}
+.rpx-accent-lightpurple {
+  background: var(--rpx-light-purple);
+  color: var(--rpx-deep-blue);
+}
+.rpx-accent-darkblue {
+  background: color-mix(in srgb, var(--rpx-dark-blue) 10%, white);
+  color: var(--rpx-dark-blue);
+}
+
+/* solid-fill accents (legend dots) */
+.rpx-accent-dot,
+.rpx-legend-dot.rpx-accent-blue {
+  background: var(--rpx-blue);
+}
+.rpx-legend-dot.rpx-accent-deepblue {
+  background: var(--rpx-deep-blue);
+}
+.rpx-legend-dot.rpx-accent-purple {
+  background: var(--rpx-purple);
+}
+.rpx-legend-dot.rpx-accent-lightpurple {
+  background: var(--rpx-light-purple);
+}
+.rpx-legend-dot.rpx-accent-darkblue {
+  background: var(--rpx-dark-blue);
+}
+
+/* stroke accents (line / donut charts) */
+.rpx-accent-stroke-blue {
+  stroke: var(--rpx-blue);
+}
+.rpx-accent-stroke-deepblue {
+  stroke: var(--rpx-deep-blue);
+}
+.rpx-accent-stroke-purple {
+  stroke: var(--rpx-purple);
+}
+.rpx-accent-stroke-lightpurple {
+  stroke: var(--rpx-light-purple);
+}
+.rpx-accent-stroke-darkblue {
+  stroke: var(--rpx-dark-blue);
+}
+
+/* ------------------------------- STAT CARDS --------------------------------- */
+.rpx-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--rpx-gap);
+}
+
+.rpx-stat-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rpx-stat-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.rpx-stat-icon {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: var(--rpx-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rpx-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rpx-stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rpx-text-secondary);
+}
+
+.rpx-stat-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--rpx-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.rpx-stat-growth {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+}
+
+.rpx-growth-icon {
+  color: var(--rpx-positive);
+}
+.rpx-growth-value {
+  color: var(--rpx-positive);
+  font-weight: 700;
+}
+.rpx-growth-caption {
+  color: var(--rpx-text-muted);
+  font-weight: 500;
+}
+
+.rpx-sparkline {
+  width: 100%;
+  height: 36px;
+  display: block;
+}
+.rpx-sparkline-path {
+  stroke-width: 2.2;
+}
+
+/* ------------------------------- TWO-COLUMN ROWS ----------------------------- */
+.rpx-row-2col {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--rpx-gap);
+  align-items: stretch;
+}
+
+.rpx-trend-panel,
+.rpx-category-panel,
+.rpx-summary-panel,
+.rpx-products-panel {
+  padding: 22px;
+}
+
+/* ---------------------------------- LEGEND ----------------------------------- */
+.rpx-legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.rpx-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--rpx-text-secondary);
+}
+
+.rpx-legend-swatch {
+  width: 18px;
+  height: 0;
+  border-top-width: 2.5px;
+  border-top-style: solid;
+  display: inline-block;
+}
+.rpx-legend-swatch-solid {
+  border-top-color: var(--rpx-deep-blue);
+}
+.rpx-legend-swatch-dashed {
+  border-top-color: var(--rpx-text-muted);
+  border-top-style: dashed;
+}
+
+/* ------------------------------- SALES TREND CHART --------------------------- */
+.rpx-trend-chart-wrap {
+  display: flex;
+  gap: 10px;
+}
+
+.rpx-trend-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--rpx-text-muted);
+  padding: 2px 0 0;
+  min-width: 34px;
+  text-align: right;
+}
+
+.rpx-trend-chart {
+  flex: 1;
+  min-width: 0;
+}
+
+.rpx-trend-svg {
+  width: 100%;
+  height: 220px;
+  display: block;
+  overflow: visible;
+}
+
+.rpx-trend-gridline {
+  stroke: var(--rpx-border);
+  stroke-width: 1;
+}
+
+.rpx-trend-line-current {
+  stroke: var(--rpx-deep-blue);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rpx-trend-line-previous {
+  stroke: var(--rpx-text-muted);
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+  stroke-linecap: round;
+}
+
+.rpx-trend-dot {
+  fill: var(--rpx-surface);
+  stroke: var(--rpx-deep-blue);
+  stroke-width: 2;
+}
+
+.rpx-trend-x-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-left: 44px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--rpx-text-muted);
+}
+
+/* -------------------------------- CATEGORY / DONUT ---------------------------- */
+.rpx-category-body {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.rpx-donut-wrap {
+  position: relative;
+  width: 176px;
+  height: 176px;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+
+.rpx-donut-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.rpx-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.rpx-donut-center-value {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--rpx-text-primary);
+}
+
+.rpx-donut-center-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--rpx-text-muted);
+}
+
+.rpx-category-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.rpx-category-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+}
+
+.rpx-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rpx-category-legend-name {
+  font-weight: 600;
+  color: var(--rpx-text-primary);
+  min-width: 68px;
+}
+
+.rpx-category-legend-amount {
+  color: var(--rpx-text-secondary);
+  font-weight: 500;
+  margin-left: auto;
+}
+
+.rpx-category-legend-percent {
+  color: var(--rpx-text-muted);
+  font-weight: 500;
+  min-width: 52px;
+  text-align: right;
+}
+
+/* ----------------------------------- TABLES ----------------------------------- */
+.rpx-row-2col-tables {
+  align-items: start;
+}
+
+/* This is the scroll container — on narrow screens the table itself stays
+   readable (never crushes its columns) and instead scrolls sideways
+   inside this box. Works the same on desktop and mobile. */
+.rpx-table-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rpx-border) transparent;
+}
+.rpx-table-scroll::-webkit-scrollbar {
+  height: 7px;
+}
+.rpx-table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.rpx-table-scroll::-webkit-scrollbar-thumb {
+  background: var(--rpx-border);
+  border-radius: 10px;
+}
+.rpx-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--rpx-text-muted);
+}
+
+.rpx-table {
+  width: 100%;
+  min-width: 620px; /* forces horizontal scroll instead of squeezed columns */
+  border-collapse: collapse !important;
+  border-spacing: 0;
+  font-size: 13.5px;
+}
+
+.rpx-table-products {
+  min-width: 460px;
+}
+
+.rpx-table th {
+  text-align: left !important;
+  font-weight: 600;
+  color: var(--rpx-text-muted) !important;
+  background: transparent !important;
+  padding: 0 10px 12px;
+  font-size: 12.5px;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  border: none !important;
+  border-bottom: 1px solid var(--rpx-border) !important;
+  white-space: nowrap;
+}
+
+.rpx-table td {
+  padding: 12px 10px;
+  color: var(--rpx-text-primary) !important;
+  background: transparent !important;
+  font-weight: 500;
+  border: none !important;
+  border-bottom: 1px solid var(--rpx-border) !important;
+  white-space: nowrap;
+  text-align: left !important;
+  vertical-align: middle !important;
+}
+
+.rpx-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+.rpx-table-total-row td {
+  border-bottom: none !important;
+  border-top: 1px solid var(--rpx-border) !important;
+  font-weight: 700;
+  color: var(--rpx-deep-blue) !important;
+  background: var(--rpx-light-purple) !important;
+}
+.rpx-table-total-row td:first-child {
+  border-top-left-radius: var(--rpx-radius-sm);
+  border-bottom-left-radius: var(--rpx-radius-sm);
+}
+.rpx-table-total-row td:last-child {
+  border-top-right-radius: var(--rpx-radius-sm);
+  border-bottom-right-radius: var(--rpx-radius-sm);
+}
+
+.rpx-table-method,
+.rpx-table-product {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.rpx-table-method-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--rpx-light-purple);
+  color: var(--rpx-deep-blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rpx-product-thumb {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--rpx-page-bg);
+  border: 1px solid var(--rpx-border);
+  color: var(--rpx-deep-blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ----------------------------------- FOOTER ------------------------------------ */
+.rpx-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 4px 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--rpx-text-muted);
+}
+
+.rpx-footer-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ================================================================================
+   RESPONSIVE BREAKPOINTS
+   --------------------------------------------------------------------------------
+   Driven by CONTAINER width (space actually available next to the sidebar),
+   not the browser window. Wrap this component like:
+
+     <div className="rpx-dashboard-container">
+       <ReportDashboard />
+     </div>
+
+   ...inside your existing page's main content column (the column that's
+   already narrowed by your fixed sidebar). Every rule below fires based on
+   that column's width, so it collapses correctly at any sidebar width,
+   any zoom level, and on any device.
+   ================================================================================ */
+
+/* Large tablets / small laptops — 4 stat cards start to feel tight */
+@container rpxdash (max-width: 1160px) {
+  .rpx-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets — stack the two-column rows */
+@container rpxdash (max-width: 900px) {
+  .rpx-row-2col {
+    grid-template-columns: 1fr;
+  }
+  .rpx-donut-wrap {
+    margin: 0 auto;
+  }
+  .rpx-category-body {
+    justify-content: center;
+  }
+}
+
+/* Small tablets / large phones */
+@container rpxdash (max-width: 620px) {
+  .rpx-dashboard {
+    padding: 16px;
+    gap: 16px;
+  }
+  .rpx-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .rpx-header {
+    padding: 16px;
+  }
+  .rpx-header-left {
+    flex-basis: 100%;
+  }
+  .rpx-header-right {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .rpx-header-right .rpx-btn {
+    flex: 1 1 0;
+  }
+  .rpx-date-select {
+    max-width: none;
+  }
+  .rpx-trend-panel,
+  .rpx-category-panel,
+  .rpx-summary-panel,
+  .rpx-products-panel {
+    padding: 16px;
+  }
+  .rpx-panel-header {
+    margin-bottom: 14px;
+  }
+  .rpx-category-body {
+    flex-direction: column;
+  }
+  .rpx-category-legend {
+    width: 100%;
+  }
+  .rpx-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .rpx-trend-x-axis {
+    padding-left: 0;
+  }
+  .rpx-trend-chart-wrap {
+    gap: 6px;
+  }
+}
+
+/* Extra small / very narrow sidebars */
+@container rpxdash (max-width: 380px) {
+  .rpx-stat-value {
+    font-size: 19px;
+  }
+  .rpx-panel-title {
+    font-size: 15.5px;
+  }
+  .rpx-stat-card {
+    padding: 16px;
+  }
+}
+
+/* --------------------------------------------------------------------------------
+   FALLBACK for browsers without container query support (very old Safari/Firefox).
+   Approximates the same breakpoints off the viewport so layout still degrades
+   gracefully instead of breaking outright.
+   -------------------------------------------------------------------------------- */
+@supports not (container-type: inline-size) {
+  @media (max-width: 1180px) {
+    .rpx-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 980px) {
+    .rpx-row-2col {
+      grid-template-columns: 1fr;
+    }
+    .rpx-donut-wrap {
+      margin: 0 auto;
+    }
+    .rpx-category-body {
+      justify-content: center;
+    }
+  }
+  @media (max-width: 640px) {
+    .rpx-dashboard {
+      padding: 16px;
+      gap: 16px;
+    }
+    .rpx-stats-grid {
+      grid-template-columns: 1fr;
+    }
+    .rpx-header {
+      padding: 16px;
+    }
+    .rpx-header-left {
+      flex-basis: 100%;
+    }
+    .rpx-header-right {
+      width: 100%;
+      justify-content: stretch;
+    }
+    .rpx-header-right .rpx-btn {
+      flex: 1 1 0;
+    }
+    .rpx-date-select {
+      max-width: none;
+    }
+    .rpx-trend-panel,
+    .rpx-category-panel,
+    .rpx-summary-panel,
+    .rpx-products-panel {
+      padding: 16px;
+    }
+    .rpx-panel-header {
+      margin-bottom: 14px;
+    }
+    .rpx-category-body {
+      flex-direction: column;
+    }
+    .rpx-category-legend {
+      width: 100%;
+    }
+    .rpx-footer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .rpx-trend-x-axis {
+      padding-left: 0;
+    }
+    .rpx-trend-chart-wrap {
+      gap: 6px;
+    }
+  }
+  @media (max-width: 380px) {
+    .rpx-stat-value {
+      font-size: 19px;
+    }
+    .rpx-panel-title {
+      font-size: 15.5px;
+    }
+    .rpx-stat-card {
+      padding: 16px;
+    }
+  }
+}
