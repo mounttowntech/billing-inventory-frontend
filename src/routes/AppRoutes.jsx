@@ -46,6 +46,7 @@ import DashboardRedirect from "../routes/DashboardRedirect";
 import PaymentList from "../pages/payments/PaymentList";
 import PurchaseReturn from "../pages/purchases/PurchaseReturn";
 import Forgetpassword from "../pages/forgetpassword/forgetpassword";
+import ResetPassword from "../pages/Resetpassword/ResetPassword";
 
 const AppRoutes = () => {
   return (
@@ -53,7 +54,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
-      <Route path="/forgot-password" element={<ForgetPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route
         path="/"
@@ -100,7 +101,6 @@ const AppRoutes = () => {
         <Route path="inventory-dashboard" element={<InventoryDashboard />} />
         <Route path="payments" element={<PaymentList />} />
         <Route path="purchase-return" element={<PurchaseReturn />} />
-        <Route path="forgetpassword" element={<Forgetpassword />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

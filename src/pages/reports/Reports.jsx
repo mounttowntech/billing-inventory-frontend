@@ -4,13 +4,15 @@ import "./Report.css";
 /* ==========================================================================
    REPORT DASHBOARD
    --------------------------------------------------------------------------
+   TEAL VARIANT — same dashboard, re-themed to the teal palette below.
    Self-contained React component. No external packages (no chart libs, no
    icon libs) — every icon and every chart (sparklines, line chart, donut
    chart) is hand-built inline SVG so the whole page has zero dependencies.
 
-   All class names are prefixed "rpx-" (Report Page X) so this file can sit
-   next to other pages / component libraries without colliding with anyone
-   else's ".card", ".table", ".button", etc.
+   All class names are prefixed "tdb-" (Teal DashBoard) — a DIFFERENT
+   prefix than the earlier purple/blue version ("rpx-"), specifically so
+   both dashboards can live in the same app at the same time without any
+   class-name collisions.
 
    HOW TO EDIT THE CONTENT
    --------------------------------------------------------------------------
@@ -358,7 +360,7 @@ const STAT_CARDS = [
     value: "₹82,004.50",
     growth: "12.4%",
     icon: IconBag,
-    accent: "blue",
+    accent: "primary",
     spark: [30, 34, 33, 40, 38, 45, 42, 50, 48, 55, 52, 60],
   },
   {
@@ -367,7 +369,7 @@ const STAT_CARDS = [
     value: "356",
     growth: "8.7%",
     icon: IconOrders,
-    accent: "deepblue",
+    accent: "secondary",
     spark: [20, 25, 24, 30, 42, 38, 34, 40, 36, 44, 40, 46],
   },
   {
@@ -376,7 +378,7 @@ const STAT_CARDS = [
     value: "₹19,650.00",
     growth: "15.3%",
     icon: IconProfit,
-    accent: "purple",
+    accent: "dark",
     spark: [42, 38, 44, 40, 36, 30, 34, 28, 24, 20, 16, 12],
   },
   {
@@ -385,7 +387,7 @@ const STAT_CARDS = [
     value: "₹230.35",
     growth: "5.6%",
     icon: IconCart,
-    accent: "lightpurple",
+    accent: "soft",
     spark: [30, 45, 26, 40, 22, 48, 24, 42, 20, 44, 26, 38],
   },
 ];
@@ -416,11 +418,16 @@ const SALES_TREND = {
 };
 
 const CATEGORY_DATA = [
-  { label: "Shirts", amount: "₹28,450.00", percent: 34.7, color: "deepblue" },
-  { label: "T-Shirts", amount: "₹18,760.00", percent: 22.9, color: "blue" },
-  { label: "Pants", amount: "₹15,630.00", percent: 19.1, color: "purple" },
-  { label: "Jeans", amount: "₹11,250.00", percent: 13.7, color: "lightpurple" },
-  { label: "Others", amount: "₹7,914.50", percent: 9.6, color: "darkblue" },
+  { label: "Shirts", amount: "₹28,450.00", percent: 34.7, color: "primary" },
+  {
+    label: "T-Shirts",
+    amount: "₹18,760.00",
+    percent: 22.9,
+    color: "secondary",
+  },
+  { label: "Pants", amount: "₹15,630.00", percent: 19.1, color: "soft" },
+  { label: "Jeans", amount: "₹11,250.00", percent: 13.7, color: "pale" },
+  { label: "Others", amount: "₹7,914.50", percent: 9.6, color: "dark" },
 ];
 const CATEGORY_TOTAL = "₹82,004.50";
 
@@ -577,63 +584,63 @@ export default function ReportDashboard() {
   });
 
   return (
-    // rpx-dashboard-container is what makes the layout respond to the space
+    // tdb-dashboard-container is what makes the layout respond to the space
     // actually left over next to your sidebar (container queries), instead
     // of the full browser window. Keep this outer wrapper when you drop the
     // component into your existing page's main content column.
-    <div className="rpx-dashboard-container">
-      <div className="rpx-dashboard">
+    <div className="tdb-dashboard-container">
+      <div className="tdb-dashboard">
         {/* ============================= HEADER (shared) ============================= */}
-        <header className="rpx-header rpx-panel">
-          <div className="rpx-header-left">
-            <span className="rpx-field-label">Date Range</span>
-            <button type="button" className="rpx-date-select">
-              <IconCalendar className="rpx-icon-16" />
+        <header className="tdb-header tdb-panel">
+          <div className="tdb-header-left">
+            <span className="tdb-field-label">Date Range</span>
+            <button type="button" className="tdb-date-select">
+              <IconCalendar className="tdb-icon-16" />
               <span>{DATE_RANGE_LABEL}</span>
-              <IconChevronDown className="rpx-icon-16 rpx-date-select-chevron" />
+              <IconChevronDown className="tdb-icon-16 tdb-date-select-chevron" />
             </button>
           </div>
-          <div className="rpx-header-right">
-            <button type="button" className="rpx-btn rpx-btn-ghost">
-              <IconReset className="rpx-icon-16" />
+          <div className="tdb-header-right">
+            <button type="button" className="tdb-btn tdb-btn-ghost">
+              <IconReset className="tdb-icon-16" />
               <span>Reset</span>
             </button>
-            <button type="button" className="rpx-btn rpx-btn-primary">
-              <IconDownload className="rpx-icon-16" />
+            <button type="button" className="tdb-btn tdb-btn-primary">
+              <IconDownload className="tdb-icon-16" />
               <span>Export Report</span>
             </button>
           </div>
         </header>
 
         {/* ============================== STAT CARDS ================================ */}
-        <section className="rpx-stats-grid">
+        <section className="tdb-stats-grid">
           {STAT_CARDS.map((card) => {
             const Icon = card.icon;
             const sparkPath = buildSparkPath(card.spark, 220, 40);
             return (
-              <div className="rpx-panel rpx-stat-card" key={card.id}>
-                <div className="rpx-stat-card-top">
-                  <span className={`rpx-stat-icon rpx-accent-${card.accent}`}>
-                    <Icon className="rpx-icon-20" />
+              <div className="tdb-panel tdb-stat-card" key={card.id}>
+                <div className="tdb-stat-card-top">
+                  <span className={`tdb-stat-icon tdb-accent-${card.accent}`}>
+                    <Icon className="tdb-icon-20" />
                   </span>
-                  <div className="rpx-stat-info">
-                    <span className="rpx-stat-label">{card.label}</span>
-                    <span className="rpx-stat-value">{card.value}</span>
+                  <div className="tdb-stat-info">
+                    <span className="tdb-stat-label">{card.label}</span>
+                    <span className="tdb-stat-value">{card.value}</span>
                   </div>
                 </div>
-                <div className="rpx-stat-growth">
-                  <IconArrowUp className="rpx-icon-12 rpx-growth-icon" />
-                  <span className="rpx-growth-value">{card.growth}</span>
-                  <span className="rpx-growth-caption">vs previous period</span>
+                <div className="tdb-stat-growth">
+                  <IconArrowUp className="tdb-icon-12 tdb-growth-icon" />
+                  <span className="tdb-growth-value">{card.growth}</span>
+                  <span className="tdb-growth-caption">vs previous period</span>
                 </div>
                 <svg
-                  className="rpx-sparkline"
+                  className="tdb-sparkline"
                   viewBox="0 0 220 40"
                   preserveAspectRatio="none"
                 >
                   <path
                     d={sparkPath}
-                    className={`rpx-sparkline-path rpx-accent-stroke-${card.accent}`}
+                    className={`tdb-sparkline-path tdb-accent-stroke-${card.accent}`}
                     fill="none"
                   />
                 </svg>
@@ -643,38 +650,38 @@ export default function ReportDashboard() {
         </section>
 
         {/* ============================ TREND + CATEGORY ============================= */}
-        <section className="rpx-row-2col">
+        <section className="tdb-row-2col">
           {/* -------- Sales Trend -------- */}
-          <div className="rpx-panel rpx-trend-panel">
-            <div className="rpx-panel-header">
-              <h2 className="rpx-panel-title">Sales Trend</h2>
-              <div className="rpx-legend">
-                <span className="rpx-legend-item">
-                  <span className="rpx-legend-swatch rpx-legend-swatch-solid" />{" "}
+          <div className="tdb-panel tdb-trend-panel">
+            <div className="tdb-panel-header">
+              <h2 className="tdb-panel-title">Sales Trend</h2>
+              <div className="tdb-legend">
+                <span className="tdb-legend-item">
+                  <span className="tdb-legend-swatch tdb-legend-swatch-solid" />{" "}
                   Current Period
                 </span>
-                <span className="rpx-legend-item">
-                  <span className="rpx-legend-swatch rpx-legend-swatch-dashed" />{" "}
+                <span className="tdb-legend-item">
+                  <span className="tdb-legend-swatch tdb-legend-swatch-dashed" />{" "}
                   Previous Period
                 </span>
               </div>
             </div>
 
-            <div className="rpx-trend-chart-wrap">
-              <div className="rpx-trend-y-axis">
+            <div className="tdb-trend-chart-wrap">
+              <div className="tdb-trend-y-axis">
                 {[...gridRows].reverse().map((v) => (
                   <span key={v}>{v === 0 ? "0" : `${v}K`}</span>
                 ))}
               </div>
-              <div className="rpx-trend-chart">
+              <div className="tdb-trend-chart">
                 <svg
-                  className="rpx-trend-svg"
+                  className="tdb-trend-svg"
                   viewBox={`0 0 ${CHART_W} ${CHART_H}`}
                   preserveAspectRatio="none"
                 >
                   <defs>
                     <linearGradient
-                      id="rpxTrendFill"
+                      id="tdbTrendFill"
                       x1="0"
                       y1="0"
                       x2="0"
@@ -682,12 +689,12 @@ export default function ReportDashboard() {
                     >
                       <stop
                         offset="0%"
-                        stopColor="var(--rpx-deepblue)"
+                        stopColor="var(--tdb-primary)"
                         stopOpacity="0.28"
                       />
                       <stop
                         offset="100%"
-                        stopColor="var(--rpx-deepblue)"
+                        stopColor="var(--tdb-primary)"
                         stopOpacity="0"
                       />
                     </linearGradient>
@@ -702,24 +709,24 @@ export default function ReportDashboard() {
                         x2={CHART_W}
                         y1={y}
                         y2={y}
-                        className="rpx-trend-gridline"
+                        className="tdb-trend-gridline"
                       />
                     );
                   })}
 
                   <path
                     d={currentAreaPath}
-                    fill="url(#rpxTrendFill)"
+                    fill="url(#tdbTrendFill)"
                     stroke="none"
                   />
                   <path
                     d={previousLinePath}
-                    className="rpx-trend-line-previous"
+                    className="tdb-trend-line-previous"
                     fill="none"
                   />
                   <path
                     d={currentLinePath}
-                    className="rpx-trend-line-current"
+                    className="tdb-trend-line-current"
                     fill="none"
                   />
 
@@ -729,14 +736,14 @@ export default function ReportDashboard() {
                       cx={x}
                       cy={y}
                       r="3.4"
-                      className="rpx-trend-dot"
+                      className="tdb-trend-dot"
                     />
                   ))}
                 </svg>
               </div>
             </div>
 
-            <div className="rpx-trend-x-axis">
+            <div className="tdb-trend-x-axis">
               {SALES_TREND.labels
                 .filter((_, i) => i % 2 === 0)
                 .map((label) => (
@@ -746,20 +753,20 @@ export default function ReportDashboard() {
           </div>
 
           {/* -------- Sales by Category -------- */}
-          <div className="rpx-panel rpx-category-panel">
-            <div className="rpx-panel-header">
-              <h2 className="rpx-panel-title">Sales by Category</h2>
-              <button type="button" className="rpx-mini-select">
+          <div className="tdb-panel tdb-category-panel">
+            <div className="tdb-panel-header">
+              <h2 className="tdb-panel-title">Sales by Category</h2>
+              <button type="button" className="tdb-mini-select">
                 <span>All Categories</span>
-                <IconChevronDown className="rpx-icon-14" />
+                <IconChevronDown className="tdb-icon-14" />
               </button>
             </div>
 
-            <div className="rpx-category-body">
-              <div className="rpx-donut-wrap">
+            <div className="tdb-category-body">
+              <div className="tdb-donut-wrap">
                 <svg
                   viewBox={`0 0 ${DONUT_SIZE} ${DONUT_SIZE}`}
-                  className="rpx-donut-svg"
+                  className="tdb-donut-svg"
                 >
                   <g
                     transform={`rotate(-90 ${DONUT_SIZE / 2} ${DONUT_SIZE / 2})`}
@@ -774,29 +781,29 @@ export default function ReportDashboard() {
                         strokeWidth={DONUT_STROKE}
                         strokeDasharray={seg.dashArray}
                         strokeDashoffset={seg.dashOffset}
-                        className={`rpx-donut-seg rpx-accent-stroke-${seg.color}`}
+                        className={`tdb-donut-seg tdb-accent-stroke-${seg.color}`}
                         strokeLinecap="butt"
                       />
                     ))}
                   </g>
                 </svg>
-                <div className="rpx-donut-center">
-                  <span className="rpx-donut-center-value">
+                <div className="tdb-donut-center">
+                  <span className="tdb-donut-center-value">
                     {CATEGORY_TOTAL}
                   </span>
-                  <span className="rpx-donut-center-label">Total Sales</span>
+                  <span className="tdb-donut-center-label">Total Sales</span>
                 </div>
               </div>
 
-              <ul className="rpx-category-legend">
+              <ul className="tdb-category-legend">
                 {CATEGORY_DATA.map((c) => (
-                  <li key={c.label} className="rpx-category-legend-row">
-                    <span className={`rpx-legend-dot rpx-accent-${c.color}`} />
-                    <span className="rpx-category-legend-name">{c.label}</span>
-                    <span className="rpx-category-legend-amount">
+                  <li key={c.label} className="tdb-category-legend-row">
+                    <span className={`tdb-legend-dot tdb-accent-${c.color}`} />
+                    <span className="tdb-category-legend-name">{c.label}</span>
+                    <span className="tdb-category-legend-amount">
                       {c.amount}
                     </span>
-                    <span className="rpx-category-legend-percent">
+                    <span className="tdb-category-legend-percent">
                       ({c.percent}%)
                     </span>
                   </li>
@@ -807,14 +814,14 @@ export default function ReportDashboard() {
         </section>
 
         {/* ========================= SUMMARY + TOP PRODUCTS ========================== */}
-        <section className="rpx-row-2col rpx-row-2col-tables">
+        <section className="tdb-row-2col tdb-row-2col-tables">
           {/* -------- Sales Summary -------- */}
-          <div className="rpx-panel rpx-summary-panel">
-            <div className="rpx-panel-header">
-              <h2 className="rpx-panel-title">Sales Summary</h2>
+          <div className="tdb-panel tdb-summary-panel">
+            <div className="tdb-panel-header">
+              <h2 className="tdb-panel-title">Sales Summary</h2>
             </div>
-            <div className="rpx-table-scroll">
-              <table className="rpx-table">
+            <div className="tdb-table-scroll">
+              <table className="tdb-table">
                 <thead>
                   <tr>
                     <th>Payment Method</th>
@@ -830,9 +837,9 @@ export default function ReportDashboard() {
                     return (
                       <tr key={row.method}>
                         <td>
-                          <span className="rpx-table-method">
-                            <span className="rpx-table-method-icon">
-                              <Icon className="rpx-icon-16" />
+                          <span className="tdb-table-method">
+                            <span className="tdb-table-method-icon">
+                              <Icon className="tdb-icon-16" />
                             </span>
                             {row.method}
                           </span>
@@ -846,7 +853,7 @@ export default function ReportDashboard() {
                   })}
                 </tbody>
                 <tfoot>
-                  <tr className="rpx-table-total-row">
+                  <tr className="tdb-table-total-row">
                     <td>Total</td>
                     <td>{PAYMENT_TOTAL.transactions}</td>
                     <td>{PAYMENT_TOTAL.amount}</td>
@@ -859,15 +866,15 @@ export default function ReportDashboard() {
           </div>
 
           {/* -------- Top Selling Products -------- */}
-          <div className="rpx-panel rpx-products-panel">
-            <div className="rpx-panel-header">
-              <h2 className="rpx-panel-title">Top Selling Products</h2>
-              <a href="#" className="rpx-link">
+          <div className="tdb-panel tdb-products-panel">
+            <div className="tdb-panel-header">
+              <h2 className="tdb-panel-title">Top Selling Products</h2>
+              <a href="#" className="tdb-link">
                 View All
               </a>
             </div>
-            <div className="rpx-table-scroll">
-              <table className="rpx-table rpx-table-products">
+            <div className="tdb-table-scroll">
+              <table className="tdb-table tdb-table-products">
                 <thead>
                   <tr>
                     <th>Product</th>
@@ -881,9 +888,9 @@ export default function ReportDashboard() {
                     return (
                       <tr key={p.name}>
                         <td>
-                          <span className="rpx-table-product">
-                            <span className="rpx-product-thumb">
-                              <Icon className="rpx-icon-18" />
+                          <span className="tdb-table-product">
+                            <span className="tdb-product-thumb">
+                              <Icon className="tdb-icon-18" />
                             </span>
                             {p.name}
                           </span>
@@ -896,21 +903,21 @@ export default function ReportDashboard() {
                 </tbody>
               </table>
             </div>
-            <button type="button" className="rpx-btn rpx-btn-outline-block">
-              <IconGrid className="rpx-icon-16" />
+            <button type="button" className="tdb-btn tdb-btn-outline-block">
+              <IconGrid className="tdb-icon-16" />
               <span>View All Products</span>
             </button>
           </div>
         </section>
 
         {/* ================================ FOOTER =================================== */}
-        <footer className="rpx-footer">
-          <span className="rpx-footer-item">
-            <IconClock className="rpx-icon-14" />
+        <footer className="tdb-footer">
+          <span className="tdb-footer-item">
+            <IconClock className="tdb-icon-14" />
             Report generated on {REPORT_GENERATED_AT}
           </span>
-          <span className="rpx-footer-item">
-            <IconRefresh className="rpx-icon-14" />
+          <span className="tdb-footer-item">
+            <IconRefresh className="tdb-icon-14" />
             Auto refresh in {countdownLabel}
           </span>
         </footer>
