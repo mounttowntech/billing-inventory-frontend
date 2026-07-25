@@ -23,20 +23,18 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
-  const result = await dispatch(loginUser(data));
+    const result = await dispatch(loginUser(data));
 
-  if (loginUser.fulfilled.match(result)) {
+    if (loginUser.fulfilled.match(result)) {
+      toaster.success("Login successful!");
 
-    toaster.success("Login successful!");
+      const role = result.payload.user.role.roleName;
 
-    const role =
-      result.payload.user.role.roleName;
-
-    navigate(getDashboardRoute(role), {
-      replace: true,
-    });
-  }
-};
+      navigate(getDashboardRoute(role), {
+        replace: true,
+      });
+    }
+  };
 
   return (
     <div className="login-page">
@@ -61,13 +59,18 @@ const Login = () => {
           register={register}
           error={errors.password?.message}
         />
-        <button disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-        {/* new to register */}
-        <Link to="/register" className="register-link">
-          <p>New to Register? Click here</p>
-        </Link>
+        <div className="login-actions">
+          <button type="submit">Login</button>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+            <Link to="/forget-password" className="register-link">
+              Forgot Password?
+            </Link>
+            <Link to="/register" className="register-link">
+              New to Register? Click here
+            </Link>
+          </div>
+        </div>
       </form>
     </div>
   );
