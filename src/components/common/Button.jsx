@@ -3,7 +3,7 @@ import "./Button.css";
 
 export const AddButton = ({ children, onClick, type = "button" }) => {
   return (
-    <button type={type} className="btn btn-add" onClick={onClick}>
+    <button type={type} className="btn-primary" onClick={onClick}>
       {children}
     </button>
   );
