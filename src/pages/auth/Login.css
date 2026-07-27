@@ -1,26 +1,51 @@
+/* Login Button & Register Link */
+
+.login-actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.login-actions button {
+  width: 140px;
+  height: 40px;
+  background: #0f766e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-actions button:hover {
+  background: #115e59;
+}
+
 .register-link {
+  color: #0f766e;
   text-decoration: none;
-  margin-left: 100px;
-  color: #2563eb;
-  }
-  .register-link:hover{
-    text-decoration: underline;
-  }
+  font-size: 14px;
+  font-weight: 500;
+}
 
-  .password-toggle-icon:hover {
-    cursor: pointer;
-    transform: none;
-    box-shadow: none;
+.register-link:hover {
+  text-decoration: underline;
+}
 
-  }
+.password-toggle-icon:hover {
+  cursor: pointer;
+  transform: none;
+  box-shadow: none;
+}
 
-  .input-wrapper button {
+.input-wrapper button {
+  transform: none;
+}
 
-    transform: none;
-
-  }
-
-  .password-toggle-icon {
+.password-toggle-icon {
   position: absolute;
   top: 25%;
   /* right: 14px; */
@@ -39,7 +64,7 @@
   margin: 0;
   cursor: pointer;
   color: #7b8794;
-left: 85%;
+  left: 85%;
   z-index: 10;
 }
 @media (max-width: 1024px) {
@@ -62,4 +87,17 @@ left: 85%;
     background-image: url("../../assets//LOGINBG.png");
     padding: 16px;
   }
+}
+.login-actions {
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.login-actions button {
+  width: 100%;
+}
+
+.register-link {
+  text-align: center;
 }

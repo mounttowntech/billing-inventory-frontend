@@ -4,6 +4,7 @@ import ProtectedRoute from "../components/common/ProtectedRoute";
 
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
+import ForgetPassword from "../pages/forgetpassword/forgetpassword";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ProductList from "../pages/products/ProductList";
 import CustomerList from "../pages/customers/CustomerList";
@@ -43,12 +44,16 @@ import StockLedger from "../pages/StockLedger/StockLedger";
 import DashboardRedirect from "../routes/DashboardRedirect";
 import PaymentList from "../pages/payments/PaymentList";
 import PurchaseReturn from "../pages/purchases/PurchaseReturn";
+import Forgetpassword from "../pages/forgetpassword/forgetpassword";
+import ResetPassword from "../pages/Resetpassword/ResetPassword";
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forget-password" element={<ForgetPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route
         path="/"

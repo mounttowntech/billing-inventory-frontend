@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-export const colorValidation = yup.object({
+export const colorValidation = (mode) => yup.object({
   colorCode: yup
     .string()
     .required("Color Code is required")

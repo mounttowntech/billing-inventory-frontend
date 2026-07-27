@@ -93,9 +93,32 @@ const Brand = () => {
   };
 
   return (
-    <div className="brand-container-page">
-      <h2 className="brand-title">Brand Management</h2>
-      <AddButton onClick={handleAdd}>+ Add Brand</AddButton>
+    <div className="page-container">
+      <div className="page-header">
+        <h2>Brand Lists</h2>
+
+        {/* <button
+          className="btn-primary"
+          onClick={() => {
+            setMode("add");
+            setSelectedUser(null);
+            setOpenModal(true);
+          }}
+        >
+          + Add User
+        </button> */}
+        <AddButton
+          onClick={() => {
+            reset();
+            setEditId(null);
+            setShowModal(true);
+          }}
+        >
+          + Add Brand
+        </AddButton>
+      </div>
+      {/* <h2 className="brand-title">Brand Management</h2> */}
+
       <div className="brand-container">
         <div className="table-toolbar">
           <div className="entries">

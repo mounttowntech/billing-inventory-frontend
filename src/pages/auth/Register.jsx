@@ -27,12 +27,20 @@ const Register = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchRoles()).unwrap().then(res => {
-      // Handle the fetched roles if needed
-      console.log('rolesres:', res);
-      // set role name in the state
-      setRoles(res.map(role => ({ id: role._id, label: role.roleName, value: role.roleName })));
-    });
+    dispatch(fetchRoles())
+      .unwrap()
+      .then((res) => {
+        // Handle the fetched roles if needed
+        console.log("rolesres:", res);
+        // set role name in the state
+        setRoles(
+          res.map((role) => ({
+            id: role._id,
+            label: role.roleName,
+            value: role.roleName,
+          })),
+        );
+      });
   }, [dispatch]);
 
   const onSubmit = async (data) => {
@@ -42,7 +50,7 @@ const Register = () => {
       navigate("/login");
     }
   };
-console.log('roles:', roles);
+  console.log("roles:", roles);
   return (
     <div className="login-page1">
       <form onSubmit={handleSubmit(onSubmit)} className="login-card1">
@@ -125,13 +133,11 @@ console.log('roles:', roles);
             />
           </div>
 
-          <div className="full-width">
-            <button disabled={loading}>
+          <div className="full-width register-actions">
+            <button type="submit" disabled={loading}>
               {loading ? "Registering..." : "Register"}
             </button>
-          </div>
 
-          <div className="full-width">
             <Link to="/login" className="register-link1">
               Already have an account? Login
             </Link>

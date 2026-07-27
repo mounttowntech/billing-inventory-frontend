@@ -64,3 +64,45 @@
   color: #6b7280;
   cursor: not-allowed;
 }
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 12% !important;
+  height: 46px;
+
+  padding: 0 24px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #0b7f79;
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(11, 127, 121, 0.2);
+}
+
+.btn-primary:hover {
+  background: #086b66;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(11, 127, 121, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
