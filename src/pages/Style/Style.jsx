@@ -11,15 +11,11 @@ import SearchBox from "../../components/Common/SearchBox";
 import {
   AddButton,
   EditButton,
-  SaveButton,
   DeleteButton,
-  CancelButton,
   PreviousButton,
   NextButton,
 } from "../../components/Common/Button";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { styleValidation } from "../../validations/styleValidation";
+import StyleForm from "./StyleForm";
 
 const Style = () => {
   const dispatch = useDispatch();
@@ -27,6 +23,7 @@ const Style = () => {
   const { styles, loading } = useSelector((state) => state.style);
 
   const [editId, setEditId] = useState(null);
+  const [editingStyle, setEditingStyle] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -40,15 +37,6 @@ const Style = () => {
   const filteredStyles = currentStyles.filter((style) =>
     style.styleName.toLowerCase().includes(search.toLowerCase()),
   );
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(styleValidation),
-  });
 
   useEffect(() => {
     dispatch(getStyles());
@@ -61,7 +49,7 @@ const Style = () => {
     }
   }, [totalPages, currentPage]);
 
-  const onSubmit = (data) => {
+  const handleFormSubmit = (data) => {
     if (editId) {
       dispatch(
         updateStyle({
@@ -70,14 +58,13 @@ const Style = () => {
         }),
       ).then(() => {
         dispatch(getStyles());
-        reset();
         setEditId(null);
+        setEditingStyle(null);
         setShowModal(false);
       });
     } else {
       dispatch(createStyle(data)).then(() => {
         dispatch(getStyles());
-        reset();
         setShowModal(false);
       });
     }
@@ -85,11 +72,20 @@ const Style = () => {
 
   const handleEdit = (style) => {
     setEditId(style._id);
-
-    setValue("styleName", style.styleName);
-    setValue("styleCode", style.styleCode);
-
+    setEditingStyle(style);
     setShowModal(true);
+  };
+
+  const handleAdd = () => {
+    setEditId(null);
+    setEditingStyle(null);
+    setShowModal(true);
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setEditId(null);
+    setEditingStyle(null);
   };
 
   const handleDelete = (id) => {
@@ -111,56 +107,16 @@ const Style = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <AddButton
-          onClick={() => {
-            reset();
-            setEditId(null);
-            setShowModal(true);
-          }}
-        >
-          Add Style
-        </AddButton>
+        <AddButton onClick={handleAdd}>Add Style</AddButton>
       </div>
 
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>{editId ? "Update Style" : "Add Style"}</h2>
-
-            <label className="field-label">Style Name</label>
-            <input
-              className="text-input"
-              placeholder="Style Name"
-              {...register("styleName")}
-            />
-            <p className="error-text">{errors.styleName?.message}</p>
-
-            <label className="field-label">Style Code</label>
-            <input
-              className="text-input"
-              placeholder="Style Code"
-              {...register("styleCode")}
-            />
-            <p className="error-text">{errors.styleCode?.message}</p>
-
-            <div className="modal-actions">
-              <button
-                className="btn btn-cancel"
-                onClick={() => {
-                  reset();
-                  setEditId(null);
-                  setShowModal(false);
-                }}
-              >
-                Cancel
-              </button>
-
-              <SaveButton onClick={handleSubmit(onSubmit)}>
-                {editId ? "Update" : "Create"}
-              </SaveButton>
-            </div>
-          </div>
-        </div>
+        <StyleForm
+          style={editingStyle}
+          editId={editId}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCancel}
+        />
       )}
 
       {loading && <h3 className="loading-text">Loading...</h3>}

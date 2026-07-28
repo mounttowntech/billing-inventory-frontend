@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./Colors.css";
 
 import { useDispatch, useSelector } from "react-redux";
-import ColorForm  from "./ColorForm";
+import ColorForm from "./ColorForm";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
@@ -22,8 +22,6 @@ import {
   PreviousButton,
   DeleteButton,
   NextButton,
-  SaveButton,
-  CancelButton,
 } from "../../components/Common/Button";
 import SearchBox from "../../components/Common/SearchBox";
 
@@ -34,6 +32,7 @@ const Colors = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [editingColor, setEditingColor] = useState(null);
   const [search, setSearch] = useState("");
 
   const [openModal, setOpenModal] = useState(false);
@@ -42,7 +41,7 @@ const Colors = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   // const itemsPerPage = 3;
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
   const currentColors = colors.slice(indexOfFirst, indexOfLast);
@@ -70,9 +69,7 @@ const Colors = () => {
     dispatch(getColors());
   }, [dispatch]);
 
-  const onSubmit = (data) => {
-    data.status = data.status === "true" || data.status === true;
-
+  const handleFormSubmit = (data) => {
     if (editId) {
       dispatch(
         updateColor({
@@ -81,22 +78,13 @@ const Colors = () => {
         }),
       ).then(() => {
         dispatch(getColors());
-
-        reset({
-          status: true,
-        });
-
         setShowForm(false);
         setEditId(null);
+        setEditingColor(null);
       });
     } else {
       dispatch(createColor(data)).then(() => {
         dispatch(getColors());
-
-        reset({
-          status: true,
-        });
-
         setShowForm(false);
       });
     }
@@ -115,6 +103,18 @@ const Colors = () => {
     setOpenModal(true);
   };
 
+  const handleAdd = () => {
+    setEditId(null);
+    setEditingColor(null);
+    setShowForm(true);
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setEditId(null);
+    setEditingColor(null);
+  };
+
   const handleDelete = (id) => {
     if (window.confirm("Delete this color?")) {
       dispatch(deleteColor(id)).then(() => {
@@ -122,6 +122,7 @@ const Colors = () => {
       });
     }
   };
+
   return (
     <div className="page-container">
       {/* <div className="colors-header">
@@ -174,15 +175,15 @@ const Colors = () => {
 
         <table className="custom-table">
           <thead>
-              <tr>
-                <th>#</th>
-                <th>Color Code</th>
-                <th>Color Name</th>
-                <th>Hex Code</th>
-                <th>Status</th>
-                <th>Preview</th>
-                <th>Actions</th>
-              </tr>
+            <tr>
+              <th>#</th>
+              <th>Color Code</th>
+              <th>Color Name</th>
+              <th>Hex Code</th>
+              <th>Status</th>
+              <th>Preview</th>
+              <th>Actions</th>
+            </tr>
           </thead>
 
           <tbody>
@@ -308,21 +309,7 @@ const Colors = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <AddButton
-          onClick={() => {
-            reset({
-              colorCode: "",
-              colorName: "",
-              hexCode: "",
-              status: true,
-            });
-
-            setEditId(null);
-            setShowForm(true);
-          }}
-        >
-          Add Color
-        </AddButton>
+        <AddButton onClick={handleAdd}>Add Color</AddButton>
       </div>
 
       <table className="colors-table">
@@ -368,7 +355,6 @@ const Colors = () => {
 
                 <td className="action-buttons">
                   <EditButton onClick={() => handleEdit(color)} />
-
                   <DeleteButton onClick={() => handleDelete(color._id)} />
                 </td>
               </tr>
@@ -390,90 +376,14 @@ const Colors = () => {
       </table>
 
       {showForm && (
-        <div
-          className="modal-overlay"
-          onClick={() => {
-            setShowForm(false);
-            setEditId(null);
-
-            reset({
-              status: true,
-            });
-          }}
-        >
-          <form
-            className="color-form"
-            onClick={(e) => e.stopPropagation()}
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <h2>{editId ? "Edit Color" : "Add Color"}</h2>
-
-            <div className="form-group">
-              <label>Color Code</label>
-
-              <input
-                placeholder="Enter Color Code"
-                {...register("colorCode")}
-              />
-
-              <p>{errors.colorCode?.message}</p>
-            </div>
-
-            <div className="form-group">
-              <label>Color Name</label>
-
-              <input
-                placeholder="Enter Color Name"
-                {...register("colorName")}
-              />
-
-              <p>{errors.colorName?.message}</p>
-            </div>
-
-            <div className="form-group">
-              <label>Hex Code</label>
-
-              <input
-                type="text"
-                placeholder="#FF0000"
-                {...register("hexCode")}
-              />
-
-              <p>{errors.hexCode?.message}</p>
-            </div>
-
-            <div className="form-group">
-              <label>Status</label>
-
-              <select {...register("status")}>
-                <option value="true">Active</option>
-
-                <option value="false">Inactive</option>
-              </select>
-            </div>
-
-            <div className="form-buttons">
-              <SaveButton type="submit">
-                {editId ? "Update" : "Save"}
-              </SaveButton>
-
-              <CancelButton
-                type="button"
-                onClick={() => {
-                  reset({
-                    status: true,
-                  });
-
-                  setShowForm(false);
-                  setEditId(null);
-                }}
-              >
-                Cancel
-              </CancelButton>
-            </div>
-          </form>
-        </div>
+        <ColorForm
+          color={editingColor}
+          editId={editId}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCancel}
+        />
       )}
+
       <div className="pagination">
         <PreviousButton
           className="btn btn-page"

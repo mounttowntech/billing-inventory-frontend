@@ -17,9 +17,8 @@ import {
   PreviousButton,
   NextButton,
   EditButton,
-  CancelButton,
-  SaveButton,
 } from "../../components/Common/Button";
+import AuditLogForm from "./AuditLogForm";
 
 const AuditLog = () => {
   const dispatch = useDispatch();
@@ -67,12 +66,6 @@ const AuditLog = () => {
     dispatch(getAuditLogs());
   }, [dispatch]);
 
-  if (isLoading) {
-    return <h3>Loading...</h3>;
-  }
-  console.log("Logged In User:", loggedInUser);
-  console.log(localStorage);
-
   const onSubmit = (data) => {
     let oldValue = {};
     let newValue = {};
@@ -95,8 +88,6 @@ const AuditLog = () => {
       newValues: newValue,
       ipAddress: data.ipAddress,
     };
-
-    console.log("Payload:", payload);
 
     if (editId) {
       dispatch(
@@ -139,7 +130,7 @@ const AuditLog = () => {
 
   const handleEdit = (log) => {
     setEditId(log._id);
-    console.log("The log is:", log);
+
     reset({
       user: log.user ? `${log.user.firstName} ${log.user.lastName}` : "",
       module: log.module,
@@ -160,6 +151,10 @@ const AuditLog = () => {
       });
     }
   };
+
+  if (isLoading) {
+    return <h3>Loading...</h3>;
+  }
 
   return (
     <div className="auditlog-container">
@@ -300,81 +295,19 @@ const AuditLog = () => {
           </tbody>
         </table>
       </div>
-      {showForm && (
-        <div className="modal-overlay">
-          <div className="audit-modal">
-            <div className="audit-modal-header">
-              <h3>Add Audit Log</h3>
 
-              <button className="close-btn" onClick={() => setShowForm(false)}>
-                ✕
-              </button>
-            </div>
+      <AuditLogForm
+        showForm={showForm}
+        setShowForm={setShowForm}
+        editId={editId}
+        setEditId={setEditId}
+        register={register}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        errors={errors}
+        reset={reset}
+      />
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="audit-form-group">
-                <label>User</label>
-                <input type="text" {...register("user")} disabled />
-                <p>{errors.user?.message}</p>
-              </div>
-
-              <div className="audit-form-group">
-                <label>Description</label>
-                <textarea rows="3" {...register("description")} />
-                <p>{errors.description?.message}</p>
-              </div>
-
-              <div className="audit-form-group">
-                <label>Module</label>
-                <input type="text" {...register("module")} />
-                <p>{errors.module?.message}</p>
-              </div>
-
-              <div className="audit-form-group">
-                <label>Action</label>
-                <input type="text" {...register("action")} />
-                <p>{errors.action?.message}</p>
-              </div>
-
-              <div className="audit-form-group">
-                <label>Reference Id</label>
-                <input type="text" {...register("referenceId")} />
-              </div>
-
-              <div className="audit-form-group">
-                <label>Old Value (JSON)</label>
-                <textarea rows="4" {...register("oldValue")} />
-              </div>
-
-              <div className="audit-form-group">
-                <label>New Value (JSON)</label>
-                <textarea rows="4" {...register("newValue")} />
-              </div>
-
-              <div className="audit-form-group">
-                <label>IP Address</label>
-                <input type="text" {...register("ipAddress")} />
-              </div>
-
-              <div className="audit-form-buttons">
-                <SaveButton type="submit">
-                  {editId ? "Update Audit Log" : "Add Audit Log"}
-                </SaveButton>
-
-                <CancelButton
-                  onClick={() => {
-                    reset();
-                    setEditId(null);
-                    setShowForm(false);
-                  }}
-                >
-                  Cancel
-                </CancelButton>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
       <div className="pagination">
         <PreviousButton
           className="btn btn-page"

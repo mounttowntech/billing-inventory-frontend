@@ -8,18 +8,16 @@ import {
   updateCategory,
   deleteCategory,
 } from "../../features/Category/categorySlice";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AddButton,
   EditButton,
   DeleteButton,
-  SaveButton,
-  CancelButton,
 } from "../../components/Common/Button";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { categoryValidation } from "../../validations/categoryValidation";
 import SearchBox from "../../components/Common/SearchBox";
 import CategoryForm from "./CategoryForm";
+import { categoryValidation } from "../../validations/categoryValidation";
 
 const CategoryOptions = ({ value, onChange }) => {
   const dispatch = useDispatch();
@@ -39,7 +37,7 @@ const CategoryOptions = ({ value, onChange }) => {
   // const [showModal, setShowModal] = useState(false);
 
   const [search, setSearch] = useState("");
-console.log("currentCategories:", currentCategories);
+  console.log("currentCategories:", currentCategories);
   const filteredCategories = currentCategories.filter((category) =>
     category.categoryName?.toLowerCase().includes(search.toLowerCase()),
   );
@@ -106,6 +104,24 @@ console.log("currentCategories:", currentCategories);
   //   }
   // };
 
+  // const handleEdit = (category) => {
+  //   setEditId(category._id);
+  //   setEditingCategory(category);
+  //   setShowModal(true);
+  // };
+
+  const handleAdd = () => {
+    setEditId(null);
+    setEditingCategory(null);
+    setShowModal(true);
+  };
+
+  const handleCancel = () => {
+    setEditId(null);
+    setEditingCategory(null);
+    setShowModal(false);
+  };
+
   const handleDelete = (id) => {
     if (window.confirm("Delete this category?")) {
       dispatch(deleteCategory(id)).then(() => {
@@ -131,15 +147,15 @@ console.log("currentCategories:", currentCategories);
           + Add User
         </button> */}
         <AddButton
-        onClick={() => {
-          setMode("add");
-          reset();
-          setEditId(null);
-          setOpenModal(true);
-        }}
-      >
-        + Add
-      </AddButton>
+          onClick={() => {
+            setMode("add");
+            reset();
+            setEditId(null);
+            setOpenModal(true);
+          }}
+        >
+          + Add
+        </AddButton>
       </div>
 
       <div className="table-card">
@@ -176,25 +192,24 @@ console.log("currentCategories:", currentCategories);
           <thead>
             <tr>
               <th>#</th>
-            <th>Category</th>
-            <th>Action</th>
+              <th>Category</th>
+              <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
-          {filteredCategories.map((category, index) => (
-            <tr key={category._id}>
-              <td>{indexOfFirst + index + 1}</td>
-              <td>{category.categoryName}</td>
+            {filteredCategories.map((category, index) => (
+              <tr key={category._id}>
+                <td>{indexOfFirst + index + 1}</td>
+                <td>{category.categoryName}</td>
 
-              <td className="action-buttons">
-                <EditButton onClick={() => handleEdit(category)} />
-
-                <DeleteButton onClick={() => handleDelete(category._id)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
+                <td className="action-buttons">
+                  <EditButton onClick={() => handleEdit(category)} />
+                  <DeleteButton onClick={() => handleDelete(category._id)} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
 
         <div className="user-pagination">
@@ -246,23 +261,22 @@ console.log("currentCategories:", currentCategories);
         </div>
       </div>
 
-
-            <Modal
-                    open={openModal}
-                    title={mode === "add" ? "Add Category" : "Edit Category"}
-                    size="md"
-                    onClose={() => setOpenModal(false)}
-                  >
-                    <CategoryForm
-                      mode={mode}
-                      category={selectedCategory}
-                      onClose={() => setOpenModal(false)}
-                      onSuccess={() => {
-                        setOpenModal(false);
-                        dispatch(fetchCategories());
-                      }}
-                    />
-                  </Modal>
+      <Modal
+        open={openModal}
+        title={mode === "add" ? "Add Category" : "Edit Category"}
+        size="md"
+        onClose={() => setOpenModal(false)}
+      >
+        <CategoryForm
+          mode={mode}
+          category={selectedCategory}
+          onClose={() => setOpenModal(false)}
+          onSuccess={() => {
+            setOpenModal(false);
+            dispatch(fetchCategories());
+          }}
+        />
+      </Modal>
 
       {/* {showModal && (
         <div className="modal-overlay">
@@ -295,7 +309,6 @@ console.log("currentCategories:", currentCategories);
           </div>
         </div>
       )} */}
-      
     </div>
   );
 };

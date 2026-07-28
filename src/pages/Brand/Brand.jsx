@@ -12,11 +12,9 @@ import {
   AddButton,
   EditButton,
   DeleteButton,
-  SaveButton,
-  CancelButton,
-  PreviousButton,
-  NextButton,
 } from "../../components/Common/Button";
+import BrandForm from "./BrandForm";
+import Modal from "../../components/Common/Modal";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { brandValidation } from "../../validations/brandValidation";
@@ -27,12 +25,23 @@ const Brand = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [editingBrand, setEditingBrand] = useState(null);
 
   const { brands = [], loading } = useSelector((state) => state.brand);
 
   const filteredBrands = brands.filter((brand) =>
     (brand.brandName || "").toLowerCase().includes(search.toLowerCase()),
   );
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(brandValidation),
+  });
 
   const totalPages =
     filteredBrands.length > 0
@@ -44,34 +53,11 @@ const Brand = () => {
 
   const currentBrands = filteredBrands.slice(indexOfFirst, indexOfLast);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(brandValidation),
-    defaultValues: {
-      brandCode: "",
-      brandName: "",
-      description: "",
-      logo: "",
-    },
-  });
-  console.log(
-    "rowsPerPage:",
-    rowsPerPage,
-    "currentBrands:",
-    currentBrands.length,
-  );
-  const [editId, setEditId] = useState(null);
-
   useEffect(() => {
     dispatch(fetchBrands());
   }, [dispatch]);
 
-  const onSubmit = (data) => {
+  const handleFormSubmit = (data) => {
     if (editId) {
       dispatch(
         updateBrand({
@@ -80,14 +66,13 @@ const Brand = () => {
         }),
       ).then(() => {
         dispatch(fetchBrands());
-        reset();
         setEditId(null);
+        setEditingBrand(null);
         setShowModal(false);
       });
     } else {
       dispatch(createBrand(data)).then(() => {
         dispatch(fetchBrands());
-        reset();
         setShowModal(false);
       });
     }
@@ -95,12 +80,20 @@ const Brand = () => {
 
   const handleEdit = (brand) => {
     setEditId(brand._id);
-
-    setValue("brandCode", brand.brandCode);
-    setValue("brandName", brand.brandName);
-    setValue("description", brand.description);
-    setValue("logo", brand.logo);
+    setEditingBrand(brand);
     setShowModal(true);
+  };
+
+  const handleAdd = () => {
+    setEditId(null);
+    setEditingBrand(null);
+    setShowModal(true);
+  };
+
+  const handleCancel = () => {
+    setEditId(null);
+    setEditingBrand(null);
+    setShowModal(false);
   };
 
   const handleDelete = (id) => {
@@ -127,18 +120,17 @@ const Brand = () => {
           + Add User
         </button> */}
         <AddButton
-        onClick={() => {
-          reset();
-          setEditId(null);
-          setShowModal(true);
-        }}
-      >
-        + Add Brand
-      </AddButton>
+          onClick={() => {
+            reset();
+            setEditId(null);
+            setShowModal(true);
+          }}
+        >
+          + Add Brand
+        </AddButton>
       </div>
       {/* <h2 className="brand-title">Brand Management</h2> */}
 
-      
       <div className="brand-container">
         <div className="table-toolbar">
           <div className="entries">
@@ -156,6 +148,8 @@ const Brand = () => {
             </select>
 
             <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
             <SearchBox
               placeholder="Search Brand..."
               value={search}
@@ -167,59 +161,20 @@ const Brand = () => {
           </div>
         </div>
 
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h2>{editId ? "Update Brand" : "Add Brand"}</h2>
-
-              <div className="brand-form">
-                <input
-                  type="text"
-                  placeholder="Brand Code"
-                  {...register("brandCode")}
-                />
-                <p className="error">{errors.brandCode?.message}</p>
-
-                <input
-                  type="text"
-                  placeholder="Brand Name"
-                  {...register("brandName")}
-                />
-                <p className="error">{errors.brandName?.message}</p>
-
-                <input
-                  type="text"
-                  placeholder="Logo URL"
-                  {...register("logo")}
-                />
-                <p className="error">{errors.logo?.message}</p>
-
-                <textarea
-                  placeholder="Description"
-                  rows="3"
-                  {...register("description")}
-                />
-                <p className="error">{errors.description?.message}</p>
-
-                <div className="form-buttons">
-                  <EditButton onClick={handleSubmit(onSubmit)}>
-                    {editId ? "Update Brand" : "Add Brand"}
-                  </EditButton>
-
-                  <CancelButton
-                    onClick={() => {
-                      reset();
-                      setEditId(null);
-                      setShowModal(false);
-                    }}
-                  >
-                    Cancel
-                  </CancelButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <Modal
+          open={showModal}
+          title={editId ? "Edit Brand" : "Add Brand"}
+          size="md"
+          onClose={handleCancel}
+        >
+          <BrandForm
+            brand={editingBrand}
+            editId={editId}
+            onSubmit={handleFormSubmit}
+            onCancel={handleCancel}
+            onClose={handleCancel}
+          />
+        </Modal>
 
         {loading && <p>Loading...</p>}
         <div className="table-wrapper">
@@ -240,11 +195,8 @@ const Brand = () => {
                 currentBrands.map((brand, index) => (
                   <tr key={brand._id}>
                     <td>{indexOfFirst + index + 1}</td>
-
                     <td>{brand.brandCode}</td>
-
                     <td>{brand.brandName}</td>
-
                     <td>
                       {brand.logo ? (
                         <img
@@ -260,14 +212,11 @@ const Brand = () => {
                         "No Logo"
                       )}
                     </td>
-
                     <td>{brand.description}</td>
-
                     <td className="action-buttons">
                       <EditButton onClick={() => handleEdit(brand)}>
                         Edit
                       </EditButton>
-
                       <DeleteButton onClick={() => handleDelete(brand._id)}>
                         Delete
                       </DeleteButton>
@@ -299,14 +248,12 @@ const Brand = () => {
             >
               &laquo;
             </button>
-
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
             >
               &lsaquo;
             </button>
-
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i}
@@ -316,14 +263,12 @@ const Brand = () => {
                 {i + 1}
               </button>
             ))}
-
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
             >
               &rsaquo;
             </button>
-
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(totalPages)}

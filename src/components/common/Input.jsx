@@ -21,11 +21,11 @@ const Input = ({
 
       <div className="input-wrapper">
         <input
-          type={isPassword && showPassword ? "text" : type}
+          type={isPassword ? (showPassword ? "text" : "password") : type}
           placeholder={placeholder}
           className="form-control"
           disabled={disabled}
-          {...register(name)}
+          {...(register ? register(name) : {})}
           value={value}
           onChange={onChange}
         />
