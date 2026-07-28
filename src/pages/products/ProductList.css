@@ -129,3 +129,16 @@
   font-weight: 700;
   border: #ffffff solid 1px;
 }
+
+.product-list-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    min-height: 50px !important;
+    border-radius: var(--radius-sm);
+    background: var(--light-color);
+    margin-top: 21px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -42,8 +42,9 @@ export const createProduct = createAsyncThunk(
     try {
       return await createProductApi(data);
     } catch (error) {
+      console.log('create_prod__response', error);
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to create product",
+        error || {message: "Failed to create product"},
       );
     }
   },
@@ -55,8 +56,9 @@ export const updateProduct = createAsyncThunk(
     try {
       return await updateProductApi(id, data);
     } catch (error) {
+      console.log('error_response', error);
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update product",
+        error || {message: "Failed to update product"},
       );
     }
   },
@@ -170,6 +172,7 @@ const productSlice = createSlice({
         state.products.push(action.payload.data);
       })
       .addCase(createProduct.rejected, (state, action) => {
+        console.error("Failed to create product:", action);
         state.loading = false;
         state.error = action.payload;
       })
@@ -189,6 +192,7 @@ const productSlice = createSlice({
         }
       })
       .addCase(updateProduct.rejected, (state, action) => {
+        console.error("Failed to update product:", action);
         state.loading = false;
         state.error = action.payload;
       })

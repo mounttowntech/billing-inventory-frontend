@@ -300,6 +300,10 @@ export default function POSPage() {
                       <img
                         src={`${IMAGE_BASE_URL}/${product.image}`}
                         alt={product.productName}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = noImage;
+                        }}
                       />
                     ) : (
                       <img src={noImage} alt="No Image" />

@@ -11,18 +11,33 @@ export const getProductByIdApi = async (id) => {
 };
 
 export const createProductApi = async (data) => {
+  try {
   const response = await API.post("/products/create", data);
   return response.data;
+  } catch (error) {
+    console.error("Error updating attendance request:", error.response?.data?.message || error.message);
+    throw error?.response?.data?.message || "Failed to create product"; // Rethrow the error to be handled by the caller
+  }
 };
 
 export const updateProductApi = async (id, data) => {
+  try {
   const response = await API.put(`/products/update/${id}`, data);
   return response.data;
+  } catch (error) {
+    console.log("Error updating product:", error);
+    throw error?.response?.data?.message || "Failed to update product"; // Rethrow the error to be handled by the caller
+  }
 };
 
 export const deleteProductApi = async (id) => {
-  const response = await API.delete(`/products/delete/${id}`);
-  return response.data;
+  try {
+    const response = await API.delete(`/products/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log("Error deleting product:", error);
+    throw error?.response?.data?.message || "Failed to delete product"; // Rethrow the error to be handled by the caller
+  }
 };
 
 export const searchBySKUApi = async (sku) => {
