@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { sizesValidation } from "../../validations/SizesValidation";
 import { SaveButton, CancelButton } from "../../components/Common/Button";
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
 
 const SizeForm = ({ size, editId, onSubmit, onCancel }) => {
   const {
@@ -19,11 +21,10 @@ const SizeForm = ({ size, editId, onSubmit, onCancel }) => {
       chest: "",
       waist: "",
       hip: "",
-      status: true,
+      status: "true",
     },
   });
 
-  // Populate form when editing, reset when adding
   useEffect(() => {
     if (size) {
       reset({
@@ -43,64 +44,98 @@ const SizeForm = ({ size, editId, onSubmit, onCancel }) => {
         chest: "",
         waist: "",
         hip: "",
-        status: true,
+        status: "true",
       });
     }
   }, [size, reset]);
 
   const handleCancel = () => {
-    reset({ status: true });
+    reset();
     onCancel();
   };
 
   const submitHandler = (data) => {
     data.status = data.status === "true" || data.status === true;
     onSubmit(data);
-    reset({ status: true });
+    reset();
   };
 
   return (
-    <div className="modal-overlay" onClick={handleCancel}>
-      <form
-        className="size-form"
-        onClick={(e) => e.stopPropagation()}
-        onSubmit={handleSubmit(submitHandler)}
-      >
-        <h2>{editId ? "Edit Size" : "Add Size"}</h2>
+    <form className="size-form" onSubmit={handleSubmit(submitHandler)}>
+      <Input
+        label="Size Code"
+        name="sizeCode"
+        placeholder="Enter Size Code"
+        register={register}
+        error={errors.sizeCode?.message}
+      />
 
-        <input placeholder="Size Code" {...register("sizeCode")} />
-        <p>{errors.sizeCode?.message}</p>
+      <Input
+        label="Size Name"
+        name="sizeName"
+        placeholder="Enter Size Name"
+        register={register}
+        error={errors.sizeName?.message}
+      />
 
-        <input placeholder="Size Name" {...register("sizeName")} />
-        <p>{errors.sizeName?.message}</p>
+      <Input
+        label="Display Order"
+        name="displayOrder"
+        type="number"
+        placeholder="Display Order"
+        register={register}
+        error={errors.displayOrder?.message}
+      />
 
-        <input
-          type="number"
-          placeholder="Display Order"
-          {...register("displayOrder")}
-        />
-        <p>{errors.displayOrder?.message}</p>
+      <Input
+        label="Chest"
+        name="chest"
+        type="number"
+        placeholder="Chest"
+        register={register}
+        error={errors.chest?.message}
+      />
 
-        <input type="number" placeholder="Chest" {...register("chest")} />
-        <p>{errors.chest?.message}</p>
+      <Input
+        label="Waist"
+        name="waist"
+        type="number"
+        placeholder="Waist"
+        register={register}
+        error={errors.waist?.message}
+      />
 
-        <input type="number" placeholder="Waist" {...register("waist")} />
-        <p>{errors.waist?.message}</p>
+      <Input
+        label="Hip"
+        name="hip"
+        type="number"
+        placeholder="Hip"
+        register={register}
+        error={errors.hip?.message}
+      />
 
-        <input type="number" placeholder="Hip" {...register("hip")} />
-        <p>{errors.hip?.message}</p>
+      <Select
+        label="Status"
+        name="status"
+        register={register}
+        error={errors.status?.message}
+        options={[
+          { _id: "true", label: "Active" },
+          { _id: "false", label: "Inactive" },
+        ]}
+        placeholder="Status"
+      />
 
-        <select {...register("status")}>
-          <option value="true">Active</option>
-          <option value="false">Inactive</option>
-        </select>
+      <div className="form-buttons">
+        <SaveButton type="submit">
+          {editId ? "Update Size" : "Add Size"}
+        </SaveButton>
 
-        <div className="form-buttons">
-          <SaveButton type="submit" />
-          <CancelButton type="button" onClick={handleCancel} />
-        </div>
-      </form>
-    </div>
+        <CancelButton type="button" onClick={handleCancel}>
+          Cancel
+        </CancelButton>
+      </div>
+    </form>
   );
 };
 

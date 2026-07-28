@@ -16,12 +16,18 @@ import {
   NextButton,
 } from "../../components/Common/Button";
 import FabricForm from "./FabricForm";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import fabricValidation from "../../validations/fabricValidation";
 
 const Fabric = () => {
   const dispatch = useDispatch();
   const { fabrics, loading, error } = useSelector((state) => state.fabric);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const itemsPerPage = rowsPerPage;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentFabrics = fabrics.slice(indexOfFirst, indexOfLast);
@@ -38,6 +44,15 @@ const Fabric = () => {
     fabric.fabricName.toLowerCase().includes(search.toLowerCase()),
   );
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(fabricValidation),
+  });
+
   useEffect(() => {
     dispatch(getFabrics());
   }, [dispatch]);
@@ -52,21 +67,26 @@ const Fabric = () => {
   }, [fabrics, currentPage]);
 
   // Create & Update
-  const handleFormSubmit = (fabricData) => {
-    if (editId) {
-      dispatch(
-        updateFabric({
-          id: editId,
-          fabricData,
-        }),
-      ).then(() => {
-        dispatch(getFabrics());
-        setEditId("");
-        setEditingFabric(null);
-        setShowModal(false);
-      });
-    } else {
-      dispatch(createFabric(fabricData));
+  const handleFormSubmit = async (fabricData) => {
+    try {
+      if (editId) {
+        await dispatch(
+          updateFabric({
+            id: editId,
+            fabricData,
+          }),
+        ).unwrap();
+      } else {
+        await dispatch(createFabric(fabricData)).unwrap();
+      }
+
+      await dispatch(getFabrics());
+
+      setEditId("");
+      setEditingFabric(null);
+      setShowModal(false);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -100,81 +120,133 @@ const Fabric = () => {
   if (error) return <h2>{error}</h2>;
 
   return (
-    <div className="fabric-container">
-      <h2 className="fabric-title">Fabric Management</h2>
+    <div className="Fabric-main-page">
       <div className="fabric-actions">
-        <SearchBox
-          placeholder="Search Fabric..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <AddButton onClick={handleAdd}>Add Fabric</AddButton>
+        <h2 className="fabric-title">Fabric Management</h2>
+        <AddButton
+          onClick={() => {
+            (reset(), setEditId(null));
+            setShowModal(true);
+          }}
+        >
+          + Add Fabric
+        </AddButton>
       </div>
 
-      {showModal && (
-        <FabricForm
-          fabric={editingFabric}
-          editId={editId}
-          onSubmit={handleFormSubmit}
-          onCancel={handleCancel}
-        />
-      )}
+      <div className="fabric-container">
+        <div className="entries">
+          <select
+            value={rowsPerPage}
+            onChange={(e) => {
+              setRowsPerPage(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+          </select>
 
-      <div className="fabric-card">
-        {fabrics.length === 0 ? (
-          <h3>No Fabrics Found</h3>
-        ) : (
-          <table className="fabric-table">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Fabric Name</th>
-                <th>Fabric Code</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+          <span>Entries</span>
 
-            <tbody>
-              {filteredFabrics.map((fabric, index) => (
-                <tr key={fabric._id}>
-                  <td>{indexOfFirst + index + 1}</td>
-                  <td>{fabric.fabricName}</td>
-                  <td>{fabric.fabricCode}</td>
-
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(fabric)}>
-                      Edit
-                    </EditButton>
-
-                    <DeleteButton onClick={() => handleDelete(fabric._id)}>
-                      Delete
-                    </DeleteButton>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div style={{ marginLeft: "auto" }}>
+            <SearchBox
+              placeholder="Search Fabric..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
+        {showModal && (
+          <FabricForm
+            fabric={editingFabric}
+            editId={editId}
+            onSubmit={handleFormSubmit}
+            onCancel={handleCancel}
+          />
         )}
-      </div>
-      <div className="pagination">
-        <PreviousButton
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-        >
-          Previous
-        </PreviousButton>
 
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
+        <div className="fabric-card">
+          {fabrics.length === 0 ? (
+            <h3>No Fabrics Found</h3>
+          ) : (
+            <table className="fabric-table">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Fabric Name</th>
+                  <th>Fabric Code</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-        <NextButton
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+              <tbody>
+                {filteredFabrics.map((fabric, index) => (
+                  <tr key={fabric._id}>
+                    <td>{indexOfFirst + index + 1}</td>
+                    <td>{fabric.fabricName}</td>
+                    <td>{fabric.fabricCode}</td>
+
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(fabric)}>
+                        Edit
+                      </EditButton>
+
+                      <DeleteButton onClick={() => handleDelete(fabric._id)}>
+                        Delete
+                      </DeleteButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        <div className="user-pagination">
+          <p>
+            Showing {filteredFabrics.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredFabrics.length)}
+            of {filteredFabrics.length} entries
+          </p>
+
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

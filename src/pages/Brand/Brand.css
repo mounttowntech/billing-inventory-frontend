@@ -26,7 +26,6 @@
 .brand-container {
   width: 100%;
   max-width: 1200px;
-  margin: 20px auto;
   padding: 24px;
   background: var(--color-white);
   border-radius: 12px;

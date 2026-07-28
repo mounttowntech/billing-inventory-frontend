@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { unitValidation } from "../../validations/UnitValidation";
 import { SaveButton, CancelButton } from "../../components/Common/Button";
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
 
 const UnitForm = ({ unit, editId, onSubmit, onCancel }) => {
   const {
@@ -62,38 +64,38 @@ const UnitForm = ({ unit, editId, onSubmit, onCancel }) => {
 
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="unit-form-group">
-            <label>Unit Name</label>
-
-            <input
-              type="text"
+            <Input
+              label="Unit Name"
+              name="name"
               placeholder="Enter Unit Name"
-              {...register("name")}
+              register={register}
+              error={errors.name?.message}
             />
-
-            <p>{errors.name?.message}</p>
           </div>
 
           <div className="unit-form-group">
-            <label>Short Name</label>
-
-            <input
-              type="text"
+            <Input
+              label="Short Name"
+              name="shortName"
               placeholder="Eg. Kg, Pc, Box"
-              {...register("shortName")}
+              register={register}
+              error={errors.shortName?.message}
             />
-
-            <p>{errors.shortName?.message}</p>
           </div>
 
           <div className="unit-form-group">
-            <label>Allow Decimal</label>
-
-            <select {...register("allowDecimal")}>
-              <option value={false}>No</option>
-              <option value={true}>Yes</option>
-            </select>
-
-            <p>{errors.allowDecimal?.message}</p>
+            <Select
+              label="Allow Decimal"
+              name="allowDecimal"
+              register={register}
+              error={errors.allowDecimal?.message}
+              optionValue="value"
+              optionLabel="label"
+              options={[
+                { value: "true", label: "Yes" },
+                { value: "false", label: "No" },
+              ]}
+            />
           </div>
 
           <div className="unit-form-group">

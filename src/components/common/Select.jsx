@@ -11,7 +11,7 @@ const Select = ({
   optionLabel = "label",
 }) => {
   console.log("Select options:", options);
-  // console.log("Select value:", value);
+  // console.log("Select value:", item[optionValue]);
   return (
     <div className="form-group">
       {label && <label>{label}</label>}
@@ -24,11 +24,19 @@ const Select = ({
       >
         <option value="">{placeholder}</option>
 
-        {options.map((item, index) => (
-          <option key={item[optionValue]} value={item[optionValue]}>
-            {item[optionLabel]}
-          </option>
-        ))}
+        {options.map(
+          (item, index) => (
+            console.log("Select value:", item[optionValue]),
+            (
+              <option
+                key={item[optionValue] ?? index}
+                value={item[optionValue]}
+              >
+                {item[optionLabel]}
+              </option>
+            )
+          ),
+        )}
       </select>
 
       {error && <p className="error">{error}</p>}

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import fabricValidation from "../../validations/fabricValidation";
 import { CancelButton } from "../../components/Common/Button";
+import Input from "../../components/common/Input";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const FabricForm = ({ fabric, editId, onSubmit, onCancel }) => {
   const [fabricName, setFabricName] = useState("");
@@ -18,6 +21,8 @@ const FabricForm = ({ fabric, editId, onSubmit, onCancel }) => {
     }
     setErrors({});
   }, [fabric]);
+
+  const { register } = useForm();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,28 +55,23 @@ const FabricForm = ({ fabric, editId, onSubmit, onCancel }) => {
         <h2>{editId ? "Update Fabric" : "Add Fabric"}</h2>
 
         <form className="fabric-form" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Fabric Name"
+          <Input
+            label="Fabric Name"
+            name="fabricName"
             value={fabricName}
+            register={register}
             onChange={(e) => setFabricName(e.target.value)}
+            error={errors.fabricName?.message}
           />
-          {errors.fabricName && (
-            <p style={{ color: "red", marginTop: "5px" }}>
-              {errors.fabricName}
-            </p>
-          )}
-          <input
-            type="text"
-            placeholder="Fabric Code"
+          <Input
+            label="Fabric Code"
+            name="fabricCode"
             value={fabricCode}
+            register={register}
             onChange={(e) => setFabricCode(e.target.value)}
+            error={errors.fabricCode?.message}
           />
-          {errors.fabricCode && (
-            <p style={{ color: "red", marginTop: "5px" }}>
-              {errors.fabricCode}
-            </p>
-          )}
+
           <div className="modal-buttons">
             <button type="submit">{editId ? "Update" : "Create"}</button>
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./Colors.css";
 
 import { useDispatch, useSelector } from "react-redux";
-import ColorForm  from "./ColorForm";
+import ColorForm from "./ColorForm";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
@@ -24,7 +24,6 @@ import {
   NextButton,
 } from "../../components/Common/Button";
 import SearchBox from "../../components/Common/SearchBox";
-import ColorForm from "./ColorForm";
 
 const Colors = () => {
   const dispatch = useDispatch();
@@ -42,7 +41,7 @@ const Colors = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   // const itemsPerPage = 3;
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
   const currentColors = colors.slice(indexOfFirst, indexOfLast);
@@ -176,15 +175,15 @@ const Colors = () => {
 
         <table className="custom-table">
           <thead>
-              <tr>
-                <th>#</th>
-                <th>Color Code</th>
-                <th>Color Name</th>
-                <th>Hex Code</th>
-                <th>Status</th>
-                <th>Preview</th>
-                <th>Actions</th>
-              </tr>
+            <tr>
+              <th>#</th>
+              <th>Color Code</th>
+              <th>Color Name</th>
+              <th>Hex Code</th>
+              <th>Status</th>
+              <th>Preview</th>
+              <th>Actions</th>
+            </tr>
           </thead>
 
           <tbody>

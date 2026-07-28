@@ -4,7 +4,7 @@
 
 .unit-container {
   width: 95%;
-  margin: 25px auto;
+  margin: 2px auto;
   padding: 20px;
   background: #fff;
   border-radius: 12px;
@@ -16,7 +16,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  padding: 24px;
 }
 
 .unit-header h2 {

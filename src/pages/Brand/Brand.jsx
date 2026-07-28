@@ -15,6 +15,9 @@ import {
 } from "../../components/Common/Button";
 import BrandForm from "./BrandForm";
 import Modal from "../../components/Common/Modal";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { brandValidation } from "../../validations/brandValidation";
 
 const Brand = () => {
   const dispatch = useDispatch();
@@ -30,6 +33,15 @@ const Brand = () => {
   const filteredBrands = brands.filter((brand) =>
     (brand.brandName || "").toLowerCase().includes(search.toLowerCase()),
   );
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(brandValidation),
+  });
 
   const totalPages =
     filteredBrands.length > 0
@@ -136,6 +148,8 @@ const Brand = () => {
             </select>
 
             <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
             <SearchBox
               placeholder="Search Brand..."
               value={search}

@@ -27,6 +27,14 @@ export const sizesValidation = yup.object({
     .number()
     .typeError("Hip must be a number")
     .required("Hip is required"),
-
-  status: yup.boolean().required("Status is required"),
+  status: yup
+    .boolean()
+    .transform((value, originalValue) => {
+      console.log("typeofval", originalValue);
+      console.log("typeof", typeof originalValue);
+      if (originalValue == "true") return true;
+      if (originalValue == "false") return false;
+      return value;
+    })
+    .required("Status is required"),
 });
