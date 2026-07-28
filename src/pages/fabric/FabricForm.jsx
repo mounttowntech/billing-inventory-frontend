@@ -50,36 +50,32 @@ const FabricForm = ({ fabric, editId, onSubmit, onCancel }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>{editId ? "Update Fabric" : "Add Fabric"}</h2>
-
-        <form className="fabric-form" onSubmit={handleSubmit}>
-          <Input
-            label="Fabric Name"
-            name="fabricName"
-            value={fabricName}
-            register={register}
-            onChange={(e) => setFabricName(e.target.value)}
-            error={errors.fabricName?.message}
-          />
-          <Input
-            label="Fabric Code"
-            name="fabricCode"
-            value={fabricCode}
-            register={register}
-            onChange={(e) => setFabricCode(e.target.value)}
-            error={errors.fabricCode?.message}
-          />
-
-          <div className="modal-buttons">
-            <button type="submit">{editId ? "Update" : "Create"}</button>
-
-            <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-          </div>
-        </form>
+    <form className="fabric-form" onSubmit={handleSubmit}>
+      <div className="form-grid">
+        <Input
+          label="Fabric Name"
+          name="fabricName"
+          value={fabricName}
+          register={register}
+          onChange={(e) => setFabricName(e.target.value)}
+          error={errors.fabricName?.message}
+        />
+        <Input
+          label="Fabric Code"
+          name="fabricCode"
+          value={fabricCode}
+          register={register}
+          onChange={(e) => setFabricCode(e.target.value)}
+          error={errors.fabricCode?.message}
+        />
       </div>
-    </div>
+
+      <div className="modal-buttons">
+        <button type="submit">{editId ? "Update" : "Create"}</button>
+
+        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+      </div>
+    </form>
   );
 };
 

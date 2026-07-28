@@ -52,21 +52,22 @@ const BrandForm = ({ brand, editId, onSubmit, onCancel }) => {
 
   return (
     <form className="brand-form" onSubmit={handleSubmit(submitHandler)}>
-      <Input
-        label="Brand Code"
-        name="brandCode"
-        placeholder="Brand Code"
-        register={register}
-        error={errors.brandCode?.message}
-      />
-
-      <Input
-        label="Brand Name"
-        name="brandName"
-        placeholder="Brand Name"
-        register={register}
-        error={errors.brandName?.message}
-      />
+      <div className="form-grid">
+        <Input
+          label="Brand Code"
+          name="brandCode"
+          placeholder="Brand Code"
+          register={register}
+          error={errors.brandCode?.message}
+        />
+        <Input
+          label="Brand Name"
+          name="brandName"
+          placeholder="Brand Name"
+          register={register}
+          error={errors.brandName?.message}
+        />
+      </div>
 
       <Input
         label="Logo URL"
@@ -76,12 +77,16 @@ const BrandForm = ({ brand, editId, onSubmit, onCancel }) => {
         error={errors.logo?.message}
       />
 
-      <textarea
-        placeholder="Description"
-        rows={3}
-        {...register("description")}
-      />
-      <p className="error">{errors.description?.message}</p>
+      <div className="unit-form-group">
+        <label>Description</label>
+        <textarea
+          label="Description"
+          placeholder="Description"
+          rows={3}
+          {...register("description")}
+        />
+        <p className="error">{errors.description?.message}</p>
+      </div>
 
       <div className="form-buttons">
         <EditButton type="submit">

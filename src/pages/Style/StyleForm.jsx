@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { styleValidation } from "../../validations/styleValidation";
-import { SaveButton } from "../../components/Common/Button";
+import { CancelButton, SaveButton } from "../../components/Common/Button";
+import Input from "../../components/common/Input";
 
 const StyleForm = ({ style, editId, onSubmit, onCancel }) => {
   const {
@@ -44,37 +45,30 @@ const StyleForm = ({ style, editId, onSubmit, onCancel }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>{editId ? "Update Style" : "Add Style"}</h2>
-
-        <label className="field-label">Style Name</label>
-        <input
-          className="text-input"
-          placeholder="Style Name"
-          {...register("styleName")}
+    <form onSubmit={handleSubmit} className="season-form">
+      <div className="form-grid">
+        <Input
+          label="Style Name"
+          name="styleName"
+          register={register}
+          error={errors.styleName?.message}
         />
-        <p className="error-text">{errors.styleName?.message}</p>
-
-        <label className="field-label">Style Code</label>
-        <input
-          className="text-input"
-          placeholder="Style Code"
-          {...register("styleCode")}
+        <Input
+          label="Style Code"
+          name="styleCode"
+          register={register}
+          error={errors.styleCode?.message}
         />
-        <p className="error-text">{errors.styleCode?.message}</p>
-
-        <div className="modal-actions">
-          <button className="btn btn-cancel" onClick={handleCancel}>
-            Cancel
-          </button>
-
-          <SaveButton onClick={handleSubmit(submitHandler)}>
-            {editId ? "Update" : "Create"}
-          </SaveButton>
-        </div>
       </div>
-    </div>
+      <div className="modal-actions">
+        <SaveButton onClick={handleSubmit(submitHandler)}>
+          {editId ? "Update" : "Create"}
+        </SaveButton>
+        <CancelButton className="btn btn-cancel" onClick={handleCancel}>
+          Cancel
+        </CancelButton>
+      </div>
+    </form>
   );
 };
 

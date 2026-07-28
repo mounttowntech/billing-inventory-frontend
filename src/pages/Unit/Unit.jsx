@@ -17,7 +17,7 @@ import {
 } from "../../components/Common/Button";
 
 import UnitForm from "./UnitForm";
-
+import Modal from "../../components/Common/Modal";
 import "./Unit.css";
 
 const Unit = () => {
@@ -168,14 +168,19 @@ const Unit = () => {
           </tbody>
         </table>
 
-        {showForm && (
+        <Modal
+          open={showForm}
+          title={editId ? "Edit Unit" : "Add Unit"}
+          size="md"
+          onClose={() => handleCancel(false)}
+        >
           <UnitForm
             unit={editingUnit}
             editId={editId}
             onSubmit={handleFormSubmit}
             onCancel={handleCancel}
           />
-        )}
+        </Modal>
 
         <div className="user-pagination">
           <p>
