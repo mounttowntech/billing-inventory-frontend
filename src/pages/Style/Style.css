@@ -29,6 +29,10 @@
   color: var(--teal-900);
 }
 
+.style-main-page{
+  padding: 20px;
+}
+
 /* Header */
 .style-header {
   display: flex;

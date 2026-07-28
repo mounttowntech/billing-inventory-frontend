@@ -52,74 +52,60 @@ const UnitForm = ({ unit, editId, onSubmit, onCancel }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="unit-modal">
-        <div className="unit-modal-header">
-          <h3>{editId ? "Edit Unit" : "Add Unit"}</h3>
+    <form onSubmit={handleSubmit(submitHandler)}>
+      <div className="form-grid">
+        <Input
+          label="Unit Name"
+          name="name"
+          placeholder="Enter Unit Name"
+          register={register}
+          error={errors.name?.message}
+        />
 
-          <button className="close-btn" onClick={handleCancel}>
-            ✕
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit(submitHandler)}>
-          <div className="unit-form-group">
-            <Input
-              label="Unit Name"
-              name="name"
-              placeholder="Enter Unit Name"
-              register={register}
-              error={errors.name?.message}
-            />
-          </div>
-
-          <div className="unit-form-group">
-            <Input
-              label="Short Name"
-              name="shortName"
-              placeholder="Eg. Kg, Pc, Box"
-              register={register}
-              error={errors.shortName?.message}
-            />
-          </div>
-
-          <div className="unit-form-group">
-            <Select
-              label="Allow Decimal"
-              name="allowDecimal"
-              register={register}
-              error={errors.allowDecimal?.message}
-              optionValue="value"
-              optionLabel="label"
-              options={[
-                { value: "true", label: "Yes" },
-                { value: "false", label: "No" },
-              ]}
-            />
-          </div>
-
-          <div className="unit-form-group">
-            <label>Description</label>
-
-            <textarea
-              rows="4"
-              placeholder="Enter Description"
-              {...register("description")}
-            />
-
-            <p>{errors.description?.message}</p>
-          </div>
-
-          <div className="unit-form-buttons">
-            <SaveButton type="submit">
-              {editId ? "Update Unit" : "Save Unit"}
-            </SaveButton>
-
-            <CancelButton onClick={handleCancel}>Cancel</CancelButton>
-          </div>
-        </form>
+        <Input
+          label="Short Name"
+          name="shortName"
+          placeholder="Eg. Kg, Pc, Box"
+          register={register}
+          error={errors.shortName?.message}
+        />
       </div>
-    </div>
+
+      <div className="unit-form-group">
+        <Select
+          label="Allow Decimal"
+          name="allowDecimal"
+          register={register}
+          error={errors.allowDecimal?.message}
+          optionValue="value"
+          optionLabel="label"
+          options={[
+            { value: "true", label: "Yes" },
+            { value: "false", label: "No" },
+          ]}
+        />
+      </div>
+
+      <div className="unit-form-group">
+        <label>Description</label>
+
+        <textarea
+          rows="4"
+          placeholder="Enter Description"
+          {...register("description")}
+        />
+
+        <p>{errors.description?.message}</p>
+      </div>
+
+      <div className="unit-form-buttons">
+        <SaveButton type="submit">
+          {editId ? "Update Unit" : "Save Unit"}
+        </SaveButton>
+
+        <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+      </div>
+    </form>
   );
 };
 

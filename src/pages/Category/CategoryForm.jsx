@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 
 import Input from "../../components/common/Input";
-import { SaveButton } from "../../components/common/Button";
+import { SaveButton, CancelButton } from "../../components/common/Button";
 
 import { categoryValidation } from "../../validations/categoryValidation";
 import {
@@ -95,6 +95,10 @@ export default function CategoryForm({
         <SaveButton>
           {mode === "add" ? "Add Category" : "Update Category"}
         </SaveButton>
+
+        <CancelButton type="button" onClick={onClose}>
+          Cancel
+        </CancelButton>
       </div>
     </form>
   );

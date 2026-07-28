@@ -19,6 +19,7 @@ import FabricForm from "./FabricForm";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import fabricValidation from "../../validations/fabricValidation";
+import Modal from "../../components/Common/Modal";
 
 const Fabric = () => {
   const dispatch = useDispatch();
@@ -158,14 +159,20 @@ const Fabric = () => {
             />
           </div>
         </div>
-        {showModal && (
+
+        <Modal
+          open={showModal}
+          title={editId ? "Edit Fabric" : "Add Fabric"}
+          size="md"
+          onClose={() => setShowModal(false)}
+        >
           <FabricForm
             fabric={editingFabric}
             editId={editId}
             onSubmit={handleFormSubmit}
             onCancel={handleCancel}
           />
-        )}
+        </Modal>
 
         <div className="fabric-card">
           {fabrics.length === 0 ? (

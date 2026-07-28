@@ -1,5 +1,5 @@
 .season-container {
-  width: 90%;
+  width: 100%;
   max-width: 1200px;
   margin: 30px auto;
   padding: 24px 20px 48px;
@@ -11,6 +11,10 @@
   display: flex !important;
   justify-content: space-between;
   align-items: center;
+}
+
+.season-main-page{
+  padding: 30px;
 }
 
 .season-actions{

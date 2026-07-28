@@ -62,57 +62,60 @@ const SizeForm = ({ size, editId, onSubmit, onCancel }) => {
 
   return (
     <form className="size-form" onSubmit={handleSubmit(submitHandler)}>
-      <Input
-        label="Size Code"
-        name="sizeCode"
-        placeholder="Enter Size Code"
-        register={register}
-        error={errors.sizeCode?.message}
-      />
+      <div className="form-grid">
+        <Input
+          label="Size Code"
+          name="sizeCode"
+          placeholder="Enter Size Code"
+          register={register}
+          error={errors.sizeCode?.message}
+        />
 
-      <Input
-        label="Size Name"
-        name="sizeName"
-        placeholder="Enter Size Name"
-        register={register}
-        error={errors.sizeName?.message}
-      />
+        <Input
+          label="Size Name"
+          name="sizeName"
+          placeholder="Enter Size Name"
+          register={register}
+          error={errors.sizeName?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Display Order"
+          name="displayOrder"
+          type="number"
+          placeholder="Display Order"
+          register={register}
+          error={errors.displayOrder?.message}
+        />
 
-      <Input
-        label="Display Order"
-        name="displayOrder"
-        type="number"
-        placeholder="Display Order"
-        register={register}
-        error={errors.displayOrder?.message}
-      />
-
-      <Input
-        label="Chest"
-        name="chest"
-        type="number"
-        placeholder="Chest"
-        register={register}
-        error={errors.chest?.message}
-      />
-
-      <Input
-        label="Waist"
-        name="waist"
-        type="number"
-        placeholder="Waist"
-        register={register}
-        error={errors.waist?.message}
-      />
-
-      <Input
-        label="Hip"
-        name="hip"
-        type="number"
-        placeholder="Hip"
-        register={register}
-        error={errors.hip?.message}
-      />
+        <Input
+          label="Chest"
+          name="chest"
+          type="number"
+          placeholder="Chest"
+          register={register}
+          error={errors.chest?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Waist"
+          name="waist"
+          type="number"
+          placeholder="Waist"
+          register={register}
+          error={errors.waist?.message}
+        />
+        <Input
+          label="Hip"
+          name="hip"
+          type="number"
+          placeholder="Hip"
+          register={register}
+          error={errors.hip?.message}
+        />
+      </div>
 
       <Select
         label="Status"
