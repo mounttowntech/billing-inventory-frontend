@@ -18,37 +18,51 @@ import {
   NextButton,
   SaveButton,
 } from "../../components/Common/Button";
+
+import Modal from "../../components/common/Modal";
+import ProductForm from "./ProductForm";
+import noImage from "../../assets/no-image.png";
+
 const ProductList = () => {
+
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [expandedProduct, setExpandedProduct] = useState(null);
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [mode, setMode] = useState("add"); // add | edit
   const dispatch = useDispatch();
 
   const { products } = useSelector((state) => state.product);
+  // console.log("Products in ProductList are the :", products);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
+  // const itemsPerPage = 3;
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+  const indexOfLast = currentPage * rowsPerPage;
+  const indexOfFirst = indexOfLast - rowsPerPage;
 
   const currentProducts = products.slice(indexOfFirst, indexOfLast);
 
   const totalPages =
-    products.length > 0 ? Math.ceil(products.length / itemsPerPage) : 1;
+    products.length > 0 ? Math.ceil(products.length / rowsPerPage) : 1;
   const filteredProducts = currentProducts.filter((product) =>
     product.productName.toLowerCase().includes(search.toLowerCase()),
   );
-
+// console.log("currentProducts :", currentProducts);
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
 
   const handleEdit = (product) => {
+    // console.log("Editing product:", product);
+    setMode("edit");
     setSelectedProduct(product);
-    setIsEdit(true);
-    setShowAddProduct(true);
+    setOpenModal(true);
+    // setIsEdit(true);
+    // setShowAddProduct(true);
   };
 
   useEffect(() => {
@@ -66,77 +80,96 @@ const ProductList = () => {
       dispatch(deleteProduct(id));
     }
   };
-  console.log("Products in ProductList are the :", products);
+  // console.log("Products in ProductList are the :", products);
 
   return (
     <>
-      <div className="product-container">
-        <div className="product-actions-header">
-          <h2>Product Management</h2>
-        </div>
-        <div className="product-actions">
-          <SearchBox
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <AddButton onClick={() => setShowAddProduct(true)}>
-            + Add Product
-          </AddButton>
-        </div>
+      <div className="page-container">
 
-        <AddProductModal
-          isOpen={showAddProduct}
-          onClose={() => {
-            setShowAddProduct(false);
-            setSelectedProduct(null);
-            setIsEdit(false);
+        <div className="page-header">
+        <h2>Product Lists</h2>
+
+        <button
+          className="btn-primary"
+          onClick={() => {
+            setMode("add");
+            setSelectedUser(null);
+            setOpenModal(true);
           }}
-          onProductAdded={(product) => {
-            console.log(product);
-          }}
-          fetchProducts={() => dispatch(getProducts())}
-          product={selectedProduct}
-          isEdit={isEdit}
-        />
-        <div className="product-table-wrapper">
-          <table className="product-table">
-            <thead>
-              <tr className="product-table-wrapper">
-                <th>#</th>
-                <th>productCode</th>
-                <th>Image</th>
-                <th>productName</th>
-                <th>category</th>
-                <th>season</th>
-                <th>style</th>
-                <th>gender</th>
-                <th>description</th>
-                <th>View Type</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentProducts.map((product, index) => (
+        >
+          + Add
+        </button>
+      </div>
+
+      <div className="table-card">
+              <div className="table-toolbar">
+                <div className="entries">
+                  <select
+                    value={rowsPerPage}
+                    onChange={(e) => {
+                      setRowsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                  </select>
+      
+                  <span>Entries</span>
+                </div>
+      
+                <input
+                  className="user-search-box"
+                  placeholder="Search users..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+      
+              <table className="custom-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Product Code</th>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Season</th>
+                    <th>Style</th>
+                    <th>Gender</th>
+                    <th>Description</th>
+                    <th>View Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                
+                <tbody>
+                  {filteredProducts.map((product, index) => (
                 <>
                   <tr key={product?._id ?? index}>
                     <td>{indexOfFirst + index + 1}</td>
                     <td>{product.productCode}</td>
                     <td>
-                      {product.image ? (
                         <img
                           src={`${import.meta.env.VITE_API_BASE_URL}/${product.image}`}
                           alt={product.productName}
-                          className="product-image"
+                          className="product-list-image"
                           style={{
-                            width: 50,
-                            height: 50,
+                            width: 80,
+                            height: 80,
                             objectFit: "cover",
                           }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `${noImage}`;
+                          }}
                         />
-                      ) : (
-                        <span>No Image</span>
-                      )}
+
                     </td>
                     <td>{product.productName}</td>
                     <td>{product.category?.categoryName}</td>
@@ -156,7 +189,7 @@ const ProductList = () => {
                           )
                         }
                       >
-                        View Variants ({product.variants.length})
+                        View ({product.variants.length})
                       </button>
                     </td>
 
@@ -210,30 +243,78 @@ const ProductList = () => {
                       </td>
                     </tr>
                   )}
-                </>
-              ))}
+                  </>
+              
+))}
             </tbody>
-          </table>
-        </div>
-        <div className="pagination">
-          <PreviousButton
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-          >
-            Previous
-          </PreviousButton>
 
-          <span>
-            Page {currentPage} of {totalPages || 1}
-          </span>
-
-          <NextButton
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-          >
-            Next
-          </NextButton>
-        </div>
+              </table>
+      
+              <div className="user-pagination">
+                <p>
+                  Showing {filteredProducts.length === 0 ? 0 : indexOfFirst + 1}
+                  to {Math.min(indexOfLast, filteredProducts.length)}
+                  of {filteredProducts.length} entries
+                </p>
+      
+                <div className="page-buttons">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(1)}
+                  >
+                    &laquo;
+                  </button>
+      
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                  >
+                    &lsaquo;
+                  </button>
+      
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i}
+                      className={currentPage === i + 1 ? "active-page" : ""}
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+      
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                  >
+                    &rsaquo;
+                  </button>
+      
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(totalPages)}
+                  >
+                    &raquo;
+                  </button>
+                </div>
+              </div>
+            </div>
+      
+            <Modal
+              open={openModal}
+              title={mode === "add" ? "Add Product" : "Edit Product"}
+              size="md"
+              onClose={() => setOpenModal(false)}
+            >
+              <ProductForm
+                mode={mode}
+                product={selectedProduct}
+                onClose={() => setOpenModal(false)}
+                onSuccess={() => {
+                  setOpenModal(false);
+                  dispatch(getProducts());
+                }}
+              />
+            </Modal>
       </div>
     </>
   );

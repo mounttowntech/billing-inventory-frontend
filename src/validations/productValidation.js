@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-export const productValidation = yup.object({
+export const productValidation = (mode) => yup.object({
   productName: yup.string().required("Product name is required"),
   category: yup.string().required("Category is required"),
   stock: yup.number().min(0, "Stock cannot be negative"),
@@ -8,7 +8,7 @@ export const productValidation = yup.object({
     yup.object({
       color: yup.string().required("Color is required"),
       size: yup.string().required("Size is required"),
-      price: yup.number().required("Price is required"),
+      price: yup.number().optional(),
       mrp: yup.number().required("MRP is required"),
       sellingPrice: yup.number().required("Selling price is required"),
       currentStock: yup.number().min(0, "Stock cannot be negative").required("Stock is required"),
