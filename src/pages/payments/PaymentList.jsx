@@ -43,8 +43,16 @@ export default function PaymentList() {
     }
   }, [authPayments]);
 
+  const convertDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const filteredPayments = payments.filter((payment) =>
-    `${payment.paymentName} ${payment.paymentCode}`
+    `${payment.paymentNo} ${payment.type} ${payment?.customerName || ""} ${payment.supplier?.supplierName || ""} ${payment.amount} ${payment.paymentMethod} ${convertDate(payment.paymentDate)} ${payment.paymentStatus}`
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
@@ -62,7 +70,7 @@ export default function PaymentList() {
   // console.log(payments);
 
   const handleDelete = async (payment) => {
-    const ok = window.confirm(`Delete ${payment.paymentName}?`);
+    const ok = window.confirm(`Delete ${payment.paymentNo}?`);
 
     if (!ok) return;
 
@@ -90,7 +98,7 @@ export default function PaymentList() {
             setOpenModal(true);
           }}
         >
-          + Add Payment
+          + Add
         </button>
       </div>
 
@@ -156,21 +164,27 @@ export default function PaymentList() {
                   <td>{payment?.type}</td>
 
                   <td>
-                    {payment.customer?.customerName ||
-                      payment.supplier?.supplierName ||
-                      "-"}
+                    {payment?.supplier?.supplierName
+                      ? payment.supplier.supplierName
+                      : payment?.customer?.customerName
+                      ? payment.customer.customerName
+                      : payment?.customerName ? payment.customerName : "-"}
                   </td>
 
                   <td>{payment?.amount}</td>
 
                   <td>{payment?.paymentMethod}</td>
 
-                  <td>{payment?.paymentDate}</td>
+                  <td>{convertDate(payment?.paymentDate)}</td>
 
                   <td>
-                    <span className="status active">
-                      {payment?.paymentStatus ? "Active" : "Inactive"}
-                    </span>
+                    {payment?.paymentStatus === 'pending' ? (
+                      <span className="status pending">Pending</span>
+                    ) : payment?.paymentStatus === 'completed' ? (
+                      <span className="status active">
+                        {payment?.paymentStatus ? "Completed" : "-"}
+                      </span>
+                    ) : null}
                   </td>
 
                   <td>
@@ -182,12 +196,14 @@ export default function PaymentList() {
                           setSelectedPayment(payment);
                           setOpenModal(true);
                         }}
+                        disabled={payment?.paymentMethod === "cashfree"}
                       >
                         Edit
                       </button>
                       <button
                         className="btn-delete"
                         onClick={() => handleDelete(payment)}
+                        disabled={payment?.paymentMethod === "cashfree"}
                       >
                         Delete
                       </button>
