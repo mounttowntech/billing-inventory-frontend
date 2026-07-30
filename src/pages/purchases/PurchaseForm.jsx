@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import PurchaseValidation from "../../validations/PurchaseValidation";
-import { SaveButton } from "../../components/Common/Button";
+import { SaveButton, CancelButton } from "../../components/Common/Button";
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
 
 const PurchaseForm = ({
   purchase,
@@ -64,6 +66,11 @@ const PurchaseForm = ({
     }
   }, [purchase, reset]);
 
+  const handleCancel = () => {
+    reset();
+    onClose();
+  };
+
   const submitHandler = async (data) => {
     const purchaseData = {
       supplier: data.supplier,
@@ -88,109 +95,102 @@ const PurchaseForm = ({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="purchase-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>Add Purchase</h3>
+    <form onSubmit={handleSubmit(submitHandler)}>
+      <div className="form-grid">
+        <Select
+          label="Supplier"
+          name="supplier"
+          register={register}
+          error={errors.supplier?.message}
+          options={[
+            ...suppliers.map((supplier) => ({
+              _id: supplier._id,
+              label: `${supplier.supplierCode} - ${supplier.supplierName}`,
+            })),
+          ]}
+        />
 
-          <button className="close-btn" onClick={onClose}>
-            ×
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit(submitHandler)} className="purchase-form">
-          <div className="form-group">
-            <label>Supplier</label>
-            <select {...register("supplier")}>
-              <option value="">Select Supplier</option>
-
-              {suppliers.map((supplier) => (
-                <option key={supplier._id} value={supplier._id}>
-                  {supplier.supplierCode} - {supplier.supplierName}
-                </option>
-              ))}
-            </select>
-            <span>{errors.supplier?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Product</label>
-            <select {...register("product")}>
-              <option value="">Select Product</option>
-              {products.map((product) => (
-                <option key={product._id} value={product._id}>
-                  {product.productName}
-                </option>
-              ))}
-            </select>
-            <span>{errors.product?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>SKU Code</label>
-            <select {...register("skuCode")}>
-              <option value="">Select SKU Code</option>
-              {selectedProduct?.variants?.map((variant) => (
-                <option key={variant.skuCode} value={variant.skuCode}>
-                  {variant.skuCode}
-                </option>
-              ))}
-            </select>
-            <span>{errors.skuCode?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Quantity</label>
-            <input
-              type="number"
-              placeholder="Quantity"
-              {...register("quantity")}
-            />
-            <span>{errors.quantity?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Purchase Price</label>
-            <input
-              type="number"
-              placeholder="Purchase Price"
-              {...register("purchasePrice")}
-            />
-            <span>{errors.purchasePrice?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>GST Amount</label>
-            <input
-              type="number"
-              placeholder="GST Amount"
-              {...register("gstAmount")}
-            />
-            <span>{errors.gstAmount?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Paid Amount</label>
-            <input
-              type="number"
-              placeholder="Paid Amount"
-              {...register("paidAmount")}
-            />
-            <span>{errors.paidAmount?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Total Amount</label>
-            <input type="number" {...register("totalAmount")} />
-            <span>{errors.totalAmount?.message}</span>
-          </div>
-
-          <SaveButton className="save-btn" type="submit">
-            Save Purchase
-          </SaveButton>
-        </form>
+        <Select
+          label="Product"
+          name="product"
+          register={register}
+          error={errors.product?.message}
+          options={[
+            ...products.map((product) => ({
+              _id: product._id,
+              label: product.productName,
+            })),
+          ]}
+        />
       </div>
-    </div>
+      <div className="form-grid">
+        <Select
+          label="SKU Code"
+          name="skuCode"
+          register={register}
+          error={errors.skuCode?.message}
+          options={[
+            ...(selectedProduct?.variants || []).map((variant) => ({
+              _id: variant.skuCode,
+              label: variant.skuCode,
+            })),
+          ]}
+        />
+
+        <Input
+          label="Quantity"
+          name="quantity"
+          type="number"
+          placeholder="Quantity"
+          register={register}
+          error={errors.quantity?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Purchase Price"
+          name="purchasePrice"
+          type="number"
+          placeholder="Purchase Price"
+          register={register}
+          error={errors.purchasePrice?.message}
+        />
+
+        <Input
+          label="GST Amount"
+          name="gstAmount"
+          type="number"
+          placeholder="GST Amount"
+          register={register}
+          error={errors.gstAmount?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Paid Amount"
+          name="paidAmount"
+          type="number"
+          placeholder="Paid Amount"
+          register={register}
+          error={errors.paidAmount?.message}
+        />
+
+        <Input
+          label="Total Amount"
+          name="totalAmount"
+          type="number"
+          placeholder="Total Amount"
+          register={register}
+          error={errors.totalAmount?.message}
+        />
+      </div>
+      <div className="form-buttons">
+        <SaveButton>{editId ? "Update Purchase" : "Save Purchase"}</SaveButton>
+        <CancelButton type="button" onClick={handleCancel}>
+          Cancel
+        </CancelButton>
+      </div>
+    </form>
   );
 };
 

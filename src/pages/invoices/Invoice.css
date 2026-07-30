@@ -1,6 +1,7 @@
 .invoice-container {
-  width: 100%;
-  padding: 35px;
+  width: 97%;
+  margin: 20px;
+  padding: 15px;
   border-radius: 12px;
   background: var(--color-white);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -17,6 +18,12 @@
 
 .supplier-actions {
     width: 100px;
+}
+
+.invoice-header{
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
 }
 
 .purchase-table {

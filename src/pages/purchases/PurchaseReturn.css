@@ -26,7 +26,7 @@
   font-family: var(--pr-font);
   color: var(--pr-text);
   background: var(--pr-bg);
-  padding: 28px 32px 40px;
+  padding: 18px 32px 40px;
   min-height: 100%;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);  
@@ -42,8 +42,9 @@
 .purchase-return-header {
   display: flex;
   align-items: center;
+  padding: 20px;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .purchase-return-header h2 {
@@ -52,7 +53,9 @@
   letter-spacing: -0.01em;
   margin: 0;
 }
-
+.purchase-return-main{
+  padding: 20px;
+}
 /* ---------- Toolbar ---------- */
 
 .purchase-return-toolbar {

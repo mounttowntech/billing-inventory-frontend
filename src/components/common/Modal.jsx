@@ -1,12 +1,6 @@
 import "./Modal.css";
 
-export default function Modal({
-  open,
-  title,
-  children,
-  onClose,
-  size = "md",
-}) {
+export default function Modal({ open, title, children, onClose, size = "md" }) {
   if (!open) return null;
 
   return (
@@ -15,17 +9,12 @@ export default function Modal({
         <div className="modal-header">
           <h3>{title}</h3>
 
-          <button
-            className="modal-close"
-            onClick={onClose}
-          >
+          <button className="modal-close" onClick={onClose}>
             ✕
           </button>
         </div>
 
-        <div className="modal-body">
-          {children}
-        </div>
+        <div className="modal-body">{children}</div>
       </div>
     </div>
   );

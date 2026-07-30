@@ -8,6 +8,10 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
+.measurement-main{
+  padding: 20px;
+}
+
 .measurement-header {
   display: flex;
   justify-content: space-between;
@@ -178,16 +182,6 @@
 
 .measurement-note {
   grid-column: 1 / -1;
-}
-
-/* Save button full width */
-
-.purchase-form .btn-save,
-.purchase-form .save-btn {
-  grid-column: 1 / -1;
-  justify-self: center;
-  width: 220px;
-  margin-top: 10px;
 }
 
 /* ================= Pagination ================= */

@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { alterationValidation } from "../../validations/AlterationValidation";
 import { SaveButton, CancelButton } from "../../components/Common/Button";
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
 
 const AlterationForm = ({
   alteration,
@@ -30,6 +32,13 @@ const AlterationForm = ({
       status: "",
     },
   });
+
+  const statusOptions = [
+    { _id: "pending", label: "Pending" },
+    { _id: "in_progress", label: "In Progress" },
+    { _id: "completed", label: "Completed" },
+    { _id: "delivered", label: "Delivered" },
+  ];
 
   const selectedCustomer = watch("customer");
   const filteredInvoices = invoices.filter(
@@ -74,64 +83,86 @@ const AlterationForm = ({
   };
 
   return (
-    <div className="modal-overlay" onClick={handleCancel}>
-      <form
-        onSubmit={handleSubmit(submitHandler)}
-        className="alteration-form"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <select {...register("customer")}>
-          <option value="">Select Customer</option>
-          {customers.map((customer) => (
-            <option key={customer._id} value={customer._id}>
-              {customer.customerName}
-            </option>
-          ))}
-        </select>
-
-        <select {...register("invoice")}>
-          <option value="">Select Invoice</option>
-          {filteredInvoices.map((invoice) => (
-            <option key={invoice._id} value={invoice._id}>
-              {invoice.invoiceNo}
-            </option>
-          ))}
-        </select>
-
-        <input placeholder="Product Name" {...register("productName")} />
-        <p>{errors.productName?.message}</p>
-
-        <input placeholder="Alteration Type" {...register("alterationType")} />
-        <p>{errors.alterationType?.message}</p>
-
-        <input
-          type="number"
-          placeholder="Charge"
-          {...register("alterationCharge")}
+    <form onSubmit={handleSubmit(submitHandler)}>
+      <div className="form-grid">
+        <Select
+          label="Customer"
+          name="customer"
+          register={register}
+          error={errors.customer?.message}
+          options={[
+            ...customers.map((customer) => ({
+              _id: customer._id,
+              label: customer.customerName,
+            })),
+          ]}
         />
-        <p>{errors.alterationCharge?.message}</p>
+        <Select
+          label="Invoice"
+          name="invoice"
+          register={register}
+          error={errors.invoice?.message}
+          options={[
+            ...filteredInvoices.map((invoice) => ({
+              _id: invoice._id,
+              label: invoice.invoiceNo,
+            })),
+          ]}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Product Name"
+          name="productName"
+          placeholder="Enter Product Name"
+          register={register}
+          error={errors.productName?.message}
+        />
 
-        <input type="date" {...register("expectedDeliveryDate")} />
-        <p>{errors.expectedDeliveryDate?.message}</p>
+        <Input
+          label="Alteration Type"
+          name="alterationType"
+          type="text"
+          placeholder="Enter Alteration Type"
+          register={register}
+          error={errors.alterationType?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Alteration Charge"
+          name="alterationCharge"
+          type="number"
+          placeholder="Enter Charge"
+          register={register}
+          error={errors.alterationCharge?.message}
+        />
 
-        <select {...register("status")}>
-          <option value="">Select Status</option>
-          <option value="pending">Pending</option>
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
-          <option value="delivered">Delivered</option>
-        </select>
-        <p>{errors.status?.message}</p>
+        <Input
+          label="Expected Delivery Date"
+          name="expectedDeliveryDate"
+          type="date"
+          register={register}
+          error={errors.expectedDeliveryDate?.message}
+        />
+      </div>
+      <Select
+        label="Status"
+        name="status"
+        register={register}
+        error={errors.status?.message}
+        options={statusOptions}
+      />
 
-        <div className="form-buttons">
-          <SaveButton type="submit" />
-
-          <CancelButton type="button" onClick={handleCancel}>
-            Cancel
-          </CancelButton>
-        </div>
-      </form>
-    </div>
+      <div className="form-buttons">
+        <SaveButton>
+          {editId ? "Update Alteration" : "Save Alteration"}
+        </SaveButton>
+        <CancelButton type="button" onClick={handleCancel}>
+          Cancel
+        </CancelButton>
+      </div>
+    </form>
   );
 };
 

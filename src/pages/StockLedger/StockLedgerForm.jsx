@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
-
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
 import { stockLedgerValidation } from "../../validations/StockLedgerValidation";
 
 import { SaveButton, CancelButton } from "../../components/Common/Button";
@@ -74,16 +75,20 @@ const StockLedgerForm = ({
   };
 
   return (
-    <form
-      className="stockledger-form"
-      onSubmit={handleSubmit(handleFormSubmit)}
-    >
-      {/* Product */}
-      <div className="stock-form-group">
-        <label>Product</label>
-
-        <select
-          {...register("product")}
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
+      <div className="form-grid">
+        <Select
+          label="Product"
+          name="product"
+          register={register}
+          error={errors.product?.message}
+          options={[
+            { _id: "", label: "Select Product" },
+            ...products.map((product) => ({
+              _id: product._id,
+              label: product.productName,
+            })),
+          ]}
           onChange={(e) => {
             const selectedProduct = products.find(
               (p) => p._id === e.target.value,
@@ -100,120 +105,90 @@ const StockLedgerForm = ({
               );
             }
           }}
-        >
-          <option value="">Select Product</option>
+        />
 
-          {products.map((product) => (
-            <option key={product._id} value={product._id}>
-              {product.productName}
-            </option>
-          ))}
-        </select>
-
-        <p>{errors.product?.message}</p>
-      </div>
-
-      {/* SKU Code */}
-      <div className="stock-form-group">
-        <label>SKU Code</label>
-
-        <input
+        <Input
+          label="SKU Code"
+          name="skuCode"
           type="text"
           placeholder="Enter SKU Code"
-          {...register("skuCode")}
+          register={register}
+          error={errors.skuCode?.message}
+        />
+      </div>
+
+      <div className="form-grid">
+        <Select
+          label="Movement Type"
+          name="movementType"
+          register={register}
+          error={errors.movementType?.message}
+          options={[
+            { _id: "", label: "Select Movement" },
+            { _id: "purchase", label: "Purchase" },
+            { _id: "sale", label: "Sale" },
+            { _id: "sales_return", label: "Sales Return" },
+            { _id: "sale_cancel", label: "Sale Cancel" },
+            { _id: "purchase_return", label: "Purchase Return" },
+            { _id: "adjustment_in", label: "Adjustment In" },
+            { _id: "adjustment_out", label: "Adjustment Out" },
+          ]}
         />
 
-        <p>{errors.skuCode?.message}</p>
-      </div>
-
-      {/* Movement Type */}
-      <div className="stock-form-group">
-        <label>Movement Type</label>
-
-        <select {...register("movementType")}>
-          <option value="">Select Movement</option>
-          <option value="purchase">Purchase</option>
-          <option value="sale">Sale</option>
-          <option value="sales_return">Sales Return</option>
-          <option value="sale_cancel">Sale Cancel</option>
-          <option value="purchase_return">Purchase Return</option>
-          <option value="adjustment_in">Adjustment In</option>
-          <option value="adjustment_out">Adjustment Out</option>
-        </select>
-
-        <p>{errors.movementType?.message}</p>
-      </div>
-
-      {/* Quantity */}
-      <div className="stock-form-group">
-        <label>Quantity</label>
-
-        <input
+        <Input
+          label="Quantity"
+          name="quantity"
           type="number"
           placeholder="Enter Quantity"
-          {...register("quantity")}
+          register={register}
+          error={errors.quantity?.message}
         />
-
-        <p>{errors.quantity?.message}</p>
       </div>
 
-      {/* Before Stock */}
-      <div className="stock-form-group">
-        <label>Before Stock</label>
-
-        <input
+      <div className="form-grid">
+        <Input
+          label="Before Stock"
+          name="beforeStock"
           type="number"
           placeholder="Enter Before Stock"
-          {...register("beforeStock")}
+          register={register}
+          error={errors.beforeStock?.message}
         />
 
-        <p>{errors.beforeStock?.message}</p>
-      </div>
-
-      {/* After Stock */}
-      <div className="stock-form-group">
-        <label>After Stock</label>
-
-        <input
+        <Input
+          label="After Stock"
+          name="afterStock"
           type="number"
           placeholder="Enter After Stock"
-          {...register("afterStock")}
+          register={register}
+          error={errors.afterStock?.message}
         />
-
-        <p>{errors.afterStock?.message}</p>
       </div>
 
-      {/* Reference Number */}
-      <div className="stock-form-group">
-        <label>Reference Number</label>
-
-        <input
+      <div className="form-grid">
+        <Input
+          label="Reference Number"
+          name="referenceNumber"
           type="text"
           placeholder="Enter Reference Number"
-          {...register("referenceNumber")}
+          register={register}
+          error={errors.referenceNumber?.message}
         />
 
-        <p>{errors.referenceNumber?.message}</p>
-      </div>
-
-      {/* Remarks */}
-      <div className="stock-form-group full-width">
-        <label>Remarks</label>
-
-        <textarea
-          rows="4"
+        <Input
+          label="Remarks"
+          name="remarks"
+          type="textarea"
           placeholder="Enter Remarks"
-          {...register("remarks")}
+          register={register}
+          error={errors.remarks?.message}
+          rows={4}
         />
-
-        <p>{errors.remarks?.message}</p>
       </div>
 
       {/* Buttons */}
       <div className="form-buttons">
-        <SaveButton type="submit">
-          {editingId ? "Update Stock Ledger" : "Save Stock Ledger"}
-        </SaveButton>
+        <SaveButton type="submit">{editingId ? "Update " : "Save"}</SaveButton>
 
         <CancelButton type="button" onClick={handleCancel}>
           Cancel

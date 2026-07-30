@@ -186,7 +186,8 @@ color:#15803d;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-top:20px;
+    margin-top:10px;
+    padding: 20px;
     flex-wrap:wrap;
     gap:15px;
 }

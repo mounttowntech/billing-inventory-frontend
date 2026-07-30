@@ -42,9 +42,9 @@ export const createProduct = createAsyncThunk(
     try {
       return await createProductApi(data);
     } catch (error) {
-      console.log('create_prod__response', error);
+      console.log("create_prod__response", error);
       return thunkAPI.rejectWithValue(
-        error || {message: "Failed to create product"},
+        error || { message: "Failed to create product" },
       );
     }
   },
@@ -56,9 +56,9 @@ export const updateProduct = createAsyncThunk(
     try {
       return await updateProductApi(id, data);
     } catch (error) {
-      console.log('error_response', error);
+      console.log("error_response", error);
       return thunkAPI.rejectWithValue(
-        error || {message: "Failed to update product"},
+        error || { message: "Failed to update product" },
       );
     }
   },

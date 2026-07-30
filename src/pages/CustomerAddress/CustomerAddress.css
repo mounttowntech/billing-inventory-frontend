@@ -159,22 +159,6 @@
 }
 
 /* ===========================
-   Buttons
-=========================== */
-
-.form-buttons {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.form-buttons button {
-  min-width: 140px;
-}
-
-/* ===========================
    Responsive
 =========================== */
 
