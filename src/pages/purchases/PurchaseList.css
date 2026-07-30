@@ -3,14 +3,14 @@
   margin: 25px auto;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  padding: 34px 20px 68px;
+  /* padding: 34px 20px 68px; */
 }
 
 .purchase-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  padding: 20px;
 }
 
 /* Popup */
@@ -41,19 +41,6 @@
   margin-bottom: 25px;
 }
 
-.close-btn {
-  border: none;
-  background: none;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-.purchase-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-}
-
 .form-group {
   display: flex;
   flex-direction: column;
@@ -79,15 +66,16 @@
 /* Table */
 
 .table-wrapper {
-  width: 100%;              /* fits inside .purchase-container, no overflow of parent */
+  width: 100%;              
   max-width: 100%;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  max-height: 500px;        /* adjust to taste */
-  overflow-x: auto;         /* horizontal scrollbar lives here now */
+  max-height: 500px;       
+  overflow-x: auto;      
   overflow-y: auto;
-  border-radius: 8px;       /* keeps the scrollbar corner tidy inside the box */
-  position: relative;       /* needed for sticky header to anchor correctly */
+  padding: 20px;
+  border-radius: 8px;     
+  position: relative;      
 }
 
 .purchase-table {

@@ -141,7 +141,7 @@ const StockLedger = () => {
             setShowModal(true);
           }}
         >
-          Add Stock Ledger
+          Add
         </AddButton>
       </div>
       <div className="stockledger-container">

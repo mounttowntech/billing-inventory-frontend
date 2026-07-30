@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import "./StockAdjustment.css";
 
 import { useDispatch, useSelector } from "react-redux";
-
+import Modal from "../../components/Common/Modal";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -26,15 +26,14 @@ import StockAdjustmentForm from "./StockAdjustmentForm";
 
 const StockAdjustment = () => {
   const dispatch = useDispatch();
-  const [search, setSearch] = useState("");
-  // ================= Redux =================
 
   const { stockAdjustments, isLoading } = useSelector(
     (state) => state.stockAdjustment,
   );
-
   const { products } = useSelector((state) => state.product);
 
+  const [search, setSearch] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const {
     register,
     handleSubmit,
@@ -61,7 +60,7 @@ const StockAdjustment = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const itemsPerPage = 2;
+  const itemsPerPage = rowsPerPage;
 
   // ================= Watch =================
 
@@ -231,130 +230,168 @@ const StockAdjustment = () => {
     setCurrentPage(pageNumber);
   };
 
-  // ================= Render =================
-
   return (
-    <div className="stock-adjustment-page">
-      <div className="stock-adjustment-header">
-        <div className="stock-header">
-          <h2>Stock Adjustments</h2>
-        </div>
-        <div className="stock-adjustment-header-actions">
-          <SearchBox
-            placeholder="Search Measurements..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
-            }}
-          />
-          <AddButton onClick={handleAdd} label="Add Adjustment">
-            <span className="add-icon">+</span> Add Adjustment
-          </AddButton>
-        </div>
+    <div className="stock-main">
+      <div className="stock-header">
+        <h2>Stock Adjustments</h2>
+        <AddButton onClick={handleAdd} label="Add Adjustment">
+          <span className="add-icon">+</span> Add Adjustment
+        </AddButton>
       </div>
 
-      <StockAdjustmentForm
-        showForm={showForm}
-        products={products}
-        variants={variants}
-        selectedProduct={selectedProduct}
-        register={register}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        errors={errors}
-        editId={editId}
-        isLoading={isLoading}
-        handleCancel={handleCancel}
-      />
+      <div className="stock-adjustment-page">
+        <div className="table-toolbar">
+          <div className="entries">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
 
-      <div className="stock-adjustment-table-wrapper">
-        <table className="stock-adjustment-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Adjustment No</th>
-              <th>Product</th>
-              <th>SKU Code</th>
-              <th>Type</th>
-              <th>Quantity</th>
-              <th>Reason</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
+            <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <SearchBox
+              placeholder="Search Stock Adjustments..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+        </div>
+
+        <Modal
+          open={showForm}
+          onClose={() => setShowForm(false)}
+          title={editId ? "Edit Stock Adjustment" : "Add Stock Adjustment"}
+        >
+          <StockAdjustmentForm
+            showForm={showForm}
+            products={products}
+            variants={variants}
+            selectedProduct={selectedProduct}
+            register={register}
+            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
+            errors={errors}
+            editingId={editId}
+            editId={editId}
+            isLoading={isLoading}
+            handleCancel={handleCancel}
+          />
+        </Modal>
+
+        <div className="stock-adjustment-table-wrapper">
+          <table className="stock-adjustment-table">
+            <thead>
               <tr>
-                <td colSpan="7" className="table-status">
-                  Loading...
-                </td>
+                <th>#</th>
+                <th>Adjustment No</th>
+                <th>Product</th>
+                <th>SKU Code</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Reason</th>
+                <th>Actions</th>
               </tr>
-            ) : currentRows.length === 0 ? (
-              <tr>
-                <td colSpan="7" className="table-status">
-                  No stock adjustments found.
-                </td>
-              </tr>
-            ) : (
-              currentRows.map((item) => (
-                <tr key={item._id}>
-                  <td>{indexOfFirstRow + currentRows.indexOf(item) + 1}</td>
-                  <td>{item.adjustmentNo}</td>
-                  <td>{item.product?.productName || "-"}</td>
-                  <td>{item.skuCode}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        item.adjustmentType === "increase"
-                          ? "badge-increase"
-                          : "badge-decrease"
-                      }`}
-                    >
-                      {item.adjustmentType}
-                    </span>
-                  </td>
-                  <td>{item.quantity}</td>
-                  <td>{item.reason}</td>
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(item)} />
-                    <DeleteButton onClick={() => handleDelete(item._id)} />
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan="7" className="table-status">
+                    Loading...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {totalPages > 1 && (
-        <div className="pagination-stock-adjustment">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => paginate(currentPage - 1)}
-          >
-            Prev
-          </button>
-
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-            (page) => (
-              <button
-                key={page}
-                className={page === currentPage ? "active" : ""}
-                onClick={() => paginate(page)}
-              >
-                {page}
-              </button>
-            ),
-          )}
-
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => paginate(currentPage + 1)}
-          >
-            Next
-          </button>
+              ) : currentRows.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="table-status">
+                    No stock adjustments found.
+                  </td>
+                </tr>
+              ) : (
+                currentRows.map((item) => (
+                  <tr key={item._id}>
+                    <td>{indexOfFirstRow + currentRows.indexOf(item) + 1}</td>
+                    <td>{item.adjustmentNo}</td>
+                    <td>{item.product?.productName || "-"}</td>
+                    <td>{item.skuCode}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          item.adjustmentType === "increase"
+                            ? "badge-increase"
+                            : "badge-decrease"
+                        }`}
+                      >
+                        {item.adjustmentType}
+                      </span>
+                    </td>
+                    <td>{item.quantity}</td>
+                    <td>{item.reason}</td>
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(item)} />
+                      <DeleteButton onClick={() => handleDelete(item._id)} />
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      )}
+
+        <div className="user-pagination">
+          <p>
+            Showing {filteredAdjustments.length === 0 ? 0 : indexOfFirstRow + 1}
+            to {Math.min(indexOfLastRow, filteredAdjustments.length)}
+            of {filteredAdjustments.length} entries
+          </p>
+
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

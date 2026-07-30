@@ -150,7 +150,7 @@ const StoreForm = ({
             </select>
 
             <span>{errors.status?.message}</span>
-            <SaveButton type="submit" className="btn-save">
+            <SaveButton type="submit">
               {editingId ? "Update Store" : "Save Store"}
             </SaveButton>
           </div>

@@ -1,10 +1,10 @@
-import { SaveButton } from "../../components/Common/Button";
+import { invoiceValidation } from "../../validations/InvoiceValidation";
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
+import { SaveButton, CancelButton } from "../../components/common/Button";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-/**
- * Modal form for creating / editing an Invoice.
- * All state (react-hook-form, customers, products, etc.) is owned by the
- * parent <Invoice /> component and passed down as props.
- */
 const InvoiceForm = ({
   showModal,
   setShowModal,
@@ -16,134 +16,121 @@ const InvoiceForm = ({
   onSubmit,
   errors,
   editingId,
+  onCancel,
 }) => {
-  if (!showModal) return null;
+  const { reset, watch } = useForm({
+    resolver: yupResolver(invoiceValidation),
+  });
+
+  const handleCancel = () => {
+    reset();
+    onCancel();
+  };
 
   return (
-    <div className="modal-overlay" onClick={() => setShowModal(false)}>
-      <div className="purchase-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>{editingId ? "Edit Invoice" : "Add Invoice"}</h3>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="form-grid">
+        <Select
+          label="Customer"
+          name="customer"
+          register={register}
+          error={errors.customer?.message}
+          options={[
+            ...customers.map((customer) => ({
+              _id: customer._id,
+              label: `${customer.customerCode} - ${customer.customerName}`,
+            })),
+          ]}
+        />
 
-          <button className="close-btn" onClick={() => setShowModal(false)}>
-            ×
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="purchase-form">
-          <div className="form-group">
-            <label>Customer</label>
-
-            <select {...register("customer")}>
-              <option value="">Select Customer</option>
-
-              {customers.map((customer) => (
-                <option key={customer._id} value={customer._id}>
-                  {customer.customerCode} - {customer.customerName}
-                </option>
-              ))}
-            </select>
-
-            <span>{errors.customer?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Product</label>
-
-            <select {...register("product")}>
-              <option value="">Select Product</option>
-
-              {products.map((product) => (
-                <option key={product._id} value={product._id}>
-                  {product.productName}
-                </option>
-              ))}
-            </select>
-
-            <span>{errors.product?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>SKU Code</label>
-
-            <select {...register("skuCode")}>
-              <option value="">Select SKU</option>
-
-              {selectedProduct?.variants?.map((variant) => (
-                <option key={variant.skuCode} value={variant.skuCode}>
-                  {variant.skuCode}
-                </option>
-              ))}
-            </select>
-
-            <span>{errors.skuCode?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Quantity</label>
-
-            <input
-              type="number"
-              placeholder="Quantity"
-              {...register("quantity")}
-            />
-
-            <span>{errors.quantity?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Discount Amount</label>
-
-            <input
-              type="number"
-              placeholder="Discount"
-              defaultValue={0}
-              {...register("discountAmount")}
-            />
-
-            <span>{errors.discountAmount?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Paid Amount</label>
-
-            <input
-              type="number"
-              placeholder="Paid Amount"
-              defaultValue={0}
-              {...register("paidAmount")}
-            />
-
-            <span>{errors.paidAmount?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Payment Method</label>
-
-            <select {...register("paymentMethod")}>
-              <option value="">Select Payment Method</option>
-              <option value="cash">Cash</option>
-              <option value="upi">UPI</option>
-              <option value="card">Card</option>
-              <option value="wallet">Wallet</option>
-              <option value="credit">Credit</option>
-            </select>
-
-            <span>{errors.paymentMethod?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Remarks</label>
-
-            <textarea rows="3" placeholder="Remarks" {...register("remarks")} />
-          </div>
-
-          <SaveButton type="submit">
-            {editingId ? "Update Invoice" : "Save Invoice"}
-          </SaveButton>
-        </form>
+        <Select
+          label="Product"
+          name="product"
+          register={register}
+          error={errors.product?.message}
+          options={[
+            ...products.map((product) => ({
+              _id: product._id,
+              label: product.productName,
+            })),
+          ]}
+        />
       </div>
-    </div>
+
+      <div className="form-grid">
+        <Select
+          label="SKU Code"
+          name="skuCode"
+          register={register}
+          error={errors.skuCode?.message}
+          options={[
+            ...(selectedProduct?.variants?.map((variant) => ({
+              _id: variant.skuCode,
+              label: variant.skuCode,
+            })) || []),
+          ]}
+        />
+
+        <Input
+          label="Quantity"
+          name="quantity"
+          type="number"
+          placeholder="Quantity"
+          register={register}
+          error={errors.quantity?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Discount Amount"
+          name="discountAmount"
+          type="number"
+          placeholder="Discount"
+          register={register}
+          error={errors.discountAmount?.message}
+        />
+        <Input
+          label="Paid Amount"
+          name="paidAmount"
+          type="number"
+          placeholder="Paid Amount"
+          register={register}
+          error={errors.paidAmount?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Select
+          label="Payment Method"
+          name="paymentMethod"
+          register={register}
+          error={errors.paymentMethod?.message}
+          options={[
+            { _id: "cash", label: "Cash" },
+            { _id: "upi", label: "UPI" },
+            { _id: "card", label: "Card" },
+            { _id: "wallet", label: "Wallet" },
+            { _id: "credit", label: "Credit" },
+          ]}
+        />
+
+        <Input
+          label="Remarks"
+          name="remarks"
+          type="text"
+          placeholder="Remarks"
+          register={register}
+          error={errors.remarks?.message}
+        />
+      </div>
+
+      <div className="form-footer">
+        <SaveButton>{editingId === "add" ? "Add " : "Update "}</SaveButton>
+
+        <CancelButton type="button" onClick={handleCancel}>
+          Cancel
+        </CancelButton>
+      </div>
+    </form>
   );
 };
 

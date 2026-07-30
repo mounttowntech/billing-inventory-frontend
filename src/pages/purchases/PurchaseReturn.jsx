@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Modal from "../../components/common/Modal";
 
 import "./PurchaseReturn.css";
 
@@ -40,7 +41,7 @@ const PurchaseReturn = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [entriesPerPage, setEntriesPerPage] = useState(5);
 
   useEffect(() => {
     dispatch(getPurchasesReturn());
@@ -70,7 +71,10 @@ const PurchaseReturn = () => {
     indexOfLast,
   );
 
-  const totalPages = Math.ceil(filteredPurchaseReturns.length / entriesPerPage);
+  const totalPages =
+    filteredPurchaseReturns.length > 0
+      ? Math.ceil(filteredPurchaseReturns.length / entriesPerPage)
+      : 1;
 
   const openAddModal = () => {
     setEditingId(null);
@@ -96,21 +100,27 @@ const PurchaseReturn = () => {
     }
   };
 
-  const handleFormSubmit = (data) => {
-    if (editingId) {
-      dispatch(
-        updatePurchaseReturn({
-          id: editingId,
-          purchase: data,
-        }),
-      ).unwrap();
-    } else {
-      dispatch(createPurchaseReturn(data)).unwrap();
+  const handleFormSubmit = async (data) => {
+    try {
+      if (editingId) {
+        await dispatch(
+          updatePurchaseReturn({
+            id: editingId,
+            purchase: data,
+          }),
+        ).unwrap();
+      } else {
+        await dispatch(createPurchaseReturn(data)).unwrap();
+      }
+
+      await dispatch(getPurchasesReturn()).unwrap();
+
+      setShowModal(false);
+      setEditingId(null);
+      setEditingItem(null);
+    } catch (error) {
+      console.error(error);
     }
-    dispatch(getPurchasesReturn());
-    setShowModal(false);
-    setEditingId(null);
-    setEditingItem(null);
   };
 
   const purchaseOptions = purchases.map((purchase) => ({
@@ -124,37 +134,56 @@ const PurchaseReturn = () => {
   }));
 
   return (
-    <>
+    <div className="purchase-return-main">
+      <div className="purchase-return-header">
+        <h2>Purchase Returns</h2>
+
+        <AddButton onClick={openAddModal}>+ Add </AddButton>
+      </div>
       <div className="purchase-return-container">
-        <div className="purchase-return-header">
-          <h2>Purchase Returns</h2>
-
-          <AddButton onClick={openAddModal}>+ Add Purchase Return</AddButton>
+        <div className="table-toolbar">
+          <div className="entries">
+            <select
+              value={entriesPerPage}
+              onChange={(e) => {
+                setEntriesPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
+            <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <SearchBox
+              placeholder="Search Purchase Return..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
         </div>
 
-        <div className="purchase-return-toolbar">
-          <SearchBox
-            placeholder="Search Purchase Return..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
-            }}
+        <Modal
+          open={showModal}
+          title={editingId ? "Edit " : "Add "}
+          size="md"
+          onClose={() => setShowModal(false)}
+        >
+          <PurchaseReturnForm
+            item={editingItem}
+            editId={editingId}
+            purchaseOptions={purchaseOptions}
+            supplierOptions={supplierOptions}
+            onSubmit={handleFormSubmit}
+            onCancel={handleCancel}
           />
-
-          <select
-            value={entriesPerPage}
-            onChange={(e) => {
-              setEntriesPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}
-          >
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
-          </select>
-        </div>
-
+        </Modal>
         <div className="table-responsive">
           <table className="purchase-return-table">
             <thead>
@@ -209,39 +238,52 @@ const PurchaseReturn = () => {
             </tbody>
           </table>
         </div>
+        <div className="user-pagination">
+          <p>
+            Showing{" "}
+            {filteredPurchaseReturns.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredPurchaseReturns.length)}
+            of {filteredPurchaseReturns.length} entries
+          </p>
 
-        <div className="pagination">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-          >
-            Previous
-          </button>
-
-          <span>
-            Page {currentPage} of {totalPages || 1}
-          </span>
-
-          <button
-            disabled={currentPage === totalPages || totalPages === 0}
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-          >
-            Next
-          </button>
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
         </div>
       </div>
-
-      {showModal && (
-        <PurchaseReturnForm
-          item={editingItem}
-          editId={editingId}
-          purchaseOptions={purchaseOptions}
-          supplierOptions={supplierOptions}
-          onSubmit={handleFormSubmit}
-          onCancel={handleCancel}
-        />
-      )}
-    </>
+    </div>
   );
 };
 

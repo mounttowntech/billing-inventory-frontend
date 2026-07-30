@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import "./Measurement.css";
 import { useDispatch, useSelector } from "react-redux";
-
+import Modal from "../../components/Common/Modal";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { measurementValidation } from "../../validations/MeasurementValidation";
 import {
   getMeasurements,
   createMeasurement,
@@ -23,40 +26,16 @@ import MeasurementForm from "./MeasurementForm";
 
 const Measurement = () => {
   const dispatch = useDispatch();
-
-  const { measurements = [], loading } = useSelector(
-    (state) => state.measurement || {},
-  );
-
+  const { loading } = useSelector((state) => state.measurement || {});
   const { customers = [] } = useSelector((state) => state.customer || {});
 
-  const [showModal, setShowModal] = useState(false);
+  const [measurementData, setMeasurementData] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editingMeasurement, setEditingMeasurement] = useState(null);
-  const [measurementData, setMeasurementData] = useState([]);
   const [search, setSearch] = useState("");
-
-  // ================= Pagination =================
-
+  const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const itemsPerPage = 3;
-
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-
-  const currentMeasurements = measurements.slice(indexOfFirst, indexOfLast);
-
-  const totalPages =
-    measurements.length > 0 ? Math.ceil(measurements.length / itemsPerPage) : 1;
-
-  const filteredMeasurements = measurementData.filter((measurement) =>
-    measurement.customer?.customerName
-      .toLowerCase()
-      .includes(search.toLowerCase()),
-  );
-
-  // ================= Load Data =================
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     dispatch(getMeasurements())
@@ -67,11 +46,34 @@ const Measurement = () => {
       });
   }, [dispatch]);
 
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
+  const filteredMeasurements = measurementData.filter((measurement) =>
+    measurement.customer?.customerName
+      .toLowerCase()
+      .includes(search.toLowerCase()),
+  );
+
+  const itemsPerPage = rowsPerPage;
+  const totalPages =
+    filteredMeasurements.length > 0
+      ? Math.ceil(filteredMeasurements.length / itemsPerPage)
+      : 1;
+
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+
+  const currentMeasurements = filteredMeasurements.slice(
+    indexOfFirst,
+    indexOfLast,
+  );
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(measurementValidation),
+  });
 
   const handleFormSubmit = async (measurementData) => {
     try {
@@ -100,7 +102,7 @@ const Measurement = () => {
     }
   };
 
-  // ================= Edit =================
+  // Edit
 
   const handleEdit = (measurement) => {
     setEditingId(measurement._id);
@@ -135,112 +137,165 @@ const Measurement = () => {
   };
 
   return (
-    <div className="measurement-container">
+    <div className="measurement-main">
       <div className="measurement-header">
         <h2>Measurement Management</h2>
-      </div>
-      <div className="measurement-actions">
-        <SearchBox
-          placeholder="Search Measurements..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+
         <AddButton onClick={handleAdd}>+ Add Measurement</AddButton>
       </div>
 
-      {showModal && (
-        <MeasurementForm
-          measurement={editingMeasurement}
-          editId={editingId}
-          customers={customers}
-          onSubmit={handleFormSubmit}
-          onCancel={handleCancel}
-        />
-      )}
+      <div className="measurement-container">
+        <div className="table-toolbar">
+          <div className="entries">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
 
-      <div className="table-wrapper">
-        <table className="purchase-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Customer</th>
-              <th>Phone</th>
-              <th>Chest</th>
-              <th>Waist</th>
-              <th>Shoulder</th>
-              <th>Sleeve</th>
-              <th>Neck</th>
-              <th>Hip</th>
-              <th>Inseam</th>
-              <th>Length</th>
-              <th>Notes</th>
-              <th className="supplier-column">Action</th>
-            </tr>
-          </thead>
+            <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <SearchBox
+              placeholder="Search Measurements..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
 
-          <tbody>
-            {loading ? (
+        <Modal
+          open={showModal}
+          title={editingId ? "Edit Measurement" : "Add Measurement"}
+          size="md"
+          onClose={handleCancel}
+        >
+          <MeasurementForm
+            measurement={editingMeasurement}
+            editingId={editingId}
+            customers={customers}
+            onSubmit={handleFormSubmit}
+            onCancel={handleCancel}
+          />
+        </Modal>
+
+        <div className="table-wrapper">
+          <table className="purchase-table">
+            <thead>
               <tr>
-                <td colSpan="12" style={{ textAlign: "center" }}>
-                  Loading...
-                </td>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Chest</th>
+                <th>Waist</th>
+                <th>Shoulder</th>
+                <th>Sleeve</th>
+                <th>Neck</th>
+                <th>Hip</th>
+                <th>Inseam</th>
+                <th>Length</th>
+                <th>Notes</th>
+                <th className="supplier-column">Action</th>
               </tr>
-            ) : measurementData.length === 0 ? (
-              <tr>
-                <td colSpan="12" style={{ textAlign: "center" }}>
-                  No Measurements Found
-                </td>
-              </tr>
-            ) : (
-              filteredMeasurements.map((measurement) => (
-                <tr key={measurement._id}>
-                  <td>{measurementData.indexOf(measurement) + 1}</td>
-                  <td>{measurement.customer?.customerName || "-"}</td>
-                  <td>{measurement.customer?.phone || "-"}</td>
-                  <td>{measurement.chest}</td>
-                  <td>{measurement.waist}</td>
-                  <td>{measurement.shoulder}</td>
-                  <td>{measurement.sleeve}</td>
-                  <td>{measurement.neck}</td>
-                  <td>{measurement.hip}</td>
-                  <td>{measurement.inseam}</td>
-                  <td>{measurement.length}</td>
-                  <td>{measurement.notes || "-"}</td>
+            </thead>
 
-                  <td className="supplier-column">
-                    <EditButton onClick={() => handleEdit(measurement)}>
-                      Edit
-                    </EditButton>
-
-                    <DeleteButton onClick={() => handleDelete(measurement._id)}>
-                      Delete
-                    </DeleteButton>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="12" style={{ textAlign: "center" }}>
+                    Loading...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : currentMeasurements.length === 0 ? (
+                <tr>
+                  <td colSpan="12" style={{ textAlign: "center" }}>
+                    No Measurements Found
+                  </td>
+                </tr>
+              ) : (
+                currentMeasurements.map((measurement) => (
+                  <tr key={measurement._id}>
+                    <td>{measurementData.indexOf(measurement) + 1}</td>
+                    <td>{measurement.customer?.customerName || "-"}</td>
+                    <td>{measurement.customer?.phone || "-"}</td>
+                    <td>{measurement.chest}</td>
+                    <td>{measurement.waist}</td>
+                    <td>{measurement.shoulder}</td>
+                    <td>{measurement.sleeve}</td>
+                    <td>{measurement.neck}</td>
+                    <td>{measurement.hip}</td>
+                    <td>{measurement.inseam}</td>
+                    <td>{measurement.length}</td>
+                    <td>{measurement.notes || "-"}</td>
 
-      <div className="pagination">
-        <PreviousButton
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-        >
-          Previous
-        </PreviousButton>
+                    <td className="supplier-column">
+                      <EditButton onClick={() => handleEdit(measurement)}>
+                        Edit
+                      </EditButton>
 
-        <span className="page-info">
-          Page {currentPage} of {totalPages}
-        </span>
+                      <DeleteButton
+                        onClick={() => handleDelete(measurement._id)}
+                      >
+                        Delete
+                      </DeleteButton>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
-        <NextButton
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+        <div className="user-pagination">
+          <p>
+            Showing {filteredMeasurements.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredMeasurements.length)}
+            of {filteredMeasurements.length} entries
+          </p>
+
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

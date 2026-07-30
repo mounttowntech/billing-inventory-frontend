@@ -1,8 +1,9 @@
 .stockledger-container {
-  width: 100%;
+  width: 97%;
   background: #fff;
   border-radius: 16px;
   padding: 22px;
+  margin: 20px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
@@ -33,6 +34,7 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+  padding: 20px;
   align-items: center;
   margin-bottom: 25px;
 }

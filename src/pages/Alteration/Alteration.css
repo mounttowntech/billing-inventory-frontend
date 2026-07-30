@@ -23,60 +23,13 @@
   color: #1f2937;
 }
 
-/* =========================
-   Form
-========================= */
-
 .alteration-form {
   background: #fff;
   padding: 25px;
   border-radius: 12px;
   margin-bottom: 5px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-}
-
-.alteration-form input,
-.alteration-form select,
-.alteration-form textarea {
-  width: 100%;
-  padding: 11px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  outline: none;
-  font-size: 15px;
-  transition: .3s;
-  box-sizing: border-box;
-  background: #fff;
-}
-
-.alteration-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.alteration-form textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.alteration-form input:focus,
-.alteration-form select:focus,
-.alteration-form textarea:focus {
-  
-  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
-}
-
-/* Validation */
-
-.alteration-form p {
-  margin: -10px 0 0;
-  color: #dc2626;
-  font-size: 13px;
 }
 
 /* Buttons */
@@ -160,19 +113,15 @@
   background: #7c3aed;
 }
 
-/* =========================
-   Action Buttons
-========================= */
+.alteration-main{
+  padding: 20px;
+}
 
 .action-buttons {
   display: flex;
   justify-content: center;
   gap: 8px;
 }
-
-/* =========================
-   Empty Table
-========================= */
 
 .no-data {
   text-align: center;
