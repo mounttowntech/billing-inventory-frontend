@@ -7,15 +7,15 @@ const SearchBox = ({
   width = "300px",
 }) => {
   return (
-    <div className="search-box" style={{ width }}>
+    // <div className="search-box" style={{ width }}>
       <input
         type="text"
-        className="search-input"
+        className="user-search-box"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
       />
-    </div>
+    // </div>
   );
 };
 

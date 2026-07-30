@@ -145,7 +145,7 @@ const Invoice = () => {
       <div className="invoice-header">
         <h2>Invoice Management</h2>
 
-        <AddButton onClick={() => setShowModal(true)}>+ Add Invoice</AddButton>
+        <AddButton onClick={() => setShowModal(true)}>+ Add</AddButton>
       </div>
 
       <div className="invoice-container">
@@ -221,17 +221,17 @@ const Invoice = () => {
                     Loading...
                   </td>
                 </tr>
-              ) : currentInvoices.length === 0 ? (
+              ) : filteredInvoices.length === 0 ? (
                 <tr>
                   <td colSpan="12" style={{ textAlign: "center" }}>
                     No Invoices Found
                   </td>
                 </tr>
               ) : (
-                currentInvoices.map((invoice) => (
+                filteredInvoices.map((invoice) => (
                   <tr key={invoice._id}>
                     <td>
-                      {indexOfFirst + currentInvoices.indexOf(invoice) + 1}
+                      {indexOfFirst + filteredInvoices.indexOf(invoice) + 1}
                     </td>
                     <td>{invoice.invoiceNo}</td>
 
