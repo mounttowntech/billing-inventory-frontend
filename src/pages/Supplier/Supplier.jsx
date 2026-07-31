@@ -11,6 +11,8 @@ import {
   deleteSupplier,
 } from "../../features/supplier/supplierSlice";
 import SearchBox from "../../components/Common/SearchBox";
+import Modal from "../../components/Common/Modal";
+
 import {
   AddButton,
   PreviousButton,
@@ -27,11 +29,14 @@ const Supplier = () => {
   const { suppliers, loading, error } = useSelector((state) => state.supplier);
 
   const [showModal, setShowModal] = useState(false);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+
   const [editId, setEditId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = rowsPerPage;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentSuppliers = suppliers.slice(indexOfFirst, indexOfLast);
@@ -58,7 +63,9 @@ const Supplier = () => {
 
   const openAddModal = () => {
     reset({});
-    setEditId(null);
+    setSelectedSupplier(null);
+    setEditId("add");
+    setEditId("add");
     setShowModal(true);
   };
 
@@ -70,6 +77,8 @@ const Supplier = () => {
 
   const handleEdit = (supplier) => {
     setEditId(supplier._id);
+    setSelectedSupplier(supplier);
+
     reset({
       supplierName: supplier.supplierName,
       contactPerson: supplier.contactPerson,
@@ -121,138 +130,194 @@ const Supplier = () => {
   };
 
   return (
-    <div className="supplier-container">
+    <div className="supplier-main">
       <div className="supplier-header">
         <h2>Supplier Management</h2>
+        <AddButton
+          onClick={() => {
+            openAddModal();
+            setSelectedSupplier(null);
+          }}
+        >
+          Add Supplier
+        </AddButton>
       </div>
-      <div className="supplier-search-buttons">
-        <SearchBox
-          placeholder="Search Suppliers..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <AddButton onClick={openAddModal}>Add Supplier</AddButton>
-      </div>
 
-      {error && <div className="supplier-error-banner">{error}</div>}
+      <div className="supplier-container">
+        <div className="table-toolbar">
+          <div className="entries">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
 
-      <SupplierForm
-        showModal={showModal}
-        closeModal={closeModal}
-        editId={editId}
-        register={register}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        errors={errors}
-        isSubmitting={isSubmitting}
-        loading={loading}
-      />
-
-      {deleteTarget && (
-        <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
-          <div
-            className="supplier-modal confirm-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h3>Delete Supplier</h3>
-              <button
-                className="close-btn"
-                onClick={() => setDeleteTarget(null)}
-              >
-                ×
-              </button>
-            </div>
-            <p>
-              Are you sure you want to delete{" "}
-              <strong>{deleteTarget.supplierName}</strong>? This cannot be
-              undone.
-            </p>
-            <div className="form-buttons">
-              <CancelButton onClick={() => setDeleteTarget(null)}>
-                Cancel
-              </CancelButton>
-              <DeleteButton onClick={confirmDelete}>Delete</DeleteButton>
-            </div>
+            <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <SearchBox
+              placeholder="Search Suppliers..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
         </div>
-      )}
 
-      <div className="table-wrapper">
-        {loading && suppliers.length === 0 ? (
-          <h3>Loading...</h3>
-        ) : (
-          <table className="supplier-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Supplier Code</th>
-                <th>Supplier Name</th>
-                <th>Contact Person</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>City</th>
-                <th>Opening Balance</th>
-                <th>Current Balance</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+        <Modal
+          open={showModal}
+          title={editId === "add" ? "Add Supplier" : "Edit Supplier"}
+          size="md"
+          onClose={() => setShowModal(false)}
+        >
+          <SupplierForm
+            mode={editId === "add" ? "add" : "edit"}
+            supplier={selectedSupplier}
+            onSubmit={onSubmit}
+            onClose={() => setShowModal(false)}
+            onSuccess={() => {
+              setShowModal(false);
+              dispatch(getSuppliers());
+            }}
+          />
+        </Modal>
 
-            <tbody>
-              {filteredSuppliers.length > 0 ? (
-                filteredSuppliers.map((supplier) => (
-                  <tr key={supplier._id}>
-                    <td>
-                      {indexOfFirst + filteredSuppliers.indexOf(supplier) + 1}
-                    </td>
-                    <td>{supplier.supplierCode}</td>
-                    <td>{supplier.supplierName}</td>
-                    <td>{supplier.contactPerson}</td>
-                    <td>{supplier.phone}</td>
-                    <td>{supplier.email}</td>
-                    <td>{supplier.city}</td>
-                    <td>₹{supplier.openingBalance}</td>
-                    <td>₹{supplier.currentBalance}</td>
-                    <td className="actions-cell">
-                      <EditButton onClick={() => handleEdit(supplier)}>
-                        Edit
-                      </EditButton>
-                      <DeleteButton onClick={() => handleDelete(supplier._id)}>
-                        Delete
-                      </DeleteButton>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="9">No Suppliers Found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        {deleteTarget && (
+          <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
+            <div
+              className="supplier-modal confirm-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h3>Delete Supplier</h3>
+                <button
+                  className="close-btn"
+                  onClick={() => setDeleteTarget(null)}
+                >
+                  ×
+                </button>
+              </div>
+              <p>
+                Are you sure you want to delete{" "}
+                <strong>{deleteTarget.supplierName}</strong>? This cannot be
+                undone.
+              </p>
+              <div className="form-buttons">
+                <CancelButton onClick={() => setDeleteTarget(null)}>
+                  Cancel
+                </CancelButton>
+                <DeleteButton onClick={confirmDelete}>Delete</DeleteButton>
+              </div>
+            </div>
+          </div>
         )}
-      </div>
 
-      <div className="pagination">
-        <PreviousButton
-          className="btn btn-page"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-        >
-          Previous
-        </PreviousButton>
+        <div className="table-wrapper">
+          {loading && suppliers.length === 0 ? (
+            <h3>Loading...</h3>
+          ) : (
+            <table className="supplier-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Supplier Code</th>
+                  <th>Supplier Name</th>
+                  <th>Contact Person</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>City</th>
+                  <th>Opening Balance</th>
+                  <th>Current Balance</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-        <span className="page-info">
-          Page {currentPage} of {totalPages}
-        </span>
+              <tbody>
+                {filteredSuppliers.length > 0 ? (
+                  filteredSuppliers.map((supplier) => (
+                    <tr key={supplier._id}>
+                      <td>
+                        {indexOfFirst + filteredSuppliers.indexOf(supplier) + 1}
+                      </td>
+                      <td>{supplier.supplierCode}</td>
+                      <td>{supplier.supplierName}</td>
+                      <td>{supplier.contactPerson}</td>
+                      <td>{supplier.phone}</td>
+                      <td>{supplier.email}</td>
+                      <td>{supplier.city}</td>
+                      <td>₹{supplier.openingBalance}</td>
+                      <td>₹{supplier.currentBalance}</td>
+                      <td className="actions-cell">
+                        <EditButton onClick={() => handleEdit(supplier)}>
+                          Edit
+                        </EditButton>
+                        <DeleteButton
+                          onClick={() => handleDelete(supplier._id)}
+                        >
+                          Delete
+                        </DeleteButton>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9">No Suppliers Found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
+        </div>
 
-        <NextButton
-          className="btn btn-page"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+        <div className="user-pagination">
+          <p>
+            Showing {filteredSuppliers.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredSuppliers.length)}
+            of {filteredSuppliers.length} entries
+          </p>
+
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -23,22 +23,30 @@ import {
 } from "../../components/Common/Button";
 
 import CustomerAddressForm from "./CustomerAddressForm";
+import Modal from "../../components/common/Modal";
 
 const CustomerAddress = () => {
   const dispatch = useDispatch();
+
+  const { customers } = useSelector((state) => state.customer);
+
+  // Modal & Form State
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [editingAddress, setEditingAddress] = useState(null);
+
+  // Search
   const [search, setSearch] = useState("");
+
+  // Data
   const [addresses, setAddresses] = useState([]);
-  const { customers } = useSelector((state) => state.customer);
 
-  // ================= Pagination =================
-
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const itemsPerPage = rowsPerPage;
 
-  const itemsPerPage = 5;
-
+  // Fetch Data
   useEffect(() => {
     dispatch(getAddresses()).then((res) => {
       setAddresses(res.payload);
@@ -47,25 +55,26 @@ const CustomerAddress = () => {
     dispatch(getCustomers());
   }, [dispatch]);
 
+  // Search Filter
   const filteredAddresses = addresses?.filter((item) => {
     const keyword = search.toLowerCase();
 
     return (
       (item.customer?.customerName || "").toLowerCase().includes(keyword) ||
-      item.label?.toLowerCase().includes(keyword) ||
-      item.city?.toLowerCase().includes(keyword) ||
-      item.state?.toLowerCase().includes(keyword) ||
-      item.pincode?.toLowerCase().includes(keyword)
+      (item.label || "").toLowerCase().includes(keyword) ||
+      (item.city || "").toLowerCase().includes(keyword) ||
+      (item.state || "").toLowerCase().includes(keyword) ||
+      (item.pincode || "").toLowerCase().includes(keyword)
     );
   });
 
+  // Pagination Calculation
   const totalPages =
     filteredAddresses.length > 0
       ? Math.ceil(filteredAddresses.length / itemsPerPage)
       : 1;
 
   const indexOfLast = currentPage * itemsPerPage;
-
   const indexOfFirst = indexOfLast - itemsPerPage;
 
   const currentAddresses = filteredAddresses.slice(indexOfFirst, indexOfLast);
@@ -130,97 +139,149 @@ const CustomerAddress = () => {
   };
 
   return (
-    <div className="customeraddress-container">
+    <div className="customeraddress-main">
       <div className="customeraddress-header">
         <h2>Customer Address Management</h2>
+
+        <AddButton onClick={handleAdd}>Add </AddButton>
       </div>
+      <div className="customer-address-container">
+        <div className="table-wrapper">
+          <div className="table-toolbar">
+            <div className="entries">
+              <select
+                value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
 
-      <div className="customeraddress-actions">
-        <SearchBox
-          placeholder="Search Address..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+              <span>Entries</span>
+            </div>
+            <div style={{ marginLeft: "auto" }}>
+              <SearchBox
+                placeholder="Search Address..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
 
-        <AddButton onClick={handleAdd}>Add Address</AddButton>
-      </div>
-
-      <div className="table-wrapper">
-        <table className="customeraddress-table">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Customer</th>
-              <th>Label</th>
-              <th>Address Line 1</th>
-              <th>Address Line 2</th>
-              <th>City</th>
-              <th>State</th>
-              <th>Pincode</th>
-              <th>Default</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {currentAddresses.length === 0 ? (
+          <Modal
+            open={showModal}
+            title={editingId ? "Edit Address" : "Add Address"}
+            size="md"
+            onClose={handleCancel}
+          >
+            <CustomerAddressForm
+              mode={editingId ? "edit" : "add"}
+              address={editingAddress}
+              customers={customers}
+              onSubmit={handleFormSubmit}
+              onClose={handleCancel}
+              onSuccess={() => {
+                handleCancel();
+                dispatch(getCustomerAddresses());
+              }}
+            />
+          </Modal>
+          <table className="customeraddress-table">
+            <thead>
               <tr>
-                <td colSpan="10" style={{ textAlign: "center" }}>
-                  No Customer Addresses Found
-                </td>
+                <th>No</th>
+                <th>Customer</th>
+                <th>Label</th>
+                <th>Address Line 1</th>
+                <th>Address Line 2</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Pincode</th>
+                <th>Default</th>
+                <th>Actions</th>
               </tr>
-            ) : (
-              currentAddresses.map((item, index) => (
-                <tr key={item._id}>
-                  <td>{indexOfFirst + index + 1}</td>
-                  <td>{item.customer?.customerName || "-"}</td>
-                  <td style={{ textTransform: "capitalize" }}>{item.label}</td>
-                  <td>{item.addressLine1}</td>
-                  <td>{item.addressLine2 || "-"}</td>
-                  <td>{item.city}</td>
-                  <td>{item.state}</td>
-                  <td>{item.pincode}</td>
-                  <td>{item.isDefault ? "Yes" : "No"}</td>
+            </thead>
 
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(item)} />
-                    <DeleteButton onClick={() => handleDelete(item._id)} />
+            <tbody>
+              {currentAddresses.length === 0 ? (
+                <tr>
+                  <td colSpan="10" style={{ textAlign: "center" }}>
+                    No Customer Addresses Found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : (
+                currentAddresses.map((item, index) => (
+                  <tr key={item._id}>
+                    <td>{indexOfFirst + index + 1}</td>
+                    <td>{item.customer?.customerName || "-"}</td>
+                    <td style={{ textTransform: "capitalize" }}>
+                      {item.label}
+                    </td>
+                    <td>{item.addressLine1}</td>
+                    <td>{item.addressLine2 || "-"}</td>
+                    <td>{item.city}</td>
+                    <td>{item.state}</td>
+                    <td>{item.pincode}</td>
+                    <td>{item.isDefault ? "Yes" : "No"}</td>
 
-      {showModal && (
-        <CustomerAddressForm
-          address={editingAddress}
-          editId={editingId}
-          customers={customers}
-          onSubmit={handleFormSubmit}
-          onCancel={handleCancel}
-        />
-      )}
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(item)} />
+                      <DeleteButton onClick={() => handleDelete(item._id)} />
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="user-pagination">
+          <p>
+            Showing {filteredAddresses.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredAddresses.length)}
+            of {filteredAddresses.length} entries
+          </p>
 
-      <div className="pagination">
-        <PreviousButton
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-        >
-          Previous
-        </PreviousButton>
-
-        <span className="page-info">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        <NextButton
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

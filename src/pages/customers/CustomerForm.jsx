@@ -1,55 +1,82 @@
-import { CancelButton } from "../../components/Common/Button";
+import { CancelButton, SaveButton } from "../../components/Common/Button";
+import Input from "../../components/Common/Input";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { customerValidation } from "../../validations/customerValidation";
+import { useEffect } from "react";
 
-/**
- * Modal form for creating / editing a Customer.
- * All state (react-hook-form, etc.) is owned by the parent <Customer />
- * component and passed down as props.
- */
-const CustomerForm = ({
-  showModal,
-  setShowModal,
-  editId,
-  setEditId,
-  register,
-  handleSubmit,
-  onSubmit,
-  errors,
-  reset,
-}) => {
-  if (!showModal) return null;
+const CustomerForm = ({ mode, customer, onSubmit, onClose, onSuccess }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(customerValidation(mode)),
+  });
+
+  useEffect(() => {
+    if (customer) {
+      reset({
+        customerCode: customer.customerCode || "",
+        customerName: customer.customerName || "",
+        phone: customer.phone || "",
+        email: customer.email || "",
+      });
+    } else {
+      reset({
+        customerCode: "",
+        customerName: "",
+        phone: "",
+        email: "",
+      });
+    }
+  }, [customer, reset]);
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <h2>{editId ? "Update Customer" : "Add Customer"}</h2>
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input placeholder="Customer Code" {...register("customerCode")} />
-          <p>{errors.customerCode?.message}</p>
-
-          <input placeholder="Customer Name" {...register("customerName")} />
-          <p>{errors.customerName?.message}</p>
-
-          <input placeholder="Phone" {...register("phone")} />
-          <p>{errors.phone?.message}</p>
-
-          <input placeholder="Email" {...register("email")} />
-          <p>{errors.email?.message}</p>
-
-          <button type="submit">{editId ? "Update" : "Save"}</button>
-
-          <CancelButton
-            onClick={() => {
-              setShowModal(false);
-              setEditId(null);
-              reset();
-            }}
-          >
-            Cancel
-          </CancelButton>
-        </form>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="form-grid">
+        <Input
+          label="Customer Code"
+          name="customerCode"
+          placeholder="Customer Code"
+          register={register}
+          error={errors.customerCode?.message}
+        />
+        <Input
+          label="Customer Name"
+          name="customerName"
+          placeholder="Customer Name"
+          register={register}
+          error={errors.customerName?.message}
+        />
       </div>
-    </div>
+      <div className="form-grid">
+        <Input
+          label="Phone"
+          name="phone"
+          placeholder="Phone"
+          register={register}
+          error={errors.phone?.message}
+        />
+        <Input
+          label="Email"
+          name="email"
+          placeholder="Email"
+          register={register}
+          error={errors.email?.message}
+        />
+      </div>
+      <div className="form-footer">
+        <SaveButton>
+          {mode === "add" ? "Add Customer" : "Update Customer"}
+        </SaveButton>
+
+        <CancelButton type="button" onClick={onClose}>
+          Cancel
+        </CancelButton>
+      </div>
+    </form>
   );
 };
 
