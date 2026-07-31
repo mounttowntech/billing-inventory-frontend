@@ -38,11 +38,14 @@
 
 /* Table */
 
+.supplier-main{
+  padding: 30px;
+}
+
 .table-wrapper {
   overflow-x: auto;
   background: #fff;
   border-radius: 10px;
-  border: 1px solid #e5e7eb;
 }
 
 .supplier-table {
@@ -120,26 +123,6 @@
 
 .close-btn:hover {
   color: #111827;
-}
-
-/* Form */
-
-.supplier-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.form-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
 }
 
 .form-group input,
