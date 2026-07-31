@@ -1,38 +1,198 @@
+import "./SalesReturnForm.css";
 import { SaveButton, CancelButton } from "../../components/Common/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { salesReturnValidation } from "../../validations/salesReturnValidation";
+import { getSalesReturns } from "../../features/salesReturn/salesReturnSlice";
+import toaster from "../../utils/toaster";
+
+import Select from "../../components/common/Select";
+import Input from "../../components/common/Input";
+import { createSalesReturn, updateSalesReturn } from "../../features/salesReturn/salesReturnSlice";
+import { useEffect } from "react";
+
+import {getProducts} from "../../features/Product/productSlice";
 
 /**
  * Modal form for creating / editing a Sales Return.
  * All state (react-hook-form, customers, invoices, etc.) is owned by the
  * parent <SalesReturn /> component and passed down as props.
  */
-const SalesReturnForm = ({
-  showForm,
-  setShowForm,
-  customers,
-  filteredInvoices,
-  register,
-  handleSubmit,
-  onSubmit,
-  errors,
-  reset,
-  setEditId,
-  editId,
-}) => {
-  if (!showForm) return null;
+const SalesReturnForm = ({ mode = "add", salesReturn = null, onClose, onSuccess }) => {
+  // if (!showForm) return null;
 
+  const dispatch = useDispatch();
+  
+    const {
+      register,
+      handleSubmit,
+      reset,
+      watch,
+      formState: { errors },
+    } = useForm({
+      resolver: yupResolver(salesReturnValidation(mode)),
+    });
+    const { products } = useSelector((state) => state.product);
+console.log("Products:", products);
+    useEffect(() => {
+        // dispatch(getCustomers());
+        dispatch(getProducts());
+      }, [dispatch]);
+
+  useEffect(() => {
+    if (mode === "edit" && salesReturn) {
+      reset({
+        product: salesReturn.product?._id || "",
+        skuCode: salesReturn.skuCode || "",
+        quantity: salesReturn.quantity || "",
+        refundAmount: salesReturn.refundAmount || "",
+        reason: salesReturn.reason || "",
+      });
+    } else {
+      reset({
+        product: "",
+        skuCode: "",
+        quantity: "",
+        refundAmount: "",
+        reason: "",
+      });
+    }
+  }, [mode, salesReturn, reset]);
+
+      //get selected product sku codes
+      const selectedProduct = watch("product");
+      const filteredProduct = products.find((product) => product._id === selectedProduct);
+      const skuCodes = filteredProduct?.variants?.map((variant) => variant.skuCode) || [];
+
+      
+console.log("Selected Product:", selectedProduct);
+console.log("Filtered Product:", filteredProduct);
+console.log("SKU Codes:", skuCodes);
+
+    const onSubmit = (data) => {
+      console.log("Sales Return Form Data:", data);
+      try {
+        const payload = {
+          product: data.product,
+          skuCode: data.skuCode,
+          quantity: data.quantity,
+          refundAmount: Number(data.refundAmount),
+          reason: data.reason,
+        };
+    console.log("Sales Return Payload:", payload);
+        if (mode === "edit" && salesReturn) {
+          dispatch(
+            updateSalesReturn({
+              id: salesReturn._id,
+              salesReturnData: payload,
+            }),
+          ).then((res) => {
+            console.log("Sales Return updated:", res);
+            onSuccess(); // Call the onSuccess callback to refresh the list in the parent component
+            // dispatch(getSalesReturns());
+            // reset();
+            // setEditId(null);
+            // setShowForm(false);
+          }).catch((error) => {
+            console.log("Error updating Sales Return:", error);
+            toaster.error("Failed to update Sales Return. Please try again.");
+          });
+        } else {
+          dispatch(createSalesReturn(payload)).then((res) => {
+            console.log("Sales Return created:", res);
+            onSuccess(); // Call the onSuccess callback to refresh the list in the parent component
+            // dispatch(getSalesReturns());
+            // reset();
+            // setShowForm(false);
+          }).catch((error) => {
+            console.log("Error creating Sales Return:", error);
+            toaster.error("Failed to create Sales Return. Please try again.");
+          });
+        }
+      } catch (error) {
+        console.log("Error submitting Sales Return form:", error);
+      }
+    };
+
+
+console.log("Sales Return Form Errors:", errors);
   return (
-    <div className="modal-overlay">
-      <div className="salesreturn-modal">
-        <div className="salesreturn-modal-header">
-          <h3>{editId ? "Update Sales Return" : "Add Sales Return"}</h3>
+        <form onSubmit={handleSubmit(onSubmit)} className="user-form">
 
-          <button className="close-btn" onClick={() => setShowForm(false)}>
-            ✕
-          </button>
+      <div className="form-grid">
+        <Select
+          label="Product"
+          name="product"
+          register={register}
+          error={errors.product?.message}
+          options={[
+            ...products.map((product) => ({
+              _id: product._id,
+              label: product.productName,
+            })),
+          ]}
+        />
+
+        <Select
+          label="SKU Code"
+          name="skuCode"
+          register={register}
+          error={errors.skuCode?.message}
+          options={[
+            ...(skuCodes.map((skuCode) => ({
+              _id: skuCode,
+              label: skuCode,
+            })) || []),
+          ]}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Quantity"
+          name="quantity"
+          type="number"
+          register={register}
+          error={errors.quantity?.message}
+        />
+        <Input
+          label="Refund Amount"
+          name="refundAmount"
+          type="number"
+          register={register}
+          error={errors.refundAmount?.message}
+        />
         </div>
+        <div className="form-grid">
+          <div className="form-group full-width">
+          {/* //reason */}
+          <label>Reason</label>
+          <textarea
+            label="Reason"
+            name="reason"
+            {...register("reason")}
+            error={errors.reason?.message}
+          />
+          {errors.reason && (
+            <p className="error">{errors.reason.message}</p>
+          )}
+          </div>
+          </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="salesreturn-form-group">
+      <div className="form-footer">
+        <SaveButton>{mode === "add" ? "Create" : "Update"}</SaveButton>
+        <CancelButton
+          type="button"
+          onClick={() => {
+            reset();
+            onClose();
+          }}
+        >
+          Cancel
+        </CancelButton>
+      </div>
+
+          {/* <div className="salesreturn-form-group">
             <label>Customer</label>
             <select {...register("customer")}>
               <option value="">Select Customer</option>
@@ -97,10 +257,8 @@ const SalesReturnForm = ({
             >
               Cancel
             </CancelButton>
-          </div>
+          </div> */}
         </form>
-      </div>
-    </div>
   );
 };
 

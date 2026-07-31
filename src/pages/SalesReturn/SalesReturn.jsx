@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Modal from "../../components/common/Modal";
 
 import {
   getSalesReturns,
@@ -31,18 +32,22 @@ const SalesReturn = () => {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
   const [search, setSearch] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [mode, setMode] = useState("add"); // add | edit
+  const [selectedSalesReturn, setSelectedSalesReturn] = useState(null);
   const { salesReturns, isLoading } = useSelector((state) => state.salesReturn);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const indexOfLast = currentPage * rowsPerPage;
+  const indexOfFirst = indexOfLast - rowsPerPage;
   const currentSalesReturns = salesReturns.slice(indexOfFirst, indexOfLast);
   const totalPages =
-    salesReturns.length > 0 ? Math.ceil(salesReturns.length / itemsPerPage) : 1;
+    salesReturns.length > 0 ? Math.ceil(salesReturns.length / rowsPerPage) : 1;
 
   const filteredSalesReturn = currentSalesReturns.filter((item) =>
-    (item.productName || "").toLowerCase().includes(search.toLowerCase()),
+    (item?.product?.productName || "").toLowerCase().includes(search.toLowerCase()),
   );
 
   const {
@@ -106,17 +111,19 @@ const SalesReturn = () => {
   };
 
   const handleEdit = (item) => {
+    setSelectedSalesReturn(item);
     setEditId(item._id);
+    setMode("edit");
+    // reset({
+    //   invoice: item.invoice || "",
+    //   customer: item.customer || "",
+    //   returnDate: item.returnDate ? item.returnDate.substring(0, 10) : "",
+    //   refundAmount: item.refundAmount,
+    //   reason: item.reason,
+    // });
 
-    reset({
-      invoice: item.invoice || "",
-      customer: item.customer || "",
-      returnDate: item.returnDate ? item.returnDate.substring(0, 10) : "",
-      refundAmount: item.refundAmount,
-      reason: item.reason,
-    });
-
-    setShowForm(true);
+    // setShowForm(true);
+    setOpenModal(true);
   };
 
   const handleDelete = (id) => {
@@ -132,10 +139,21 @@ const SalesReturn = () => {
   }
 
   return (
-    <div className="salesreturn-container">
-      <div className="salesreturn-header">
-        <h2>Sales Return Management</h2>
-        <SearchBox
+    <div className="page-container">
+      <div className="page-header">
+        <h2>Sales Returns</h2>
+        <button
+          className="btn-primary"
+          onClick={() => {
+            setMode("add");
+            setSelectedUser(null);
+            setOpenModal(true);
+          }}
+        >
+          + Add
+        </button>
+
+        {/* <SearchBox
           placeholder="Search sales..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -154,11 +172,165 @@ const SalesReturn = () => {
             setShowForm(true);
           }}
         >
-          Add Sales Return
-        </AddButton>
+          + Add
+        </AddButton> */}
       </div>
 
-      <div className="salesreturn-table-wrapper">
+      <div className="table-card">
+              <div className="table-toolbar">
+                <div className="entries">
+                  <select
+                    value={rowsPerPage}
+                    onChange={(e) => {
+                      setRowsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                  </select>
+      
+                  <span>Entries</span>
+                </div>
+      
+                {/* <input
+                  className="user-search-box"
+                  placeholder="Search users..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                /> */}
+
+          <SearchBox
+            placeholder="Search sales..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+              </div>
+      
+        <table className="custom-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>SKU Code</th>
+              <th>Quantity</th>
+              <th>Refund Amount</th>
+              <th>Reason</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {filteredSalesReturn?.length > 0 ? (
+              filteredSalesReturn.map((item) => (
+                <tr key={item._id}>
+                  <td>
+                    {indexOfFirst + filteredSalesReturn.indexOf(item) + 1}
+                  </td>
+                  <td>
+                    {item.product?.productName || item.product || "-"}
+                  </td>
+
+                  <td>
+                    {item.skuCode || "-"}
+                  </td>
+
+                  <td>
+                    {item.quantity || "-"}
+                  </td>
+
+                  <td>₹{item.refundAmount}</td>
+
+                  <td>{item.reason}</td>
+
+                  <td className="action-buttons">
+                    <EditButton onClick={() => handleEdit(item)} />
+
+                    <DeleteButton onClick={() => handleDelete(item._id)} />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No Sales Returns Found</td>
+              </tr>
+            )}
+          </tbody>
+
+        </table>
+      
+              <div className="user-pagination">
+                <p>
+                  Showing {filteredSalesReturn.length === 0 ? 0 : indexOfFirst + 1}
+                  to {Math.min(indexOfLast, filteredSalesReturn.length)}
+                  of {filteredSalesReturn.length} entries
+                </p>
+      
+                <div className="page-buttons">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(1)}
+                  >
+                    &laquo;
+                  </button>
+      
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                  >
+                    &lsaquo;
+                  </button>
+      
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i}
+                      className={currentPage === i + 1 ? "active-page" : ""}
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+      
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                  >
+                    &rsaquo;
+                  </button>
+      
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(totalPages)}
+                  >
+                    &raquo;
+                  </button>
+                </div>
+              </div>
+            </div>
+      
+            <Modal
+              open={openModal}
+              title={mode === "add" ? "Add" : "Edit"}
+              size="md"
+              onClose={() => setOpenModal(false)}
+            >
+              <SalesReturnForm
+                mode={mode}
+                salesReturn={selectedSalesReturn}
+                onClose={() => setOpenModal(false)}
+                onSuccess={() => {
+                  setOpenModal(false);
+                  dispatch(getSalesReturns());
+                }}
+              />
+            </Modal>
+
+      {/* <div className="salesreturn-table-wrapper">
         <table className="salesreturn-table">
           <thead>
             <tr>
@@ -253,7 +425,7 @@ const SalesReturn = () => {
         >
           Next
         </NextButton>
-      </div>
+      </div> */}
     </div>
   );
 };

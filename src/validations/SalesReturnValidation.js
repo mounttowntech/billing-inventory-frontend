@@ -1,11 +1,11 @@
 import * as yup from "yup";
 
-export const salesReturnValidation = yup.object({
-  invoice: yup.string().required("Invoice is required"),
+export const salesReturnValidation = (mode) => yup.object({
+  product: yup.string().required("Product is required"),
 
-  customer: yup.string().required("Customer is required"),
+  skuCode: yup.string().required("SKU Code is required"),
 
-  returnDate: yup.date().required("Return Date is required"),
+  quantity: yup.number().required("Quantity is required"),
 
   refundAmount: yup
     .number()
