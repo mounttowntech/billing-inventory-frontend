@@ -47,7 +47,7 @@ const SalesReturn = () => {
     salesReturns.length > 0 ? Math.ceil(salesReturns.length / rowsPerPage) : 1;
 
   const filteredSalesReturn = currentSalesReturns.filter((item) =>
-    (item.productName || "").toLowerCase().includes(search.toLowerCase()),
+    (item?.product?.productName || "").toLowerCase().includes(search.toLowerCase()),
   );
 
   const {
@@ -111,17 +111,19 @@ const SalesReturn = () => {
   };
 
   const handleEdit = (item) => {
+    setSelectedSalesReturn(item);
     setEditId(item._id);
+    setMode("edit");
+    // reset({
+    //   invoice: item.invoice || "",
+    //   customer: item.customer || "",
+    //   returnDate: item.returnDate ? item.returnDate.substring(0, 10) : "",
+    //   refundAmount: item.refundAmount,
+    //   reason: item.reason,
+    // });
 
-    reset({
-      invoice: item.invoice || "",
-      customer: item.customer || "",
-      returnDate: item.returnDate ? item.returnDate.substring(0, 10) : "",
-      refundAmount: item.refundAmount,
-      reason: item.reason,
-    });
-
-    setShowForm(true);
+    // setShowForm(true);
+    setOpenModal(true);
   };
 
   const handleDelete = (id) => {
@@ -139,7 +141,7 @@ const SalesReturn = () => {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h2>Sales Return Management</h2>
+        <h2>Sales Returns</h2>
         <button
           className="btn-primary"
           onClick={() => {
@@ -214,9 +216,9 @@ const SalesReturn = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>Invoice</th>
-              <th>Customer</th>
-              <th>Return Date</th>
+              <th>Product</th>
+              <th>SKU Code</th>
+              <th>Quantity</th>
               <th>Refund Amount</th>
               <th>Reason</th>
               <th>Actions</th>
@@ -231,22 +233,15 @@ const SalesReturn = () => {
                     {indexOfFirst + filteredSalesReturn.indexOf(item) + 1}
                   </td>
                   <td>
-                    {typeof item.invoice === "object"
-                      ? item.invoice?.invoiceNumber || item.invoice?._id
-                      : item.invoice}
+                    {item.product?.productName || item.product || "-"}
                   </td>
 
                   <td>
-                    {typeof item.customer === "object"
-                      ? `${item.customer?.firstName || ""} ${item.customer?.lastName || ""
-                      }`
-                      : item.customer}
+                    {item.skuCode || "-"}
                   </td>
 
                   <td>
-                    {item.returnDate
-                      ? new Date(item.returnDate).toLocaleDateString()
-                      : "-"}
+                    {item.quantity || "-"}
                   </td>
 
                   <td>₹{item.refundAmount}</td>
@@ -326,7 +321,7 @@ const SalesReturn = () => {
             >
               <SalesReturnForm
                 mode={mode}
-                user={selectedSalesReturn}
+                salesReturn={selectedSalesReturn}
                 onClose={() => setOpenModal(false)}
                 onSuccess={() => {
                   setOpenModal(false);

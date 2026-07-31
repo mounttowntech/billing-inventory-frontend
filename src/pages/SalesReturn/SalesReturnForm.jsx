@@ -1,3 +1,4 @@
+import "./SalesReturnForm.css";
 import { SaveButton, CancelButton } from "../../components/Common/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -39,6 +40,26 @@ console.log("Products:", products);
         dispatch(getProducts());
       }, [dispatch]);
 
+  useEffect(() => {
+    if (mode === "edit" && salesReturn) {
+      reset({
+        product: salesReturn.product?._id || "",
+        skuCode: salesReturn.skuCode || "",
+        quantity: salesReturn.quantity || "",
+        refundAmount: salesReturn.refundAmount || "",
+        reason: salesReturn.reason || "",
+      });
+    } else {
+      reset({
+        product: "",
+        skuCode: "",
+        quantity: "",
+        refundAmount: "",
+        reason: "",
+      });
+    }
+  }, [mode, salesReturn, reset]);
+
       //get selected product sku codes
       const selectedProduct = watch("product");
       const filteredProduct = products.find((product) => product._id === selectedProduct);
@@ -53,13 +74,13 @@ console.log("SKU Codes:", skuCodes);
       console.log("Sales Return Form Data:", data);
       try {
         const payload = {
-          invoice: data.invoice,
-          customer: data.customer,
-          returnDate: data.returnDate,
-          returnAmount: Number(data.returnAmount),
+          product: data.product,
+          skuCode: data.skuCode,
+          quantity: data.quantity,
+          refundAmount: Number(data.refundAmount),
           reason: data.reason,
         };
-    
+    console.log("Sales Return Payload:", payload);
         if (mode === "edit" && salesReturn) {
           dispatch(
             updateSalesReturn({
@@ -135,31 +156,36 @@ console.log("Sales Return Form Errors:", errors);
           error={errors.quantity?.message}
         />
         <Input
-          label="Return Amount"
-          name="returnAmount"
+          label="Refund Amount"
+          name="refundAmount"
           type="number"
           register={register}
-          error={errors.returnAmount?.message}
+          error={errors.refundAmount?.message}
         />
         </div>
         <div className="form-grid">
+          <div className="form-group full-width">
           {/* //reason */}
+          <label>Reason</label>
           <textarea
             label="Reason"
             name="reason"
             {...register("reason")}
             error={errors.reason?.message}
           />
+          {errors.reason && (
+            <p className="error">{errors.reason.message}</p>
+          )}
+          </div>
           </div>
 
       <div className="form-footer">
-        <SaveButton>{mode === "add" ? "Add User" : "Update User"}</SaveButton>
+        <SaveButton>{mode === "add" ? "Create" : "Update"}</SaveButton>
         <CancelButton
           type="button"
           onClick={() => {
             reset();
-            setEditId(null);
-            setShowForm(false);
+            onClose();
           }}
         >
           Cancel

@@ -7,11 +7,11 @@ export const salesReturnValidation = (mode) => yup.object({
 
   quantity: yup.number().required("Quantity is required"),
 
-  returnAmount: yup
+  refundAmount: yup
     .number()
-    .typeError("Return Amount must be a number")
-    .min(0, "Return Amount cannot be negative")
-    .required("Return Amount is required"),
+    .typeError("Refund Amount must be a number")
+    .min(0, "Refund Amount cannot be negative")
+    .required("Refund Amount is required"),
 
   reason: yup
     .string()
