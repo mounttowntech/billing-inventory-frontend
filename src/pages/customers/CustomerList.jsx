@@ -8,15 +8,15 @@ import {
   deleteCustomer,
 } from "../../features/Customer/customerSlice";
 import SearchBox from "../../components/Common/SearchBox";
+import Modal from "../../components/common/Modal";
+
 import {
   AddButton,
   EditButton,
   DeleteButton,
   NextButton,
 } from "../../components/Common/Button";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import CustomerValidation from "../../validations/CustomerValidation";
+
 import CustomerForm from "./CustomerForm";
 
 const Customer = () => {
@@ -24,7 +24,9 @@ const Customer = () => {
 
   const { customers } = useSelector((state) => state.customer);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const itemsPerPage = rowsPerPage;
 
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
@@ -39,15 +41,6 @@ const Customer = () => {
     customer.customerName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(CustomerValidation),
-  });
-
   useEffect(() => {
     dispatch(getCustomers({ page: 1, search: "" }));
   }, [dispatch]);
@@ -59,114 +52,159 @@ const Customer = () => {
     } else {
       dispatch(createCustomer(data));
     }
-    reset();
+    dispatch(getCustomers({ page: 1, search: "" }));
     setShowModal(false);
   };
 
   const handleEdit = (customer) => {
     setEditId(customer._id);
-
-    reset({
-      customerCode: customer.customerCode,
-      customerName: customer.customerName,
-      phone: customer.phone,
-      email: customer.email,
-    });
+    setSelectedCustomer(customer);
     setShowModal(true);
   };
 
   return (
-    <div className="customer-container">
+    <div className="customer-list-container">
       <div className="customer-header">
         <h2>Customer List</h2>
-      </div>
-      <div className="customer-search-buttons">
-        <SearchBox
-          placeholder="Search Fabric..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+
         <AddButton
           onClick={() => {
+            setSelectedCustomer(null);
             setEditId(null);
-            reset();
             setShowModal(true);
           }}
         >
-          Add Customer
+          Add
         </AddButton>
       </div>
+      <div className="customer-container">
+        <div className="table-toolbar">
+          <div className="entries">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
 
-      <CustomerForm
-        showModal={showModal}
-        setShowModal={setShowModal}
-        editId={editId}
-        setEditId={setEditId}
-        register={register}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        errors={errors}
-        reset={reset}
-      />
+            <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <SearchBox
+              placeholder="Search Customers..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
 
-      <table border="1" className="customer-table">
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Action</th>
-          </tr>
-        </thead>
+        <Modal
+          open={showModal}
+          title={editId === "add" ? "Add Customer" : "Edit Customer"}
+          size="md"
+          onClose={() => setShowModal(false)}
+        >
+          <CustomerForm
+            mode={editId === "add" ? "add" : "edit"}
+            customer={selectedCustomer}
+            onSubmit={onSubmit}
+            onClose={() => setShowModal(false)}
+            onSuccess={() => {
+              setShowModal(false);
+              dispatch(getCustomers());
+            }}
+          />
+        </Modal>
 
-        <tbody>
-          {filteredCustomers.map((customer, index) => (
-            <tr key={customer._id}>
-              <td>{indexOfFirst + index + 1}</td>
-              <td>{customer.customerCode}</td>
-
-              <td>{customer.customerName}</td>
-
-              <td>{customer.phone}</td>
-
-              <td>{customer.email}</td>
-
-              <td className="action-buttons">
-                <EditButton onClick={() => handleEdit(customer)}>
-                  Edit
-                </EditButton>
-
-                <DeleteButton
-                  onClick={() => dispatch(deleteCustomer(customer._id))}
-                >
-                  Delete
-                </DeleteButton>
-              </td>
+        <table border="1" className="customer-table">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="pagination">
-        <button
-          type="button"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-        >
-          Previous
-        </button>
+          </thead>
 
-        <span>
-          Page {currentPage} of {totalPages || 1}
-        </span>
+          <tbody>
+            {filteredCustomers.map((customer, index) => (
+              <tr key={customer._id}>
+                <td>{indexOfFirst + index + 1}</td>
+                <td>{customer.customerCode}</td>
 
-        <NextButton
-          disabled={currentPage >= totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+                <td>{customer.customerName}</td>
+
+                <td>{customer.phone}</td>
+
+                <td>{customer.email}</td>
+
+                <td className="action-buttons">
+                  <EditButton onClick={() => handleEdit(customer)}>
+                    Edit
+                  </EditButton>
+
+                  <DeleteButton
+                    onClick={() => dispatch(deleteCustomer(customer._id))}
+                  >
+                    Delete
+                  </DeleteButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="user-pagination">
+          <p>
+            Showing {filteredCustomers.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredCustomers.length)}
+            of {filteredCustomers.length} entries
+          </p>
+
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
