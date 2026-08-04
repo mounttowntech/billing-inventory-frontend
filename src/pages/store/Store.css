@@ -13,7 +13,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin: 24px;
 }
 
 .store-header h2 {
@@ -81,27 +81,10 @@
   justify-content: flex-start;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  color: #6b7280;
-}
-
-.close-btn:hover {
-  color: #111827;
-}
 /* ===========================
    Form
 =========================== */
 
-.store-form {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
 
 .form-group {
   display: flex;

@@ -258,50 +258,269 @@
   margin: 6px 4px;
 }
 
-/* Tablet */
-@media screen and (max-width: 768px) {
+
+.sidebar-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--white-color);
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--dark-color);
+  box-shadow: 0 2px 8px rgba(4, 47, 46, 0.08);
+  z-index: 210; /* above header (100), overlay (90), sidebar (200) */
+  transition: 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: var(--light-color);
+}
+
+.sidebar-toggle svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  display: block !important;
+}
+
+/* 3-bar fallback icon if no SVG is placed inside the button */
+.sidebar-toggle .bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.sidebar-toggle .bar + .bar {
+  margin-top: 4px;
+}
+
+/* animates to an "X" — toggle this class via JS alongside
+   .sidebar.open / .sidebar-overlay.active */
+.sidebar-toggle.active .bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.sidebar-toggle.active .bar:nth-child(2) {
+  opacity: 0;
+}
+.sidebar-toggle.active .bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* =====================================
+   TABLET (768px - 1024px)
+===================================== */
+
+@media screen and (max-width: 1024px) {
+
   .bh-header {
-    padding: 0 20px;
     height: 65px;
+    padding: 0 20px 0 72px; /* Space for hamburger */
   }
+
   .bh-title-page {
-    font-size: 20px;
+    font-size: 22px;
+    margin: 0;
   }
-  .bh-profile-text {
-    display: none;
+
+  .bh-actions {
+    gap: 12px;
   }
+
   .bh-profile-trigger {
-    padding: 6px;
-    gap: 0;
+    padding: 6px 10px 6px 6px;
   }
-  .bh-chevron-icon {
-    margin-left: 4px;
+
+  .bh-profile-name {
+    font-size: 13px;
+  }
+
+  .bh-profile-role {
+    font-size: 10px;
+  }
+
+  .bh-dropdown {
+    min-width: 250px;
+  }
+
+  /* ---- hamburger: fixed, centered in the 65px header ---- */
+  .sidebar-toggle {
+    display: inline-flex;
+    position: absolute; 
+    top: calc(12px + env(safe-area-inset-top));
+    left: 16px;
+    width: 40px;
+    height: 40px;
   }
 }
 
-/* Mobile */
-@media screen and (max-width: 480px) {
+/* =====================================
+   MOBILE (up to 768px)
+===================================== */
+
+@media screen and (max-width: 768px) {
+
   .bh-header {
-    padding: 0 14px;
     height: 60px;
+    padding: 0 16px 0 68px; /* Leave space for sidebar toggle */
   }
+
   .bh-title-page {
-    font-size: 17px;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
+
   .bh-actions {
     gap: 8px;
   }
+
   .bh-icon-btn {
     width: 38px;
     height: 38px;
   }
+
+  .bh-icon-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .bh-profile-trigger {
+    padding: 4px;
+    border-radius: 50%;
+    gap: 0;
+  }
+
+  .bh-profile-text,
+  .bh-chevron-icon {
+    display: none;
+  }
+
   .bh-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .bh-dropdown {
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+  }
+
+  /* ---- hamburger: fixed, centered in the 60px header ---- */
+  .sidebar-toggle {
+    top: calc(10px + env(safe-area-inset-top));
+    left: 14px;
+    position: absolute; 
+    width: 38px;
+    height: 38px;
+  }
+
+  .sidebar-toggle svg {
+    width: 19px !important;
+    height: 19px !important;
+  }
+}
+
+/* =====================================
+   SMALL MOBILE (up to 480px)
+===================================== */
+
+@media screen and (max-width: 480px) {
+
+  .bh-header {
+    height: 56px;
+    padding: 0 12px 0 60px;
+  }
+
+  .bh-title-page {
+    font-size: 16px;
+    max-width: 130px;
+  }
+
+  .bh-actions {
+    gap: 6px;
+  }
+
+  .bh-icon-btn {
     width: 34px;
     height: 34px;
+  }
+
+  .bh-icon-btn svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .bh-avatar {
+    width: 32px;
+    height: 32px;
     font-size: 12px;
   }
+
   .bh-dropdown {
-    right: -14px;
-    min-width: 240px;
+    width: calc(100vw - 24px);
+    max-width: 260px;
+    right: 0;
+  }
+
+  .bh-dropdown-label {
+    font-size: 13px;
+  }
+
+  .bh-dropdown-subtext {
+    font-size: 11px;
+  }
+
+  /* ---- hamburger: fixed, centered in the 56px header ---- */
+  .sidebar-toggle {
+    top: calc(9px + env(safe-area-inset-top));
+    left: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    position: absolute; 
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-toggle-open {
+  position: fixed !important;
+  top: 0%;
+  right: 0px;
+  left: auto !important;
+
+  width: 40px;
+  height: 40px;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
+  color: #ffffff;
+  z-index: 1001;
+}
+
+.sidebar-toggle-open svg {
+  width: 24px !important;
+  height: 24px !important;
+  stroke: #ffffff !important;
+}
+
+  .sidebar-toggle svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .sidebar-toggle .bar {
+    width: 16px;
   }
 }

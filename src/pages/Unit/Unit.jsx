@@ -103,7 +103,7 @@ const Unit = () => {
     <div>
       <div className="unit-header">
         <h2>Unit Management</h2>
-        <AddButton onClick={handleAdd}>Add Unit</AddButton>
+        <AddButton onClick={handleAdd}>Add </AddButton>
       </div>
 
       <div className="unit-container">

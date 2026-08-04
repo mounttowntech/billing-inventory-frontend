@@ -1,9 +1,17 @@
 .expense-container{
-    padding: 30px;
+    padding: 20px;
+    margin: 20px;
   background: #f5f7fb;
   min-height: fit-content;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border-radius: 12px;
+}
+
+.expense-header{
+  display: flex;
+  align-items: center;
+  margin:20px;
+  justify-content: space-between;
 }
 
 .expense-search-buttons{

@@ -115,7 +115,7 @@ const Season = () => {
     <div className="season-main-page">
       <div className="season-header">
         <h2>Season Management</h2>
-        <AddButton onClick={handleAdd}>Add Season</AddButton>
+        <AddButton onClick={handleAdd}>Add </AddButton>
       </div>
 
       <div className="season-container">

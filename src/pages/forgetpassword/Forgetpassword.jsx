@@ -1,18 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { forgotPassword } from "../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 import "./ForgetPassword.css";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading, error, forgotPasswordSuccess } = useSelector(
+    (state) => state.auth,
+  );
+
+  useEffect(() => {
+    if (forgotPasswordSuccess) {
+      alert("OTP sent successfully to your registered email.");
+      navigate("/verify-otp", {
+        state: { email },
+      });
+    }
+  }, [forgotPasswordSuccess, navigate, email]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!email) {
+    if (!email.trim()) {
       alert("Please enter your email.");
       return;
     }
 
-    alert("Password reset link sent to " + email);
+    dispatch(forgotPassword({ email }));
   };
 
   return (
@@ -24,14 +43,14 @@ const ForgetPassword = () => {
           <h1>Forgot Password?</h1>
 
           <p>
-            Enter your registered email address and we'll send you a password
-            reset link.
+            Enter your registered email address and we'll send an OTP to reset
+            your password.
           </p>
         </div>
 
         <div className="fp-form-box">
           <div className="fp-logo-area">
-            <h2>Reset Password</h2>
+            <h2>Forgot Password</h2>
             <p>Recover your account securely</p>
           </div>
 
@@ -41,20 +60,31 @@ const ForgetPassword = () => {
 
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter your registered email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
-            <button type="submit" className="fp-submit-btn">
-              Send Reset Link
+            {error && (
+              <p
+                style={{
+                  color: "red",
+                  marginTop: "10px",
+                  fontSize: "14px",
+                }}
+              >
+                {error}
+              </p>
+            )}
+
+            <button type="submit" className="fp-submit-btn" disabled={loading}>
+              {loading ? "Sending OTP..." : "Send OTP"}
             </button>
           </form>
 
           <div className="fp-footer">
-            Remember your password?
-            <a href="/login"> Login</a>
+            <a href="/login">Back to Login</a>
           </div>
         </div>
       </div>

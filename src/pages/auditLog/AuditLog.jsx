@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { auditLogValidation } from "../../validations/AuditLogValidation";
+import Modal from "../../components/Common/Modal";
 import {
   getAuditLogs,
   createAuditLog,
@@ -30,15 +28,13 @@ const AuditLog = () => {
   );
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentAuditLogs = auditLogs.slice(indexOfFirst, indexOfLast);
-  const totalPages =
-    auditLogs.length > 0 ? Math.ceil(auditLogs.length / itemsPerPage) : 1;
-
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const itemsPerPage = rowsPerPage;
+  const [selectedAuditLog, setSelectedAuditLog] = useState(null);
   const [search, setSearch] = useState("");
-  const filteredAuditLogs = currentAuditLogs.filter(
+
+  // Filter across the FULL list first, then paginate the filtered result.
+  const filteredAuditLogs = auditLogs.filter(
     (log) =>
       log.module?.toLowerCase().includes(search.toLowerCase()) ||
       log.action?.toLowerCase().includes(search.toLowerCase()) ||
@@ -46,27 +42,34 @@ const AuditLog = () => {
       log.ipAddress?.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(auditLogValidation),
-  });
+  const totalPages =
+    filteredAuditLogs.length > 0
+      ? Math.ceil(filteredAuditLogs.length / itemsPerPage)
+      : 1;
 
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentAuditLogs = filteredAuditLogs.slice(indexOfFirst, indexOfLast);
+
+  // Keep currentPage valid whenever the filtered list or page size changes.
   useEffect(() => {
-    if (loggedInUser) {
-      setValue("user", `${loggedInUser.firstName} ${loggedInUser.lastName}`);
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
     }
-  }, [loggedInUser, setValue]);
+  }, [totalPages, currentPage]);
 
   useEffect(() => {
     dispatch(getAuditLogs());
   }, [dispatch]);
 
+  const resetToFirstPage = () => setCurrentPage(1);
+
   const onSubmit = (data) => {
+    if (!loggedInUser?._id) {
+      alert("You must be logged in to perform this action.");
+      return;
+    }
+
     let oldValue = {};
     let newValue = {};
 
@@ -97,50 +100,22 @@ const AuditLog = () => {
         }),
       ).then(() => {
         dispatch(getAuditLogs());
-
-        reset();
-
-        if (loggedInUser) {
-          setValue(
-            "user",
-            `${loggedInUser.firstName} ${loggedInUser.lastName}`,
-          );
-        }
-
         setShowForm(false);
         setEditId(null);
+        setSelectedAuditLog(null);
       });
     } else {
       dispatch(createAuditLog(payload)).then(() => {
         dispatch(getAuditLogs());
-
-        reset();
-
-        if (loggedInUser) {
-          setValue(
-            "user",
-            `${loggedInUser.firstName} ${loggedInUser.lastName}`,
-          );
-        }
-
         setShowForm(false);
+        setSelectedAuditLog(null);
       });
     }
   };
 
   const handleEdit = (log) => {
     setEditId(log._id);
-
-    reset({
-      user: log.user ? `${log.user.firstName} ${log.user.lastName}` : "",
-      module: log.module,
-      action: log.action,
-      referenceId: log.recordId || "",
-      oldValue: JSON.stringify(log.oldValues || {}, null, 2),
-      newValue: JSON.stringify(log.newValues || {}, null, 2),
-      ipAddress: log.ipAddress,
-      description: log.description,
-    });
+    setSelectedAuditLog(log);
     setShowForm(true);
   };
 
@@ -157,177 +132,218 @@ const AuditLog = () => {
   }
 
   return (
-    <div className="auditlog-container">
+    <div className="auditlog-page">
       <div className="auditlog-header">
         <h2 className="auditlog-header">Audit Logs</h2>
-      </div>
-      <div className="auditlog-buttons">
-        <SearchBox
-          placeholder="Search Audit Logs..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+
         <AddButton
           onClick={() => {
-            reset();
-            if (loggedInUser) {
-              setValue(
-                "user",
-                `${loggedInUser.firstName} ${loggedInUser.lastName}`,
-              );
-            }
+            setSelectedAuditLog(null);
             setEditId(null);
             setShowForm(true);
           }}
         >
-          Add Audit Log
+          Add
         </AddButton>
       </div>
-      <div className="auditlog-table-wrapper">
-        <table className="auditlog-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>User</th>
-              <th>Module</th>
-              <th>Action</th>
-              <th>Reference Id</th>
-              <th>Old Value</th>
-              <th>New Value</th>
-              <th>IP Address</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+      <div className="auditlog-container">
+        <div className="auditlog-table-wrapper">
+          <div className="table-toolbar">
+            <div className="entries">
+              <select
+                value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  resetToFirstPage();
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
 
-          <tbody>
-            {filteredAuditLogs?.length > 0 ? (
-              filteredAuditLogs.map((log) => (
-                <tr key={log._id}>
-                  <td>{indexOfFirst + filteredAuditLogs.indexOf(log) + 1}</td>
-                  <td>
-                    {log.user
-                      ? `${log.user.firstName} ${log.user.lastName}`
-                      : "-"}
-                  </td>
+              <span>Entries</span>
+            </div>
+            <div style={{ marginLeft: "auto" }}>
+              <SearchBox
+                placeholder="Search Audit Logs..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  resetToFirstPage();
+                }}
+              />
+            </div>
+          </div>
 
-                  <td>{log.module}</td>
-
-                  <td>{log.action}</td>
-
-                  <td>{log.recordId}</td>
-
-                  <td>
-                    {log.oldValues ? (
-                      <div className="audit-data-card">
-                        <div className="audit-row">
-                          <span className="audit-label">Invoice : </span>
-                          <span className="audit-value">
-                            {log.oldValues.invoiceNo || "-"}
-                          </span>
-                        </div>
-
-                        <div className="audit-row">
-                          <span className="audit-label">Customer : </span>
-                          <span className="audit-value">
-                            {log.oldValues.customer || "-"}
-                          </span>
-                        </div>
-
-                        <div className="audit-row">
-                          <span className="audit-label">Grand Total : </span>
-                          <span className="audit-value">
-                            ₹{log.oldValues.grandTotal?.toLocaleString() || 0}
-                          </span>
-                        </div>
-                      </div>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-                    {log.newValues ? (
-                      <div className="audit-data-card">
-                        <div className="audit-row">
-                          <span className="audit-label">Invoice : </span>
-                          <span className="audit-value">
-                            {log.newValues.invoiceNo || "-"}
-                          </span>
-                        </div>
-
-                        <div className="audit-row">
-                          <span className="audit-label">Customer : </span>
-                          <span className="audit-value">
-                            {log.newValues.customer || "-"}
-                          </span>
-                        </div>
-
-                        <div className="audit-row">
-                          <span className="audit-label">Grand Total : </span>
-                          <span className="audit-value">
-                            ₹{log.newValues.grandTotal?.toLocaleString() || 0}
-                          </span>
-                        </div>
-                      </div>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-
-                  <td>{log.ipAddress}</td>
-
-                  <td>
-                    <div>{new Date(log.createdAt).toLocaleDateString()}</div>
-                    <div>{new Date(log.createdAt).toLocaleTimeString()}</div>
-                  </td>
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(log)} />
-                    <DeleteButton onClick={() => handleDelete(log._id)} />
-                  </td>
-                </tr>
-              ))
-            ) : (
+          <table className="auditlog-table">
+            <thead>
               <tr>
-                <td colSpan="8">No Audit Logs Found</td>
+                <th>#</th>
+                <th>User</th>
+                <th>Module</th>
+                <th>Action</th>
+                <th>Reference Id</th>
+                <th>Old Value</th>
+                <th>New Value</th>
+                <th>IP Address</th>
+                <th>Date</th>
+                <th>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
 
-      <AuditLogForm
-        showForm={showForm}
-        setShowForm={setShowForm}
-        editId={editId}
-        setEditId={setEditId}
-        register={register}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        errors={errors}
-        reset={reset}
-      />
+            <tbody>
+              {currentAuditLogs?.length > 0 ? (
+                currentAuditLogs.map((log, idx) => (
+                  <tr key={log._id}>
+                    <td>{indexOfFirst + idx + 1}</td>
+                    <td>
+                      {log.user
+                        ? `${log.user.firstName} ${log.user.lastName}`
+                        : "-"}
+                    </td>
 
-      <div className="pagination">
-        <PreviousButton
-          className="btn btn-page"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
+                    <td>{log.module}</td>
+
+                    <td>{log.action}</td>
+
+                    <td>{log.recordId}</td>
+
+                    <td>
+                      {log.oldValues ? (
+                        <div className="audit-data-card">
+                          <div className="audit-row">
+                            <span className="audit-label">Invoice : </span>
+                            <span className="audit-value">
+                              {log.oldValues.invoiceNo || "-"}
+                            </span>
+                          </div>
+
+                          <div className="audit-row">
+                            <span className="audit-label">Customer : </span>
+                            <span className="audit-value">
+                              {log.oldValues.customer || "-"}
+                            </span>
+                          </div>
+
+                          <div className="audit-row">
+                            <span className="audit-label">Grand Total : </span>
+                            <span className="audit-value">
+                              ₹{log.oldValues.grandTotal?.toLocaleString() || 0}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    <td>
+                      {log.newValues ? (
+                        <div className="audit-data-card">
+                          <div className="audit-row">
+                            <span className="audit-label">Invoice : </span>
+                            <span className="audit-value">
+                              {log.newValues.invoiceNo || "-"}
+                            </span>
+                          </div>
+
+                          <div className="audit-row">
+                            <span className="audit-label">Customer : </span>
+                            <span className="audit-value">
+                              {log.newValues.customer || "-"}
+                            </span>
+                          </div>
+
+                          <div className="audit-row">
+                            <span className="audit-label">Grand Total : </span>
+                            <span className="audit-value">
+                              ₹{log.newValues.grandTotal?.toLocaleString() || 0}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    <td>{log.ipAddress}</td>
+
+                    <td>
+                      <div>{new Date(log.createdAt).toLocaleDateString()}</div>
+                      <div>{new Date(log.createdAt).toLocaleTimeString()}</div>
+                    </td>
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(log)} />
+                      <DeleteButton onClick={() => handleDelete(log._id)} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="10">No Audit Logs Found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <Modal
+          open={showForm}
+          title={editId ? "Edit Audit Log" : "Add Audit Log"}
+          onClose={() => setShowForm(false)}
         >
-          Previous
-        </PreviousButton>
+          <AuditLogForm
+            mode={editId ? "edit" : "add"}
+            auditLog={selectedAuditLog}
+            loggedInUser={loggedInUser}
+            onSubmit={onSubmit}
+            onClose={() => setShowForm(false)}
+          />
+        </Modal>
+        <div className="user-pagination">
+          <p>
+            Showing {filteredAuditLogs.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredAuditLogs.length)}
+            of {filteredAuditLogs.length} entries
+          </p>
 
-        <span className="page-info">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        <NextButton
-          className="btn btn-page"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

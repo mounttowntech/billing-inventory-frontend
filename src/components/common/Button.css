@@ -69,24 +69,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  width: 12% !important;
-  height: 46px;
-
-  padding: 0 24px;
-
+  width: auto;         
+  min-width: fit-content;
+  white-space: nowrap;  
+  height: 36px;
+  padding: 0 14px;
   border: none;
   border-radius: 10px;
-
   background: #0b7f79;
   color: #fff;
-
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.3px;
-
   cursor: pointer;
-
   transition: all 0.25s ease;
   box-shadow: 0 4px 12px rgba(11, 127, 121, 0.2);
 }

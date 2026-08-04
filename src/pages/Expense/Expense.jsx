@@ -19,6 +19,7 @@ import {
   DeleteButton,
 } from "../../components/Common/Button";
 import ExpenseForm from "./ExpenseForm";
+import Modal from "../../components/Common/Modal";
 
 const Expense = () => {
   const dispatch = useDispatch();
@@ -29,9 +30,11 @@ const Expense = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
+  const [selectedExpense, setSelectedExpense] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const itemsPerPage = rowsPerPage;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentExpenses = expenses.slice(indexOfFirst, indexOfLast);
@@ -74,7 +77,7 @@ const Expense = () => {
 
     let result;
 
-    if (editingId) {
+    if (editingId && editingId !== "add") {
       result = await dispatch(
         updateExpense({
           id: editingId,
@@ -95,11 +98,11 @@ const Expense = () => {
 
   const handleEdit = (expense) => {
     setEditingId(expense._id);
-
+    setSelectedExpense(expense);
     reset({
       expenseNo: expense.expenseNo,
       title: expense.title,
-      category: expense.category,
+      category: expense.category?.toLowerCase(),
       amount: expense.amount,
       expenseDate: expense.expenseDate ? expense.expenseDate.split("T")[0] : "",
       note: expense.note || "",
@@ -119,16 +122,10 @@ const Expense = () => {
   };
 
   return (
-    <div className="expense-container">
+    <div className="expense-page">
       <div className="expense-header">
         <h2>Expense Management</h2>
-      </div>
-      <div className="expense-search-buttons">
-        <SearchBox
-          placeholder="Search Expenses..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+
         <AddButton
           className="add-btn"
           onClick={() => {
@@ -141,111 +138,168 @@ const Expense = () => {
               expenseDate: "",
               note: "",
             });
+            setEditingId("add");
             setShowModal(true);
           }}
         >
-          + Add Expense
+          Add
         </AddButton>
       </div>
 
-      <ExpenseForm
-        showModal={showModal}
-        setShowModal={setShowModal}
-        editingId={editingId}
-        setEditingId={setEditingId}
-        register={register}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        errors={errors}
-        reset={reset}
-      />
+      <div className="expense-container">
+        <div className="table-toolbar">
+          <div className="entries">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
 
-      <div className="table-wrapper">
-        <table className="expense-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Expense No</th>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Note</th>
-              <th className="supplier-column">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {loading ? (
+            <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <SearchBox
+              placeholder="Search Expenses..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
+        <Modal
+          open={showModal}
+          title={editingId === "add" ? "Add Expense" : "Edit Expense"}
+          size="md"
+          onClose={() => setShowModal(false)}
+        >
+          <ExpenseForm
+            mode={editingId === "add" ? "add" : "edit"}
+            expense={selectedExpense}
+            onSubmit={onSubmit}
+            onClose={() => setShowModal(false)}
+            onSuccess={() => {
+              setShowModal(false);
+              dispatch(getExpenses());
+            }}
+          />
+        </Modal>
+        <div className="table-wrapper">
+          <table className="expense-table">
+            <thead>
               <tr>
-                <td colSpan="7" style={{ textAlign: "center" }}>
-                  Loading...
-                </td>
+                <th>#</th>
+                <th>Expense No</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Note</th>
+                <th className="supplier-column">Action</th>
               </tr>
-            ) : currentExpenses.length === 0 ? (
-              <tr>
-                <td colSpan="7" style={{ textAlign: "center" }}>
-                  No Expenses Found
-                </td>
-              </tr>
-            ) : (
-              currentExpenses.map((expense) => (
-                <tr key={expense._id}>
-                  <td>{indexOfFirst + currentExpenses.indexOf(expense) + 1}</td>
-                  <td>{expense.expenseNo}</td>
+            </thead>
 
-                  <td>{expense.title}</td>
-
-                  <td style={{ textTransform: "capitalize" }}>
-                    {expense.category}
-                  </td>
-
-                  <td>₹{expense.amount}</td>
-
-                  <td>
-                    {expense.expenseDate
-                      ? expense.expenseDate.split("T")[0]
-                      : ""}
-                  </td>
-
-                  <td>{expense.note || "-"}</td>
-
-                  <td className="supplier-column">
-                    <EditButton onClick={() => handleEdit(expense)}>
-                      Edit
-                    </EditButton>
-
-                    <DeleteButton onClick={() => handleDelete(expense._id)}>
-                      Delete
-                    </DeleteButton>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center" }}>
+                    Loading...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : currentExpenses.length === 0 ? (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center" }}>
+                    No Expenses Found
+                  </td>
+                </tr>
+              ) : (
+                currentExpenses.map((expense) => (
+                  <tr key={expense._id}>
+                    <td>
+                      {indexOfFirst + currentExpenses.indexOf(expense) + 1}
+                    </td>
+                    <td>{expense.expenseNo}</td>
 
-      <div className="pagination">
-        <PreviousButton
-          className="btn btn-page"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-        >
-          Previous
-        </PreviousButton>
+                    <td>{expense.title}</td>
 
-        <span className="page-info">
-          Page {currentPage} of {totalPages}
-        </span>
+                    <td style={{ textTransform: "capitalize" }}>
+                      {expense.category}
+                    </td>
 
-        <NextButton
-          className="btn btn-page"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+                    <td>₹{expense.amount}</td>
+
+                    <td>
+                      {expense.expenseDate
+                        ? expense.expenseDate.split("T")[0]
+                        : ""}
+                    </td>
+
+                    <td>{expense.note || "-"}</td>
+
+                    <td className="supplier-column">
+                      <EditButton onClick={() => handleEdit(expense)}>
+                        Edit
+                      </EditButton>
+
+                      <DeleteButton onClick={() => handleDelete(expense._id)}>
+                        Delete
+                      </DeleteButton>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="user-pagination">
+          <p>
+            Showing {filteredExpenses.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredExpenses.length)}
+            of {filteredExpenses.length} entries
+          </p>
+
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -235,7 +235,7 @@ const StockAdjustment = () => {
       <div className="stock-header">
         <h2>Stock Adjustments</h2>
         <AddButton onClick={handleAdd} label="Add Adjustment">
-          <span className="add-icon">+</span> Add Adjustment
+          <span className="add-icon">+</span> Add
         </AddButton>
       </div>
 

@@ -139,7 +139,7 @@ const Colors = () => {
             setOpenModal(true);
           }}
         >
-          + Add
+          Add
         </button>
       </div>
 

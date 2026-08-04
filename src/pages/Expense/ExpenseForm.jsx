@@ -1,104 +1,124 @@
-import { SaveButton } from "../../components/Common/Button";
+import { SaveButton, CancelButton } from "../../components/Common/Button";
+import Input from "../../components/Common/Input";
+import Select from "../../components/Common/Select";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { expenseValidation } from "../../validations/ExpenseValidation";
+import { useEffect } from "react";
 
-/**
- * Modal form for creating / editing an Expense.
- * All state (react-hook-form, etc.) is owned by the parent <Expense />
- * component and passed down as props.
- */
-const ExpenseForm = ({
-  showModal,
-  setShowModal,
-  editingId,
-  setEditingId,
-  register,
-  handleSubmit,
-  onSubmit,
-  errors,
-  reset,
-}) => {
-  if (!showModal) return null;
+const ExpenseForm = ({ mode, expense, onSubmit, onClose, onSuccess }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(expenseValidation),
+  });
+
+  useEffect(() => {
+    if (expense) {
+      reset({
+        expenseNo: expense.expenseNo || "",
+        title: expense.title || "",
+        category: expense.category || "",
+        amount: expense.amount || "",
+        expenseDate: expense.expenseDate
+          ? expense.expenseDate.split("T")[0]
+          : "",
+        note: expense.note || "",
+      });
+    } else {
+      reset({
+        expenseNo: "",
+        title: "",
+        category: "",
+        amount: "",
+        expenseDate: "",
+        note: "",
+      });
+    }
+  }, [expense, reset]);
+
+  const handleCancel = () => {
+    reset();
+    onClose();
+  };
 
   return (
-    <div className="modal-overlay" onClick={() => setShowModal(false)}>
-      <div className="expense-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>{editingId ? "Edit Expense" : "Add Expense"}</h3>
+    <form onSubmit={handleSubmit(onSubmit)} className="expense-form">
+      <Input
+        label="Expense No"
+        name="expenseNo"
+        type="number"
+        placeholder="Enter Expense No"
+        register={register}
+        error={errors.expenseNo?.message}
+      />
 
-          <button
-            className="close-btn"
-            onClick={() => {
-              setShowModal(false);
-              setEditingId(null);
-              reset();
-            }}
-          >
-            ×
-          </button>
-        </div>
+      <Input
+        label="Title"
+        name="title"
+        placeholder="Enter Title"
+        register={register}
+        error={errors.title?.message}
+      />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="expense-form">
-          <div className="expense-group">
-            <label>Expense No</label>
-            <input
-              type="number"
-              placeholder="Enter Expense No"
-              {...register("expenseNo")}
-            />
-            <span>{errors.expenseNo?.message}</span>
-          </div>
+      <Select
+        label="Category"
+        name="category"
+        register={register}
+        error={errors.category?.message}
+        options={[
+          { _id: "rent", label: "Rent" },
+          { _id: "salary", label: "Salary" },
+          { _id: "electricity", label: "Electricity" },
+          { _id: "marketing", label: "Marketing" },
+          { _id: "transport", label: "Transport" },
+          { _id: "miscellaneous", label: "Miscellaneous" },
+        ]}
+      />
 
-          <div className="expense-group">
-            <label>Title</label>
-            <input
-              type="text"
-              placeholder="Enter Title"
-              {...register("title")}
-            />
-            <span>{errors.title?.message}</span>
-          </div>
+      <Input
+        label="Amount"
+        name="amount"
+        type="number"
+        placeholder="Enter Amount"
+        register={register}
+        error={errors.amount?.message}
+      />
 
-          <div className="expense-group">
-            <label>Category</label>
-            <select {...register("category")}>
-              <option value="">Select Category</option>
-              <option value="rent">Rent</option>
-              <option value="salary">Salary</option>
-              <option value="electricity">Electricity</option>
-              <option value="marketing">Marketing</option>
-              <option value="transport">Transport</option>
-              <option value="miscellaneous">Miscellaneous</option>
-            </select>
-            <span>{errors.category?.message}</span>
-          </div>
+      <Input
+        label="Expense Date"
+        name="expenseDate"
+        type="date"
+        register={register}
+        error={errors.expenseDate?.message}
+      />
 
-          <div className="expense-group">
-            <label>Amount</label>
-            <input
-              type="number"
-              placeholder="Enter Amount"
-              {...register("amount")}
-            />
-            <span>{errors.amount?.message}</span>
-          </div>
-
-          <div className="expense-group">
-            <label>Expense Date</label>
-            <input type="date" {...register("expenseDate")} />
-            <span>{errors.expenseDate?.message}</span>
-          </div>
-
-          <div className="expense-group">
-            <label>Note</label>
-            <textarea rows="3" placeholder="Enter Note" {...register("note")} />
-            <span>{errors.note?.message}</span>
-          </div>
-
-          <SaveButton className="save-btn" type="submit">
-            {editingId ? "Update Expense" : "Save Expense"}
-          </SaveButton>
-        </form>
+      <Input
+        label="Note"
+        name="note"
+        type="textarea"
+        placeholder="Enter Note"
+        register={register}
+        error={errors.note?.message}
+      />
+      <div className="form-buttons">
+        <SaveButton type="submit">
+          {mode === "edit" ? "Update " : "Save "}
+        </SaveButton>
+        <CancelButton
+          type="button"
+          onClick={() => {
+            reset();
+            onClose();
+          }}
+        >
+          Cancel
+        </CancelButton>
       </div>
-    </div>
+    </form>
   );
 };
 

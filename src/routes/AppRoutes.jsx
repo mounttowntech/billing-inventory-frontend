@@ -45,7 +45,8 @@ import DashboardRedirect from "../routes/DashboardRedirect";
 import PaymentList from "../pages/payments/PaymentList";
 import PurchaseReturn from "../pages/purchases/PurchaseReturn";
 import Forgetpassword from "../pages/forgetpassword/forgetpassword";
-import ResetPassword from "../pages/Resetpassword/ResetPassword";
+import ChangePassword from "../pages/Changepassword/ChangePassword";
+import VerifyOTP from "../pages/VerifyOTP/VerifyOTP";
 
 const AppRoutes = () => {
   return (
@@ -53,7 +54,8 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forget-password" element={<ForgetPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/verify-otp" element={<VerifyOTP />} />
+      <Route path="/change-password" element={<ChangePassword />} />
 
       <Route
         path="/"

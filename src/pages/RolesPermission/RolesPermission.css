@@ -7,6 +7,12 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
+.roles-permission-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px;
+}
 .roles-top {
   display: flex;
   justify-content: space-between;
@@ -122,13 +128,6 @@
 .roles-modal-header h3 {
   margin: 0;
   color: #111827;
-}
-
-.close-btn {
-  border: none;
-  background: transparent;
-  font-size: 22px;
-  cursor: pointer;
 }
 
 .form-group {

@@ -1,29 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./Report.css";
-
-/* ==========================================================================
-   REPORT DASHBOARD
-   --------------------------------------------------------------------------
-   TEAL VARIANT — same dashboard, re-themed to the teal palette below.
-   Self-contained React component. No external packages (no chart libs, no
-   icon libs) — every icon and every chart (sparklines, line chart, donut
-   chart) is hand-built inline SVG so the whole page has zero dependencies.
-
-   All class names are prefixed "tdb-" (Teal DashBoard) — a DIFFERENT
-   prefix than the earlier purple/blue version ("rpx-"), specifically so
-   both dashboards can live in the same app at the same time without any
-   class-name collisions.
-
-   HOW TO EDIT THE CONTENT
-   --------------------------------------------------------------------------
-   Every number/label on the page lives in the plain data objects/arrays
-   below (STAT_CARDS, SALES_TREND, CATEGORY_DATA, PAYMENT_SUMMARY,
-   TOP_PRODUCTS). Change the values there and the charts, totals and tables
-   redraw themselves automatically — no need to touch the JSX/SVG markup.
-   ========================================================================== */
-
-/* -------------------------------- ICONS ---------------------------------- */
-/* Tiny, dependency-free icon components. Pass `size` / className as needed. */
+import { getFullDashboard } from "../../features/Dashboard/GarmentDashboardSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const IconBag = (props) => (
   <svg viewBox="0 0 24 24" fill="none" {...props}>
@@ -353,45 +331,6 @@ const IconGrid = (props) => (
 
 const DATE_RANGE_LABEL = "01 Jul 2025 - 15 Jul 2025";
 
-const STAT_CARDS = [
-  {
-    id: "sales",
-    label: "Total Sales",
-    value: "₹82,004.50",
-    growth: "12.4%",
-    icon: IconBag,
-    accent: "primary",
-    spark: [30, 34, 33, 40, 38, 45, 42, 50, 48, 55, 52, 60],
-  },
-  {
-    id: "orders",
-    label: "Total Orders",
-    value: "356",
-    growth: "8.7%",
-    icon: IconOrders,
-    accent: "secondary",
-    spark: [20, 25, 24, 30, 42, 38, 34, 40, 36, 44, 40, 46],
-  },
-  {
-    id: "profit",
-    label: "Total Profit",
-    value: "₹19,650.00",
-    growth: "15.3%",
-    icon: IconProfit,
-    accent: "dark",
-    spark: [42, 38, 44, 40, 36, 30, 34, 28, 24, 20, 16, 12],
-  },
-  {
-    id: "aov",
-    label: "Average Order Value",
-    value: "₹230.35",
-    growth: "5.6%",
-    icon: IconCart,
-    accent: "soft",
-    spark: [30, 45, 26, 40, 22, 48, 24, 42, 20, 44, 26, 38],
-  },
-];
-
 /* 15 points = 01 Jul .. 15 Jul, values in thousands of ₹ */
 const SALES_TREND = {
   labels: [
@@ -417,68 +356,12 @@ const SALES_TREND = {
   yStep: 20,
 };
 
-const CATEGORY_DATA = [
-  { label: "Shirts", amount: "₹28,450.00", percent: 34.7, color: "primary" },
-  {
-    label: "T-Shirts",
-    amount: "₹18,760.00",
-    percent: 22.9,
-    color: "secondary",
-  },
-  { label: "Pants", amount: "₹15,630.00", percent: 19.1, color: "soft" },
-  { label: "Jeans", amount: "₹11,250.00", percent: 13.7, color: "pale" },
-  { label: "Others", amount: "₹7,914.50", percent: 9.6, color: "dark" },
-];
-const CATEGORY_TOTAL = "₹82,004.50";
-
-const PAYMENT_SUMMARY = [
-  {
-    method: "Cash",
-    icon: IconCash,
-    transactions: 142,
-    amount: "₹32,450.00",
-    discount: "₹1,250.00",
-    net: "₹31,200.00",
-  },
-  {
-    method: "UPI",
-    icon: IconUpi,
-    transactions: 158,
-    amount: "₹28,760.00",
-    discount: "₹950.00",
-    net: "₹27,810.00",
-  },
-  {
-    method: "Card",
-    icon: IconCard,
-    transactions: 38,
-    amount: "₹12,450.00",
-    discount: "₹450.00",
-    net: "₹12,000.00",
-  },
-  {
-    method: "Net Banking",
-    icon: IconBank,
-    transactions: 18,
-    amount: "₹8,344.50",
-    discount: "₹200.00",
-    net: "₹8,144.50",
-  },
-];
 const PAYMENT_TOTAL = {
   transactions: 356,
   amount: "₹82,004.50",
   discount: "₹2,850.00",
   net: "₹79,154.50",
 };
-
-const TOP_PRODUCTS = [
-  { name: "Formal Shirt", qty: 128, total: "₹12,800.00", icon: IconShirt },
-  { name: "Denim Jeans", qty: 96, total: "₹11,810.00", icon: IconPants },
-  { name: "T-Shirt", qty: 85, total: "₹8,925.00", icon: IconShirt },
-  { name: "Cotton Pant", qty: 74, total: "₹7,770.00", icon: IconPants },
-  { name: "Jacket", qty: 62, total: "₹6,200.00", icon: IconShirt },
-];
 
 const REPORT_GENERATED_AT = "15 Jul 2025, 10:45 AM";
 const AUTO_REFRESH_SECONDS = 165; // 02:45
@@ -526,6 +409,41 @@ function buildSparkPath(values, width, height) {
 
 export default function ReportDashboard() {
   const [secondsLeft, setSecondsLeft] = useState(AUTO_REFRESH_SECONDS);
+  const dispatch = useDispatch();
+
+  const {
+    summary,
+    salesOverview,
+    salesByCategory,
+    topSellingProducts,
+    quickStats,
+    recentTransactions,
+    topCustomers,
+    lowStockAlerts,
+    dueAmount,
+    isLoading,
+  } = useSelector((state) => state.dashboard);
+  const CATEGORY_TOTAL = salesByCategory?.total || 0;
+
+  const donutSegments =
+    salesByCategory?.breakdown?.map((c) => {
+      const dash = (c.percentage / 100) * circumference;
+
+      const seg = {
+        ...c,
+        label: c.category,
+        color: c.color || "primary",
+        dashArray: `${dash} ${circumference - dash}`,
+        dashOffset: -((cumulative / 100) * circumference),
+      };
+
+      cumulative += c.percentage;
+      return seg;
+    }) || [];
+
+  useEffect(() => {
+    dispatch(getFullDashboard());
+  }, [dispatch]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -572,16 +490,6 @@ export default function ReportDashboard() {
   const DONUT_STROKE = 26;
   const circumference = 2 * Math.PI * DONUT_R;
   let cumulative = 0;
-  const donutSegments = CATEGORY_DATA.map((c) => {
-    const dash = (c.percent / 100) * circumference;
-    const seg = {
-      ...c,
-      dashArray: `${dash} ${circumference - dash}`,
-      dashOffset: -((cumulative / 100) * circumference),
-    };
-    cumulative += c.percent;
-    return seg;
-  });
 
   return (
     // tdb-dashboard-container is what makes the layout respond to the space
@@ -614,39 +522,61 @@ export default function ReportDashboard() {
 
         {/* ============================== STAT CARDS ================================ */}
         <section className="tdb-stats-grid">
-          {STAT_CARDS.map((card) => {
-            const Icon = card.icon;
-            const sparkPath = buildSparkPath(card.spark, 220, 40);
-            return (
-              <div className="tdb-panel tdb-stat-card" key={card.id}>
-                <div className="tdb-stat-card-top">
-                  <span className={`tdb-stat-icon tdb-accent-${card.accent}`}>
-                    <Icon className="tdb-icon-20" />
-                  </span>
-                  <div className="tdb-stat-info">
-                    <span className="tdb-stat-label">{card.label}</span>
-                    <span className="tdb-stat-value">{card.value}</span>
-                  </div>
-                </div>
-                <div className="tdb-stat-growth">
-                  <IconArrowUp className="tdb-icon-12 tdb-growth-icon" />
-                  <span className="tdb-growth-value">{card.growth}</span>
-                  <span className="tdb-growth-caption">vs previous period</span>
-                </div>
-                <svg
-                  className="tdb-sparkline"
-                  viewBox="0 0 220 40"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d={sparkPath}
-                    className={`tdb-sparkline-path tdb-accent-stroke-${card.accent}`}
-                    fill="none"
-                  />
-                </svg>
+          <div className="tdb-panel tdb-stat-card">
+            <div className="tdb-stat-card-top">
+              <span className="tdb-stat-icon tdb-accent-primary">
+                <IconBag className="tdb-icon-20" />
+              </span>
+              <div className="tdb-stat-info">
+                <span className="tdb-stat-label">Low Stock Items</span>
+                <span className="tdb-stat-value">
+                  {quickStats?.lowStockItems || 0}
+                </span>
               </div>
-            );
-          })}
+            </div>
+          </div>
+
+          <div className="tdb-panel tdb-stat-card">
+            <div className="tdb-stat-card-top">
+              <span className="tdb-stat-icon tdb-accent-secondary">
+                <IconOrders className="tdb-icon-20" />
+              </span>
+              <div className="tdb-stat-info">
+                <span className="tdb-stat-label">Total Suppliers</span>
+                <span className="tdb-stat-value">
+                  {quickStats?.totalSuppliers || 0}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="tdb-panel tdb-stat-card">
+            <div className="tdb-stat-card-top">
+              <span className="tdb-stat-icon tdb-accent-dark">
+                <IconProfit className="tdb-icon-20" />
+              </span>
+              <div className="tdb-stat-info">
+                <span className="tdb-stat-label">Due Amount</span>
+                <span className="tdb-stat-value">
+                  ₹{quickStats?.dueAmount?.toLocaleString() || 0}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="tdb-panel tdb-stat-card">
+            <div className="tdb-stat-card-top">
+              <span className="tdb-stat-icon tdb-accent-soft">
+                <IconCart className="tdb-icon-20" />
+              </span>
+              <div className="tdb-stat-info">
+                <span className="tdb-stat-label">Total Customers</span>
+                <span className="tdb-stat-value">
+                  {quickStats?.totalCustomers || 0}
+                </span>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* ============================ TREND + CATEGORY ============================= */}
@@ -789,23 +719,18 @@ export default function ReportDashboard() {
                 </svg>
                 <div className="tdb-donut-center">
                   <span className="tdb-donut-center-value">
-                    {CATEGORY_TOTAL}
+                    ₹{summary?.totalSales?.amount?.toLocaleString() || 0}
                   </span>
                   <span className="tdb-donut-center-label">Total Sales</span>
                 </div>
               </div>
 
               <ul className="tdb-category-legend">
-                {CATEGORY_DATA.map((c) => (
-                  <li key={c.label} className="tdb-category-legend-row">
-                    <span className={`tdb-legend-dot tdb-accent-${c.color}`} />
-                    <span className="tdb-category-legend-name">{c.label}</span>
-                    <span className="tdb-category-legend-amount">
-                      {c.amount}
-                    </span>
-                    <span className="tdb-category-legend-percent">
-                      ({c.percent}%)
-                    </span>
+                {salesByCategory?.breakdown?.map((item) => (
+                  <li key={item.category} className="tdb-category-item">
+                    <span>{item.category}</span>
+                    <span>{item.percentage}%</span>
+                    <span>₹{item.total?.toLocaleString()}</span>
                   </li>
                 ))}
               </ul>
@@ -824,41 +749,67 @@ export default function ReportDashboard() {
               <table className="tdb-table">
                 <thead>
                   <tr>
-                    <th>Payment Method</th>
-                    <th>Total Transactions</th>
-                    <th>Total Amount</th>
-                    <th>Discount Given</th>
+                    <th>Type</th>
+                    <th>Reference No</th>
+                    <th>Date</th>
+                    <th>Party</th>
                     <th>Net Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {PAYMENT_SUMMARY.map((row) => {
-                    const Icon = row.icon;
-                    return (
-                      <tr key={row.method}>
+                  {recentTransactions?.length > 0 ? (
+                    recentTransactions.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.type}</td>
+
+                        <td>{item.referenceNo}</td>
+
                         <td>
-                          <span className="tdb-table-method">
-                            <span className="tdb-table-method-icon">
-                              <Icon className="tdb-icon-16" />
-                            </span>
-                            {row.method}
-                          </span>
+                          {new Date(item.date).toLocaleDateString("en-IN")}
                         </td>
-                        <td>{row.transactions}</td>
-                        <td>{row.amount}</td>
-                        <td>{row.discount}</td>
-                        <td>{row.net}</td>
+
+                        <td>{item.party}</td>
+
+                        <td>
+                          ₹{Number(item.amount || 0).toLocaleString("en-IN")}
+                        </td>
+
+                        {/* <td>
+                          <span
+                            className={`status-badge ${
+                              item.type === "Sale"
+                                ? "status-sale"
+                                : item.type === "Purchase"
+                                  ? "status-purchase"
+                                  : item.type === "Expense"
+                                    ? "status-expense"
+                                    : "status-default"
+                            }`}
+                          >
+                            {item.type}
+                          </span>
+                        </td> */}
                       </tr>
-                    );
-                  })}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: "center" }}>
+                        No Transactions Found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
                 <tfoot>
                   <tr className="tdb-table-total-row">
                     <td>Total</td>
-                    <td>{PAYMENT_TOTAL.transactions}</td>
-                    <td>{PAYMENT_TOTAL.amount}</td>
-                    <td>{PAYMENT_TOTAL.discount}</td>
-                    <td>{PAYMENT_TOTAL.net}</td>
+                    <td>{summary?.paymentTotal?.transactions}</td>
+                    <td>
+                      ₹{summary?.paymentTotal?.amount?.toLocaleString() || 0}
+                    </td>
+                    <td>
+                      ₹{summary?.paymentTotal?.discount?.toLocaleString() || 0}
+                    </td>
+                    <td>{summary?.paymentTotal?.net}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -883,7 +834,7 @@ export default function ReportDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {TOP_PRODUCTS.map((p) => {
+                  {summary?.topProducts?.map((p) => {
                     const Icon = p.icon;
                     return (
                       <tr key={p.name}>

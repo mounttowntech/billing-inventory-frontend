@@ -110,7 +110,7 @@ const Sizes = () => {
             handleAdd();
           }}
         >
-          + Add Size
+          Add
         </AddButton>
       </div>
       <div className="sizes-container">

@@ -130,7 +130,7 @@ const Fabric = () => {
             setShowModal(true);
           }}
         >
-          + Add Fabric
+          Add
         </AddButton>
       </div>
 

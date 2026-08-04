@@ -7,6 +7,7 @@ import {
   ProductsIcon,
   CustomersIcon,
   MeasurementIcon,
+  CloseIcon,
   AuditLogIcon,
   PurchaseIcon,
   SalesReturnIcon,
@@ -33,16 +34,14 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile toggle button — place this in your top navbar/header */}
       <button
-        className="sidebar-toggle"
+        className={`sidebar-toggle ${open ? "hide-toggle" : ""}`}
         onClick={() => setOpen(true)}
         aria-label="Open menu"
       >
         <MenuIcon />
       </button>
 
-      {/* Dark overlay behind the sidebar on mobile */}
       <div
         className={`sidebar-overlay ${open ? "active" : ""}`}
         onClick={closeSidebar}
@@ -53,10 +52,21 @@ const Sidebar = () => {
           <span className="sidebar-brand-logo">
             <BrandLogoIcon />
           </span>
+
           <div className="sidebar-brand-text">
             <h2>WonderBill</h2>
             <span>Enterprise Edition</span>
           </div>
+
+          {open && (
+            <button
+              className="sidebar-close-btn"
+              onClick={closeSidebar}
+              aria-label="Close menu"
+            >
+              <CloseIcon size={20} />
+            </button>
+          )}
         </div>
 
         <nav onClick={closeSidebar}>
