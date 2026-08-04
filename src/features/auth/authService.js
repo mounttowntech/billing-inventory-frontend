@@ -13,8 +13,8 @@ export const registerApi = async (data) => {
 //get all users
 export const getUsersApi = async () => {
   try {
-  const response = await API.get("/users/all");
-  return response.data;
+    const response = await API.get("/users/all");
+    return response.data;
   } catch (error) {
     console.log("error_response", error.response);
     throw new Error("Failed to fetch users");
@@ -41,4 +41,22 @@ export const deleteUserApi = async (id) => {
     console.log("error_response", error.response);
     throw new Error("Failed to delete user");
   }
+};
+
+// Forgot Password
+export const forgotPasswordApi = async (data) => {
+  const response = await API.post("/users/forgot-password", data);
+  return response.data;
+};
+
+// Verify OTP
+export const verifyOTPApi = async (data) => {
+  const response = await API.post("/users/verify-otp", data);
+  return response.data;
+};
+
+// Change Password
+export const changePasswordApi = async (data) => {
+  const response = await API.post("/users/change-password", data);
+  return response.data;
 };

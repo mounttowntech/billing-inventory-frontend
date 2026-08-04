@@ -138,7 +138,7 @@ const PurchaseReturn = () => {
       <div className="purchase-return-header">
         <h2>Purchase Returns</h2>
 
-        <AddButton onClick={openAddModal}>+ Add </AddButton>
+        <AddButton onClick={openAddModal}> Add </AddButton>
       </div>
       <div className="purchase-return-container">
         <div className="table-toolbar">

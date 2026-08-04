@@ -437,9 +437,6 @@ button.filter-apply-btn {
     left: 0;
 }
 
-/* ============================================================
-   RESPONSIVE
-============================================================ */
 @media (max-width: 1200px) {
   .stat-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -466,5 +463,318 @@ button.filter-apply-btn {
 
   .sales-footer {
     margin: 0 -16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  .dashboard {
+    padding: clamp(14px, 4vw, 32px);
+    gap: clamp(16px, 3vw, 24px);
+    /* respect iPhone notch / home-indicator safe areas */
+    padding-left: max(clamp(14px, 4vw, 32px), env(safe-area-inset-left));
+    padding-right: max(clamp(14px, 4vw, 32px), env(safe-area-inset-right));
+    padding-bottom: max(clamp(14px, 4vw, 32px), env(safe-area-inset-bottom));
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+
+@media (max-width: 1024px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+
+@media (max-width: 860px) {
+  .stat-card {
+    padding: 20px 20px 18px;
+  }
+
+  .stat-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .stat-icon svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .stat-value {
+    font-size: 21px;
+  }
+
+  .sales-card {
+    padding: 22px 20px 0;
+  }
+
+  .sales-footer {
+    margin: 0 -20px;
+  }
+
+  .sales-header {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard {
+    gap: 14px;
+  }
+
+  .card {
+    border-radius: var(--radius-md);
+  }
+
+  /* ---- stat cards: single column ---- */
+  .stat-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 18px 18px 16px;
+  }
+
+  .stat-head {
+    margin-bottom: 14px;
+  }
+
+  .stat-label {
+    font-size: 14px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .stat-trend {
+    margin-bottom: 12px;
+  }
+
+  .sparkline {
+    height: 48px;
+  }
+
+  /* ---- sales card header ---- */
+  .sales-card {
+    padding: 20px 16px 0;
+    border-radius: var(--radius-md);
+  }
+
+  .sales-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding-bottom: 16px;
+  }
+
+  .sales-title {
+    font-size: 19px;
+  }
+
+  .sales-subtitle {
+    font-size: 13px;
+  }
+
+  .add-sale-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    min-height: 48px; /* comfortable touch target on every OEM keyboard/gesture bar */
+    font-size: 15px;
+  }
+
+  .add-sale-plus {
+    width: auto;
+  }
+
+  /* ---- filter form ---- */
+  form.dashboard-filter {
+    flex-direction: column;
+    padding: 0 0 14px;
+    gap: 10px;
+  }
+
+  button.filter-apply-btn {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  /* ---- table: horizontal scroll with momentum + edge fade ---- */
+  .table-wrapper {
+    margin: 0 -16px;
+    padding: 0 16px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+
+  table {
+    min-width: 640px; /* preserves column layout, wrapper handles the scroll */
+  }
+
+  thead th {
+    padding: 12px 14px;
+    font-size: 11px;
+  }
+
+  tbody td {
+    padding: 15px 14px;
+    font-size: 14px;
+  }
+
+  .invoice-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .invoice-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .badge {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .row-action {
+    width: 40px; /* meets 44px+ tappable area once padding is included */
+    height: 40px;
+  }
+
+  .sales-footer {
+    margin: 0 -16px;
+    padding: 14px 0;
+  }
+
+  .view-all-btn {
+    min-height: 44px;
+    padding: 0 16px;
+  }
+
+  .view-all-btn:hover {
+    width: auto; /* the fixed 205px hover-width from desktop breaks on touch */
+  }
+}
+
+/* ------------------------------------------------------------
+   4. COMPACT PHONES  (iPhone SE, small Android, ~380px and down)
+------------------------------------------------------------ */
+@media (max-width: 380px) {
+  .dashboard {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .stat-icon svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .sales-card {
+    padding: 18px 14px 0;
+  }
+
+  .sales-title {
+    font-size: 18px;
+  }
+
+  .table-wrapper {
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+
+  .sales-footer {
+    margin: 0 -14px;
+  }
+}
+
+/* ------------------------------------------------------------
+   5. LANDSCAPE PHONES
+   Short viewport height — tighten vertical rhythm so stat cards
+   and the table don't force excess scrolling.
+------------------------------------------------------------ */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+  .stat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .stat-card {
+    padding: 14px 16px 12px;
+  }
+
+  .stat-head {
+    margin-bottom: 10px;
+  }
+
+  .sparkline {
+    height: 36px;
+  }
+
+  .dashboard {
+    gap: 12px;
+    padding: 14px;
+  }
+}
+
+/* ------------------------------------------------------------
+   6. HIGH-DPI / RETINA-CLASS SCREENS
+   (most modern iPhone, Pixel, Galaxy, Vivo, Oppo panels)
+   Keep hairline borders crisp instead of blurry.
+------------------------------------------------------------ */
+@media (max-width: 1024px) and (-webkit-min-device-pixel-ratio: 2),
+  (max-width: 1024px) and (min-resolution: 192dpi) {
+  .card,
+  tbody td,
+  .sales-footer {
+    border-width: 0.5px;
+  }
+}
+
+/* ------------------------------------------------------------
+   7. ACCESSIBILITY / SYSTEM PREFERENCES
+------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .add-sale-btn,
+  .row-action,
+  .view-all-btn {
+    transition: none;
+  }
+}
+
+/* Ensure every interactive control keeps a visible focus ring
+   on mobile browsers that support keyboard/switch navigation. */
+@media (max-width: 640px) {
+  .add-sale-btn:focus-visible,
+  .row-action:focus-visible,
+  .view-all-btn:focus-visible,
+  button.filter-apply-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
   }
 }

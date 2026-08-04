@@ -65,7 +65,6 @@ const Supplier = () => {
     reset({});
     setSelectedSupplier(null);
     setEditId("add");
-    setEditId("add");
     setShowModal(true);
   };
 
@@ -139,7 +138,7 @@ const Supplier = () => {
             setSelectedSupplier(null);
           }}
         >
-          Add Supplier
+          Add
         </AddButton>
       </div>
 
@@ -196,10 +195,7 @@ const Supplier = () => {
             >
               <div className="modal-header">
                 <h3>Delete Supplier</h3>
-                <button
-                  className="close-btn"
-                  onClick={() => setDeleteTarget(null)}
-                >
+                <button className="" onClick={() => setDeleteTarget(null)}>
                   ×
                 </button>
               </div>

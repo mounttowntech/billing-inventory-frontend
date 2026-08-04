@@ -137,7 +137,7 @@ const Alteration = () => {
       <div className="page-header">
         <h2>Alteration Management</h2>
 
-        <AddButton onClick={handleAdd}>Add Alteration</AddButton>
+        <AddButton onClick={handleAdd}>Add </AddButton>
       </div>
 
       <div className="alteration-container">

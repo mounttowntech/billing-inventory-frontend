@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Modal from "../../components/common/Modal";
-
 import {
   getSalesReturns,
   createSalesReturn,
@@ -47,7 +46,9 @@ const SalesReturn = () => {
     salesReturns.length > 0 ? Math.ceil(salesReturns.length / rowsPerPage) : 1;
 
   const filteredSalesReturn = currentSalesReturns.filter((item) =>
-    (item?.product?.productName || "").toLowerCase().includes(search.toLowerCase()),
+    (item?.product?.productName || "")
+      .toLowerCase()
+      .includes(search.toLowerCase()),
   );
 
   const {
@@ -177,25 +178,25 @@ const SalesReturn = () => {
       </div>
 
       <div className="table-card">
-              <div className="table-toolbar">
-                <div className="entries">
-                  <select
-                    value={rowsPerPage}
-                    onChange={(e) => {
-                      setRowsPerPage(Number(e.target.value));
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                  </select>
-      
-                  <span>Entries</span>
-                </div>
-      
-                {/* <input
+        <div className="table-toolbar">
+          <div className="entries">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
+
+            <span>Entries</span>
+          </div>
+
+          {/* <input
                   className="user-search-box"
                   placeholder="Search users..."
                   value={search}
@@ -210,8 +211,8 @@ const SalesReturn = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-              </div>
-      
+        </div>
+
         <table className="custom-table">
           <thead>
             <tr>
@@ -232,17 +233,11 @@ const SalesReturn = () => {
                   <td>
                     {indexOfFirst + filteredSalesReturn.indexOf(item) + 1}
                   </td>
-                  <td>
-                    {item.product?.productName || item.product || "-"}
-                  </td>
+                  <td>{item.product?.productName || item.product || "-"}</td>
 
-                  <td>
-                    {item.skuCode || "-"}
-                  </td>
+                  <td>{item.skuCode || "-"}</td>
 
-                  <td>
-                    {item.quantity || "-"}
-                  </td>
+                  <td>{item.quantity || "-"}</td>
 
                   <td>₹{item.refundAmount}</td>
 
@@ -261,74 +256,73 @@ const SalesReturn = () => {
               </tr>
             )}
           </tbody>
-
         </table>
-      
-              <div className="user-pagination">
-                <p>
-                  Showing {filteredSalesReturn.length === 0 ? 0 : indexOfFirst + 1}
-                  to {Math.min(indexOfLast, filteredSalesReturn.length)}
-                  of {filteredSalesReturn.length} entries
-                </p>
-      
-                <div className="page-buttons">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(1)}
-                  >
-                    &laquo;
-                  </button>
-      
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                  >
-                    &lsaquo;
-                  </button>
-      
-                  {Array.from({ length: totalPages }, (_, i) => (
-                    <button
-                      key={i}
-                      className={currentPage === i + 1 ? "active-page" : ""}
-                      onClick={() => setCurrentPage(i + 1)}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-      
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                  >
-                    &rsaquo;
-                  </button>
-      
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(totalPages)}
-                  >
-                    &raquo;
-                  </button>
-                </div>
-              </div>
-            </div>
-      
-            <Modal
-              open={openModal}
-              title={mode === "add" ? "Add" : "Edit"}
-              size="md"
-              onClose={() => setOpenModal(false)}
+
+        <div className="user-pagination">
+          <p>
+            Showing {filteredSalesReturn.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredSalesReturn.length)}
+            of {filteredSalesReturn.length} entries
+          </p>
+
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
             >
-              <SalesReturnForm
-                mode={mode}
-                salesReturn={selectedSalesReturn}
-                onClose={() => setOpenModal(false)}
-                onSuccess={() => {
-                  setOpenModal(false);
-                  dispatch(getSalesReturns());
-                }}
-              />
-            </Modal>
+              &laquo;
+            </button>
+
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <Modal
+        open={openModal}
+        title={mode === "add" ? "Add" : "Edit"}
+        size="md"
+        onClose={() => setOpenModal(false)}
+      >
+        <SalesReturnForm
+          mode={mode}
+          salesReturn={selectedSalesReturn}
+          onClose={() => setOpenModal(false)}
+          onSuccess={() => {
+            setOpenModal(false);
+            dispatch(getSalesReturns());
+          }}
+        />
+      </Modal>
 
       {/* <div className="salesreturn-table-wrapper">
         <table className="salesreturn-table">

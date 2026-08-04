@@ -167,8 +167,10 @@ export default function PaymentList() {
                     {payment?.supplier?.supplierName
                       ? payment.supplier.supplierName
                       : payment?.customer?.customerName
-                      ? payment.customer.customerName
-                      : payment?.customerName ? payment.customerName : "-"}
+                        ? payment.customer.customerName
+                        : payment?.customerName
+                          ? payment.customerName
+                          : "-"}
                   </td>
 
                   <td>{payment?.amount}</td>
@@ -178,9 +180,9 @@ export default function PaymentList() {
                   <td>{convertDate(payment?.paymentDate)}</td>
 
                   <td>
-                    {payment?.paymentStatus === 'pending' ? (
+                    {payment?.paymentStatus === "pending" ? (
                       <span className="status pending">Pending</span>
-                    ) : payment?.paymentStatus === 'completed' ? (
+                    ) : payment?.paymentStatus === "completed" ? (
                       <span className="status active">
                         {payment?.paymentStatus ? "Completed" : "-"}
                       </span>
@@ -214,57 +216,54 @@ export default function PaymentList() {
             )}
           </tbody>
         </table>
+      </div>
+      <div className="user-pagination">
+        <p>
+          Showing {filteredPayments.length === 0 ? 0 : indexOfFirstPayment + 1}
+          to {Math.min(indexOfLastPayment, filteredPayments.length)}
+          of {filteredPayments.length} entries
+        </p>
 
-        <div className="user-pagination">
-          <p>
-            Showing{" "}
-            {filteredPayments.length === 0 ? 0 : indexOfFirstPayment + 1}
-            to {Math.min(indexOfLastPayment, filteredPayments.length)}
-            of {filteredPayments.length} entries
-          </p>
+        <div className="page-buttons">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(1)}
+          >
+            &laquo;
+          </button>
 
-          <div className="page-buttons">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+          >
+            &lsaquo;
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => (
             <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(1)}
+              key={i}
+              className={currentPage === i + 1 ? "active-page" : ""}
+              onClick={() => setCurrentPage(i + 1)}
             >
-              &laquo;
+              {i + 1}
             </button>
+          ))}
 
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-            >
-              &lsaquo;
-            </button>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            &rsaquo;
+          </button>
 
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                className={currentPage === i + 1 ? "active-page" : ""}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              &rsaquo;
-            </button>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(totalPages)}
-            >
-              &raquo;
-            </button>
-          </div>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(totalPages)}
+          >
+            &raquo;
+          </button>
         </div>
       </div>
-
       <Modal
         open={openModal}
         title={mode === "add" ? "Add Payment" : "Edit Payment"}

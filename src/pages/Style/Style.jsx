@@ -104,7 +104,7 @@ const Style = () => {
       <div className="style-header">
         <h2>Style Management</h2>
 
-        <AddButton onClick={handleAdd}>Add Style</AddButton>
+        <AddButton onClick={handleAdd}>Add </AddButton>
       </div>
       <div className="style-container">
         <Modal

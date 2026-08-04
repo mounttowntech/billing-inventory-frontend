@@ -141,7 +141,7 @@ const Measurement = () => {
       <div className="measurement-header">
         <h2>Measurement Management</h2>
 
-        <AddButton onClick={handleAdd}>+ Add Measurement</AddButton>
+        <AddButton onClick={handleAdd}> Add </AddButton>
       </div>
 
       <div className="measurement-container">

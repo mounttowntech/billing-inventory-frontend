@@ -117,7 +117,7 @@ const Purchase = () => {
         <h2>Purchase Management</h2>
 
         <AddButton className="add-btn" onClick={() => setShowModal(true)}>
-          + Add Purchase
+          Add
         </AddButton>
       </div>
       <div className="purchase-container">

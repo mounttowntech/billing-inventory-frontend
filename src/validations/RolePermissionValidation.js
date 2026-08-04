@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-const RolePermissionValidation = yup.object({
+const rolePermissionValidation = yup.object({
   roleName: yup.string().required("Role Name is required"),
 
   permissions: yup
@@ -21,4 +21,4 @@ const RolePermissionValidation = yup.object({
     .min(1),
 });
 
-export default RolePermissionValidation;
+export default rolePermissionValidation;

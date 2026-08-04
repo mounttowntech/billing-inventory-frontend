@@ -112,18 +112,6 @@
   margin: 0;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  color: #6b7280;
-}
-
-.close-btn:hover {
-  color: #111827;
-}
 
 .form-group input,
 .form-group textarea {

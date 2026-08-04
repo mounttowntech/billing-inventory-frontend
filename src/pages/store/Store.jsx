@@ -11,7 +11,8 @@ import {
   updateStore,
   deleteStore,
 } from "../../features/store/storeSlice";
-
+import Select from "../../components/Common/Select";
+import Modal from "../../components/Common/Modal";
 import {
   AddButton,
   PreviousButton,
@@ -30,7 +31,9 @@ const Store = () => {
   const [editingId, setEditingId] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedStore, setSelectedStore] = useState(null);
+  const itemsPerPage = rowsPerPage;
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentStores = stores.slice(indexOfFirst, indexOfLast);
@@ -98,6 +101,7 @@ const Store = () => {
       reset();
       setEditingId(null);
       setShowModal(false);
+      setSelectedStore(store);
       dispatch(getStores());
     }
   };
@@ -106,7 +110,7 @@ const Store = () => {
 
   const handleEdit = (store) => {
     setEditingId(store._id);
-
+    setSelectedStore(store);
     reset({
       storeCode: store.storeCode || "",
       storeName: store.storeName || "",
@@ -138,21 +142,15 @@ const Store = () => {
   };
 
   return (
-    <div className="store-container">
+    <div className="store-main">
       <div className="store-header">
         <h2>Store Management</h2>
-      </div>
-      <div className="store-search-buttons">
-        <SearchBox
-          placeholder="Search Supplier..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+
         <AddButton
           className="add-btn"
           onClick={() => {
-            setEditingId(null);
-
+            setEditingId("add");
+            setSelectedStore(null);
             reset({
               storeCode: "",
               storeName: "",
@@ -169,118 +167,173 @@ const Store = () => {
             setShowModal(true);
           }}
         >
-          + Add Store
+          Add
         </AddButton>
       </div>
+      <div className="store-container">
+        <div className="table-toolbar">
+          <div className="entries">
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
 
-      <StoreForm
-        showModal={showModal}
-        setShowModal={setShowModal}
-        editingId={editingId}
-        setEditingId={setEditingId}
-        register={register}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        errors={errors}
-        reset={reset}
-      />
+            <span>Entries</span>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <SearchBox
+              placeholder="Search Store..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
 
-      <div className="table-wrapper">
-        <table className="store-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Store Code</th>
-              <th>Store Name</th>
-              <th>GST Number</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Address</th>
-              <th>Status</th>
-              <th className="supplier-column">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {loading ? (
+        <Modal
+          open={showModal}
+          title={editingId === "add" ? "Add Store" : "Edit Store"}
+          onClose={() => setShowModal(false)}
+        >
+          <StoreForm
+            mode={editingId === "add" ? "add" : "edit"}
+            store={selectedStore}
+            onSubmit={onSubmit}
+            onClose={() => setShowModal(false)}
+            onSuccess={() => {
+              setShowModal(false);
+              dispatch(getStores());
+            }}
+          />
+        </Modal>
+        <div className="table-wrapper">
+          <table className="store-table">
+            <thead>
               <tr>
-                <td colSpan="8" style={{ textAlign: "center" }}>
-                  Loading...
-                </td>
+                <th>#</th>
+                <th>Store Code</th>
+                <th>Store Name</th>
+                <th>GST Number</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th className="supplier-column">Action</th>
               </tr>
-            ) : filteredStores.length === 0 ? (
-              <tr>
-                <td colSpan="8" style={{ textAlign: "center" }}>
-                  No Stores Found
-                </td>
-              </tr>
-            ) : (
-              filteredStores.map((store) => (
-                <tr key={store._id}>
-                  <td>{indexOfFirst + filteredStores.indexOf(store) + 1}</td>
-                  <td>{store.storeCode}</td>
+            </thead>
 
-                  <td>{store.storeName}</td>
-
-                  <td>{store.gstNumber || "-"}</td>
-
-                  <td>{store.phone}</td>
-
-                  <td>{store.email}</td>
-
-                  <td>
-                    {store.address
-                      ? `${store.address.addressLine || ""}, ${
-                          store.address.city || ""
-                        }, ${store.address.state || ""} - ${
-                          store.address.pincode || ""
-                        }`
-                      : "-"}
-                  </td>
-
-                  <td
-                    style={{
-                      textTransform: "capitalize",
-                      fontWeight: "600",
-                    }}
-                  >
-                    {store.status}
-                  </td>
-
-                  <td className="supplier-column">
-                    <EditButton onClick={() => handleEdit(store)}>
-                      Edit
-                    </EditButton>
-
-                    <DeleteButton onClick={() => handleDelete(store._id)}>
-                      Delete
-                    </DeleteButton>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    Loading...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : filteredStores.length === 0 ? (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    No Stores Found
+                  </td>
+                </tr>
+              ) : (
+                filteredStores.map((store) => (
+                  <tr key={store._id}>
+                    <td>{indexOfFirst + filteredStores.indexOf(store) + 1}</td>
+                    <td>{store.storeCode}</td>
 
-      <div className="pagination">
-        <PreviousButton
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-        >
-          Previous
-        </PreviousButton>
+                    <td>{store.storeName}</td>
 
-        <span className="page-info">
-          Page {currentPage} of {totalPages}
-        </span>
+                    <td>{store.gstNumber || "-"}</td>
 
-        <NextButton
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-        >
-          Next
-        </NextButton>
+                    <td>{store.phone}</td>
+
+                    <td>{store.email}</td>
+
+                    <td>
+                      {store.address
+                        ? `${store.address.addressLine || ""}, ${
+                            store.address.city || ""
+                          }, ${store.address.state || ""} - ${
+                            store.address.pincode || ""
+                          }`
+                        : "-"}
+                    </td>
+
+                    <td
+                      style={{
+                        textTransform: "capitalize",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {store.status}
+                    </td>
+
+                    <td className="supplier-column">
+                      <EditButton onClick={() => handleEdit(store)}>
+                        Edit
+                      </EditButton>
+
+                      <DeleteButton onClick={() => handleDelete(store._id)}>
+                        Delete
+                      </DeleteButton>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="user-pagination">
+          <p>
+            Showing {filteredStores.length === 0 ? 0 : indexOfFirst + 1}
+            to {Math.min(indexOfLast, filteredStores.length)}
+            of {filteredStores.length} entries
+          </p>
+
+          <div className="page-buttons">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+            >
+              &laquo;
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

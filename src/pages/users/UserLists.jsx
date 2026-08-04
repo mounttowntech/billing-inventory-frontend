@@ -67,7 +67,7 @@ export default function UserLists() {
             setOpenModal(true);
           }}
         >
-          + Add User
+          Add
         </button>
       </div>
 

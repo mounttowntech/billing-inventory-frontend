@@ -154,7 +154,7 @@ const CategoryOptions = ({ value, onChange }) => {
             setOpenModal(true);
           }}
         >
-          + Add
+          Add
         </AddButton>
       </div>
 

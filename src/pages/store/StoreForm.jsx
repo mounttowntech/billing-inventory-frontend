@@ -1,162 +1,160 @@
-import { SaveButton } from "../../components/Common/Button";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
+import Input from "../../components/Common/Input";
+import Select from "../../components/Common/Select";
+import { storeValidation } from "../../validations/StoreValidation";
+import { CancelButton, SaveButton } from "../../components/Common/Button";
 
-/**
- * Modal form for creating / editing a Store.
- * All state (react-hook-form, etc.) is owned by the parent <Store />
- * component and passed down as props.
- */
-const StoreForm = ({
-  showModal,
-  setShowModal,
-  editingId,
-  setEditingId,
-  register,
-  handleSubmit,
-  onSubmit,
-  errors,
-  reset,
-}) => {
-  if (!showModal) return null;
+const StoreForm = ({ mode, store, onSubmit, onClose, onSuccess }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(storeValidation),
+  });
+
+  useEffect(() => {
+    if (store) {
+      reset({
+        storeCode: store.storeCode || "",
+        storeName: store.storeName || "",
+        gstNumber: store.gstNumber || "",
+        phone: store.phone || "",
+        email: store.email || "",
+
+        addressLine: store.address?.addressLine || "",
+        city: store.address?.city || "",
+        state: store.address?.state || "",
+        pincode: store.address?.pincode || "",
+
+        status: store.status || "active",
+      });
+    } else {
+      reset({
+        storeCode: "",
+        storeName: "",
+        gstNumber: "",
+        phone: "",
+        email: "",
+        addressLine: "",
+        city: "",
+        state: "",
+        pincode: "",
+        status: "active",
+      });
+    }
+  }, [store, reset]);
 
   return (
-    <div className="modal-overlay" onClick={() => setShowModal(false)}>
-      <div className="store-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>{editingId ? "Edit Store" : "Add Store"}</h3>
+    <form className="store-form" onSubmit={handleSubmit(onSubmit)}>
+      <div className="form-grid">
+        <Input
+          label="Store Code"
+          name="storeCode"
+          placeholder="Enter Store Code"
+          register={register}
+          error={errors.storeCode?.message}
+        />
 
-          <button
-            className="close-btn"
-            onClick={() => {
-              setShowModal(false);
-              setEditingId(null);
-              reset();
-            }}
-          >
-            ×
-          </button>
-        </div>
-
-        <form className="store-form" onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-group">
-            <label>Store Code</label>
-
-            <input
-              type="text"
-              placeholder="Enter Store Code"
-              {...register("storeCode")}
-            />
-
-            <span>{errors.storeCode?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Store Name</label>
-
-            <input
-              type="text"
-              placeholder="Enter Store Name"
-              {...register("storeName")}
-            />
-
-            <span>{errors.storeName?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>GST Number</label>
-
-            <input
-              type="text"
-              placeholder="Enter GST Number"
-              {...register("gstNumber")}
-            />
-
-            <span>{errors.gstNumber?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Phone</label>
-
-            <input
-              type="text"
-              placeholder="Enter Phone Number"
-              {...register("phone")}
-            />
-
-            <span>{errors.phone?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Email</label>
-
-            <input
-              type="email"
-              placeholder="Enter Email"
-              {...register("email")}
-            />
-
-            <span>{errors.email?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Address</label>
-
-            <input
-              type="text"
-              placeholder="Enter Address"
-              {...register("addressLine")}
-            />
-
-            <span>{errors.addressLine?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>City</label>
-
-            <input type="text" placeholder="Enter City" {...register("city")} />
-
-            <span>{errors.city?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>State</label>
-
-            <input
-              type="text"
-              placeholder="Enter State"
-              {...register("state")}
-            />
-
-            <span>{errors.state?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Pincode</label>
-
-            <input
-              type="text"
-              placeholder="Enter Pincode"
-              {...register("pincode")}
-            />
-
-            <span>{errors.pincode?.message}</span>
-          </div>
-
-          <div className="form-group">
-            <label>Status</label>
-
-            <select {...register("status")}>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-
-            <span>{errors.status?.message}</span>
-            <SaveButton type="submit">
-              {editingId ? "Update Store" : "Save Store"}
-            </SaveButton>
-          </div>
-        </form>
+        <Input
+          label="Store Name"
+          name="storeName"
+          placeholder="Enter Store Name"
+          register={register}
+          error={errors.storeName?.message}
+        />
       </div>
-    </div>
+      <div className="form-grid">
+        <Input
+          label="GST Number"
+          name="gstNumber"
+          placeholder="Enter GST Number"
+          register={register}
+          error={errors.gstNumber?.message}
+        />
+
+        <Input
+          label="Phone"
+          name="phone"
+          placeholder="Enter Phone Number"
+          register={register}
+          error={errors.phone?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="Enter Email"
+          register={register}
+          error={errors.email?.message}
+        />
+
+        <Input
+          label="Address"
+          name="addressLine"
+          placeholder="Enter Address"
+          register={register}
+          error={errors.addressLine?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="City"
+          name="city"
+          placeholder="Enter City"
+          register={register}
+          error={errors.city?.message}
+        />
+
+        <Input
+          label="State"
+          name="state"
+          placeholder="Enter State"
+          register={register}
+          error={errors.state?.message}
+        />
+      </div>
+      <div className="form-grid">
+        <Input
+          label="Pincode"
+          name="pincode"
+          placeholder="Enter Pincode"
+          register={register}
+          error={errors.pincode?.message}
+        />
+
+        <Select
+          label="Status"
+          name="status"
+          register={register}
+          error={errors.status?.message}
+          options={[
+            { _id: "active", label: "Active" },
+            { _id: "inactive", label: "Inactive" },
+          ]}
+        />
+      </div>
+      <div className="roles-form-buttons">
+        <SaveButton type="submit">
+          {mode === "edit" ? "Update " : "Add "}
+        </SaveButton>
+
+        <CancelButton
+          type="button"
+          onClick={() => {
+            reset();
+            onClose();
+          }}
+        >
+          Cancel
+        </CancelButton>
+      </div>
+    </form>
   );
 };
 

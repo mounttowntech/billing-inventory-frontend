@@ -155,7 +155,7 @@
   font-size: 22px;
 }
 
-.close-btn {
+. {
   border: none;
   background: transparent;
   cursor: pointer;
@@ -163,7 +163,7 @@
   color: #666;
 }
 
-.close-btn:hover {
+.:hover {
   color: red;
 }
 

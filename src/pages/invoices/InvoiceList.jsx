@@ -145,7 +145,7 @@ const Invoice = () => {
       <div className="invoice-header">
         <h2>Invoice Management</h2>
 
-        <AddButton onClick={() => setShowModal(true)}>+ Add</AddButton>
+        <AddButton onClick={() => setShowModal(true)}> Add</AddButton>
       </div>
 
       <div className="invoice-container">

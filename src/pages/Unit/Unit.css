@@ -139,7 +139,7 @@
   margin-bottom: 15px;
 }
 
-.close-btn {
+. {
   border: none;
   background: transparent;
   font-size: 24px;
@@ -148,7 +148,7 @@
   transition: .2s;
 }
 
-.close-btn:hover {
+.:hover {
   color: red;
 }
 

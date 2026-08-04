@@ -126,7 +126,7 @@ const Brand = () => {
             setShowModal(true);
           }}
         >
-          + Add Brand
+          Add
         </AddButton>
       </div>
       {/* <h2 className="brand-title">Brand Management</h2> */}
