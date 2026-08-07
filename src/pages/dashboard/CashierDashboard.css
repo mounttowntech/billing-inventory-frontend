@@ -275,7 +275,6 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--cshr-text-muted);
   padding: 0 10px 12px;
   border-bottom: 1px solid var(--cshr-border-color);
 }

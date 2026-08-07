@@ -55,6 +55,12 @@ export const verifyOTPApi = async (data) => {
   return response.data;
 };
 
+// Reset Password
+export const resetPasswordApi = async (data) => {
+  const response = await API.post("/users/reset-password", data);
+  return response.data;
+};
+
 // Change Password
 export const changePasswordApi = async (data) => {
   const response = await API.post("/users/change-password", data);

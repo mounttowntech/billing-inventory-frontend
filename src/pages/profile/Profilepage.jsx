@@ -8,11 +8,11 @@ const INITIAL_USER = {
   name: "Unknown User",
   role: "User",
   employeeId: "EMP-1234",
-  department: "Billing & Inventory",
+  // department: "Billing & Inventory",
   email: "test@example.com",
   phone: "+91 98765 43210",
-  joinedOn: "12 Mar 2023",
-  address: "24, Anna Nagar, Salem, Tamil Nadu",
+  // joinedOn: "12 Mar 2023",
+  // address: "24, Anna Nagar, Salem, Tamil Nadu",
   avatarUrl: "",
 };
 
@@ -208,9 +208,9 @@ const ProfilePage = () => {
     INITIAL_USER.avatarUrl = login_user?.avatarUrl || "";
     INITIAL_USER.employeeId = login_user?.employeeCode || "";
     INITIAL_USER.phone = login_user?.phone || "";
-    INITIAL_USER.department = login_user?.department || "";
-    INITIAL_USER.joinedOn = login_user?.joinedOn || "";
-    INITIAL_USER.address = login_user?.address || "";
+    // INITIAL_USER.department = login_user?.department || "";
+    // INITIAL_USER.joinedOn = login_user?.joinedOn || "";
+    // INITIAL_USER.address = login_user?.address || "";
     INITIAL_USER.email = login_user?.email || "";
   }
   const [isEditing, setIsEditing] = useState(false);
@@ -260,20 +260,20 @@ const ProfilePage = () => {
       type: "text",
       readOnly: true,
     },
-    {
-      key: "department",
-      label: "Department",
-      icon: <BpBuildingIcon />,
-      type: "text",
-    },
-    {
-      key: "joinedOn",
-      label: "Joined On",
-      icon: <BpCalendarIcon />,
-      type: "text",
-      readOnly: true,
-    },
-    { key: "address", label: "Address", icon: <BpPinIcon />, type: "text" },
+    // {
+    //   key: "department",
+    //   label: "Department",
+    //   icon: <BpBuildingIcon />,
+    //   type: "text",
+    // },
+    // {
+    //   key: "joinedOn",
+    //   label: "Joined On",
+    //   icon: <BpCalendarIcon />,
+    //   type: "text",
+    //   readOnly: true,
+    // },
+    // { key: "address", label: "Address", icon: <BpPinIcon />, type: "text" },
   ];
 
   return (
@@ -299,7 +299,7 @@ const ProfilePage = () => {
                 initials
               )}
             </span>
-            {isEditing && (
+            {/* {isEditing && (
               <button
                 type="button"
                 className="bp-avatar-edit-btn"
@@ -307,7 +307,7 @@ const ProfilePage = () => {
               >
                 <BpCameraIcon />
               </button>
-            )}
+            )} */}
           </div>
 
           <div className="bp-heading">

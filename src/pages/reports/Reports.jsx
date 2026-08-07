@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./Report.css";
-import { getFullDashboard } from "../../features/Dashboard/GarmentDashboardSlice";
+import {
+  getSummary,
+  getAnalytics,
+  getSalesTrend,
+  getSalesByCategory,
+  getSalesSummary,
+  getTopProducts,
+  getManagerDashboard,
+} from "../../features/report/reportSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const IconBag = (props) => (
   <svg viewBox="0 0 24 24" fill="none" {...props}>
@@ -331,31 +340,6 @@ const IconGrid = (props) => (
 
 const DATE_RANGE_LABEL = "01 Jul 2025 - 15 Jul 2025";
 
-/* 15 points = 01 Jul .. 15 Jul, values in thousands of ₹ */
-const SALES_TREND = {
-  labels: [
-    "01 Jul",
-    "02 Jul",
-    "03 Jul",
-    "04 Jul",
-    "05 Jul",
-    "06 Jul",
-    "07 Jul",
-    "08 Jul",
-    "09 Jul",
-    "10 Jul",
-    "11 Jul",
-    "12 Jul",
-    "13 Jul",
-    "14 Jul",
-    "15 Jul",
-  ],
-  current: [38, 52, 65, 88, 70, 60, 42, 38, 62, 45, 68, 55, 45, 68, 85],
-  previous: [24, 30, 34, 46, 50, 42, 35, 24, 20, 15, 26, 34, 30, 40, 46],
-  yMax: 100, // in thousands
-  yStep: 20,
-};
-
 const PAYMENT_TOTAL = {
   transactions: 356,
   amount: "₹82,004.50",
@@ -386,10 +370,15 @@ function pointsToPath(points) {
 }
 
 function buildAreaPath(points, height) {
+  if (!points || points.length === 0) {
+    return "";
+  }
+
   const line = pointsToPath(points);
   const [firstX] = points[0];
   const [lastX] = points[points.length - 1];
-  return `${line} L${lastX.toFixed(2)},${height} L${firstX.toFixed(2)},${height} Z`;
+
+  return `${line} L${lastX},${height} L${firstX},${height} Z`;
 }
 
 function buildSparkPath(values, width, height) {
@@ -409,24 +398,122 @@ function buildSparkPath(values, width, height) {
 
 export default function ReportDashboard() {
   const [secondsLeft, setSecondsLeft] = useState(AUTO_REFRESH_SECONDS);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const {
     summary,
-    salesOverview,
+    analytics,
+    salesTrend,
     salesByCategory,
-    topSellingProducts,
-    quickStats,
-    recentTransactions,
-    topCustomers,
-    lowStockAlerts,
-    dueAmount,
-    isLoading,
-  } = useSelector((state) => state.dashboard);
+    salesSummary,
+    topProducts,
+    report,
+    managerDashboard,
+    loading,
+    error,
+  } = useSelector((state) => state.report);
+  // Fetch Report
+  useEffect(() => {
+    dispatch(getManagerDashboard());
+  }, [dispatch]);
+
+  // Report Data
+  const salesOverview = salesTrend || {};
+  const topSellingProducts = topProducts?.products || [];
+  const recentTransactions = salesSummary?.rows || [];
+
+  const dashboard = managerDashboard.dashboard || {};
+  const topCustomers = analytics?.topCustomers || [];
+  const lowStockAlerts = analytics?.lowStockAlerts || [];
+
   const CATEGORY_TOTAL = salesByCategory?.total || 0;
 
+  const currentTrend = salesTrend?.current || [];
+  const previousTrend = salesTrend?.previous || [];
+
+  const SALES_TREND = {
+    labels: currentTrend.map((x) => x._id),
+    current: currentTrend.map((x) => x.totalSales),
+    previous: previousTrend.map((x) => x.totalSales),
+    yMax:
+      Math.max(
+        ...currentTrend.map((x) => x.totalSales),
+        ...previousTrend.map((x) => x.totalSales),
+        100,
+      ) || 100,
+    yStep: 5000,
+  };
+
+  // Countdown
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSecondsLeft((s) => (s <= 0 ? AUTO_REFRESH_SECONDS : s - 1));
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    dispatch(getSummary());
+    dispatch(getAnalytics());
+    dispatch(getSalesTrend());
+    dispatch(getSalesByCategory());
+    dispatch(getSalesSummary());
+    dispatch(getTopProducts());
+    dispatch(getManagerDashboard());
+  }, [dispatch]);
+
+  const countdownLabel = useMemo(() => {
+    const m = Math.floor(secondsLeft / 60)
+      .toString()
+      .padStart(2, "0");
+
+    const s = Math.floor(secondsLeft % 60)
+      .toString()
+      .padStart(2, "0");
+
+    return `${m}:${s}`;
+  }, [secondsLeft]);
+
+  /* ---- line chart geometry ---- */
+  const CHART_W = 640;
+  const CHART_H = 220;
+
+  const currentPoints = buildLinePoints(
+    SALES_TREND.current,
+    CHART_W,
+    CHART_H,
+    SALES_TREND.yMax,
+  );
+
+  const previousPoints = buildLinePoints(
+    SALES_TREND.previous,
+    CHART_W,
+    CHART_H,
+    SALES_TREND.yMax,
+  );
+
+  const currentLinePath = pointsToPath(currentPoints);
+  const previousLinePath = pointsToPath(previousPoints);
+  const currentAreaPath = buildAreaPath(currentPoints, CHART_H);
+
+  const gridRows = Array.from(
+    { length: 6 },
+    (_, i) => (SALES_TREND.yMax / 5) * i,
+  );
+
+  /* ---- donut chart geometry ---- */
+  const DONUT_SIZE = 176;
+  const DONUT_R = 66;
+  const DONUT_STROKE = 26;
+
+  const circumference = 2 * Math.PI * DONUT_R;
+
+  let cumulative = 0;
+
   const donutSegments =
-    salesByCategory?.breakdown?.map((c) => {
+    salesByCategory?.categories?.map((c) => {
       const dash = (c.percentage / 100) * circumference;
 
       const seg = {
@@ -438,81 +525,29 @@ export default function ReportDashboard() {
       };
 
       cumulative += c.percentage;
+
       return seg;
     }) || [];
 
-  useEffect(() => {
-    dispatch(getFullDashboard());
-  }, [dispatch]);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setSecondsLeft((s) => (s <= 0 ? AUTO_REFRESH_SECONDS : s - 1));
-    }, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const countdownLabel = useMemo(() => {
-    const m = Math.floor(secondsLeft / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = Math.floor(secondsLeft % 60)
-      .toString()
-      .padStart(2, "0");
-    return `${m}:${s}`;
-  }, [secondsLeft]);
-
-  /* ---- line chart geometry ---- */
-  const CHART_W = 640;
-  const CHART_H = 220;
-  const currentPoints = buildLinePoints(
-    SALES_TREND.current,
-    CHART_W,
-    CHART_H,
-    SALES_TREND.yMax,
-  );
-  const previousPoints = buildLinePoints(
-    SALES_TREND.previous,
-    CHART_W,
-    CHART_H,
-    SALES_TREND.yMax,
-  );
-  const currentLinePath = pointsToPath(currentPoints);
-  const previousLinePath = pointsToPath(previousPoints);
-  const currentAreaPath = buildAreaPath(currentPoints, CHART_H);
-  const gridRows = [];
-  for (let v = 0; v <= SALES_TREND.yMax; v += SALES_TREND.yStep)
-    gridRows.push(v);
-
-  /* ---- donut chart geometry ---- */
-  const DONUT_SIZE = 176;
-  const DONUT_R = 66;
-  const DONUT_STROKE = 26;
-  const circumference = 2 * Math.PI * DONUT_R;
-  let cumulative = 0;
-
+  // console.log("managerDashboard are the :", managerDashboard);
   return (
-    // tdb-dashboard-container is what makes the layout respond to the space
-    // actually left over next to your sidebar (container queries), instead
-    // of the full browser window. Keep this outer wrapper when you drop the
-    // component into your existing page's main content column.
     <div className="tdb-dashboard-container">
       <div className="tdb-dashboard">
-        {/* ============================= HEADER (shared) ============================= */}
         <header className="tdb-header tdb-panel">
           <div className="tdb-header-left">
-            <span className="tdb-field-label">Date Range</span>
-            <button type="button" className="tdb-date-select">
+            <h2>Reports</h2>
+            {/* <span className="tdb-field-label">Date Range</span> */}
+            {/* <button type="button" className="tdb-date-select">
               <IconCalendar className="tdb-icon-16" />
               <span>{DATE_RANGE_LABEL}</span>
               <IconChevronDown className="tdb-icon-16 tdb-date-select-chevron" />
-            </button>
+            </button> */}
           </div>
           <div className="tdb-header-right">
-            <button type="button" className="tdb-btn tdb-btn-ghost">
+            {/* <button type="button" className="tdb-btn tdb-btn-ghost">
               <IconReset className="tdb-icon-16" />
               <span>Reset</span>
-            </button>
+            </button> */}
             <button type="button" className="tdb-btn tdb-btn-primary">
               <IconDownload className="tdb-icon-16" />
               <span>Export Report</span>
@@ -528,9 +563,9 @@ export default function ReportDashboard() {
                 <IconBag className="tdb-icon-20" />
               </span>
               <div className="tdb-stat-info">
-                <span className="tdb-stat-label">Low Stock Items</span>
+                <span className="tdb-stat-label">Today's Sales</span>
                 <span className="tdb-stat-value">
-                  {quickStats?.lowStockItems || 0}
+                  ₹{dashboard?.todaySales?.toLocaleString() || 0}
                 </span>
               </div>
             </div>
@@ -542,9 +577,9 @@ export default function ReportDashboard() {
                 <IconOrders className="tdb-icon-20" />
               </span>
               <div className="tdb-stat-info">
-                <span className="tdb-stat-label">Total Suppliers</span>
+                <span className="tdb-stat-label">Today's Orders</span>
                 <span className="tdb-stat-value">
-                  {quickStats?.totalSuppliers || 0}
+                  {dashboard?.todayOrders || 0}
                 </span>
               </div>
             </div>
@@ -556,9 +591,9 @@ export default function ReportDashboard() {
                 <IconProfit className="tdb-icon-20" />
               </span>
               <div className="tdb-stat-info">
-                <span className="tdb-stat-label">Due Amount</span>
+                <span className="tdb-stat-label">Today's Customers</span>
                 <span className="tdb-stat-value">
-                  ₹{quickStats?.dueAmount?.toLocaleString() || 0}
+                  {dashboard?.todayCustomers || 0}
                 </span>
               </div>
             </div>
@@ -570,9 +605,51 @@ export default function ReportDashboard() {
                 <IconCart className="tdb-icon-20" />
               </span>
               <div className="tdb-stat-info">
-                <span className="tdb-stat-label">Total Customers</span>
+                <span className="tdb-stat-label">Low Stock Items</span>
                 <span className="tdb-stat-value">
-                  {quickStats?.totalCustomers || 0}
+                  {dashboard?.lowStockProducts || 0}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="tdb-panel tdb-stat-card">
+            <div className="tdb-stat-card-top">
+              <span className="tdb-stat-icon tdb-accent-primary">
+                <IconOrders className="tdb-icon-20" />
+              </span>
+              <div className="tdb-stat-info">
+                <span className="tdb-stat-label">Pending Invoices</span>
+                <span className="tdb-stat-value">
+                  {dashboard?.pendingInvoices || 0}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="tdb-panel tdb-stat-card">
+            <div className="tdb-stat-card-top">
+              <span className="tdb-stat-icon tdb-accent-secondary">
+                <IconCash className="tdb-icon-20" />
+              </span>
+              <div className="tdb-stat-info">
+                <span className="tdb-stat-label">Total Paid</span>
+                <span className="tdb-stat-value">
+                  ₹{dashboard?.totalPaid?.toLocaleString() || 0}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="tdb-panel tdb-stat-card">
+            <div className="tdb-stat-card-top">
+              <span className="tdb-stat-icon tdb-accent-dark">
+                <IconProfit className="tdb-icon-20" />
+              </span>
+              <div className="tdb-stat-info">
+                <span className="tdb-stat-label">Total Due</span>
+                <span className="tdb-stat-value">
+                  ₹{dashboard?.totalDue?.toLocaleString() || 0}
                 </span>
               </div>
             </div>
@@ -600,7 +677,7 @@ export default function ReportDashboard() {
             <div className="tdb-trend-chart-wrap">
               <div className="tdb-trend-y-axis">
                 {[...gridRows].reverse().map((v) => (
-                  <span key={v}>{v === 0 ? "0" : `${v}K`}</span>
+                  <span key={v}>₹{Math.round(v).toLocaleString("en-IN")}</span>
                 ))}
               </div>
               <div className="tdb-trend-chart">
@@ -674,11 +751,9 @@ export default function ReportDashboard() {
             </div>
 
             <div className="tdb-trend-x-axis">
-              {SALES_TREND.labels
-                .filter((_, i) => i % 2 === 0)
-                .map((label) => (
-                  <span key={label}>{label}</span>
-                ))}
+              {SALES_TREND.labels.map((label) => (
+                <span key={label}>{label}</span>
+              ))}
             </div>
           </div>
 
@@ -719,8 +794,16 @@ export default function ReportDashboard() {
                 </svg>
                 <div className="tdb-donut-center">
                   <span className="tdb-donut-center-value">
-                    ₹{summary?.totalSales?.amount?.toLocaleString() || 0}
+                    ₹
+                    {Number(summary?.totalSales?.value || 0).toLocaleString(
+                      "en-IN",
+                      {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      },
+                    )}
                   </span>
+
                   <span className="tdb-donut-center-label">Total Sales</span>
                 </div>
               </div>
@@ -771,10 +854,10 @@ export default function ReportDashboard() {
                         <td>{item.party}</td>
 
                         <td>
-                          ₹{Number(item.amount || 0).toLocaleString("en-IN")}
+                          ₹{Number(item.netAmount || 0).toLocaleString("en-IN")}
                         </td>
 
-                        {/* <td>
+                        <td>
                           <span
                             className={`status-badge ${
                               item.type === "Sale"
@@ -785,10 +868,8 @@ export default function ReportDashboard() {
                                     ? "status-expense"
                                     : "status-default"
                             }`}
-                          >
-                            {item.type}
-                          </span>
-                        </td> */}
+                          ></span>
+                        </td>
                       </tr>
                     ))
                   ) : (
@@ -802,14 +883,19 @@ export default function ReportDashboard() {
                 <tfoot>
                   <tr className="tdb-table-total-row">
                     <td>Total</td>
-                    <td>{summary?.paymentTotal?.transactions}</td>
+                    <td>{salesSummary?.totalRecords || 0}</td>
                     <td>
-                      ₹{summary?.paymentTotal?.amount?.toLocaleString() || 0}
+                      ₹
+                      {salesSummary?.summary?.totalCredit?.toLocaleString() ||
+                        0}
                     </td>
                     <td>
-                      ₹{summary?.paymentTotal?.discount?.toLocaleString() || 0}
+                      ₹
+                      {salesSummary?.summary?.totalDebit?.toLocaleString() || 0}
                     </td>
-                    <td>{summary?.paymentTotal?.net}</td>
+                    <td>
+                      ₹{salesSummary?.summary?.netAmount?.toLocaleString() || 0}
+                    </td>
                   </tr>
                 </tfoot>
               </table>
@@ -820,9 +906,9 @@ export default function ReportDashboard() {
           <div className="tdb-panel tdb-products-panel">
             <div className="tdb-panel-header">
               <h2 className="tdb-panel-title">Top Selling Products</h2>
-              <a href="#" className="tdb-link">
+              {/* <a href="#" className="tdb-link">
                 View All
-              </a>
+              </a> */}
             </div>
             <div className="tdb-table-scroll">
               <table className="tdb-table tdb-table-products">
@@ -834,27 +920,31 @@ export default function ReportDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {summary?.topProducts?.map((p) => {
-                    const Icon = p.icon;
+                  {topSellingProducts.map((p) => {
+                    const Icon = IconShirt;
                     return (
-                      <tr key={p.name}>
+                      <tr key={p.productName}>
                         <td>
                           <span className="tdb-table-product">
-                            <span className="tdb-product-thumb">
-                              <Icon className="tdb-icon-18" />
-                            </span>
-                            {p.name}
+                            {/* <span className="tdb-product-thumb"> */}
+                            {/* <Icon className="tdb-icon-18" /> */}
+                            {/* </span> */}
+                            {p.productName}
                           </span>
                         </td>
-                        <td>{p.qty}</td>
-                        <td>{p.total}</td>
+                        <td>{p.quantitySold}</td>
+                        <td>₹{p.totalSales?.toLocaleString()}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
-            <button type="button" className="tdb-btn tdb-btn-outline-block">
+            <button
+              type="button"
+              className="tdb-btn tdb-btn-outline-block"
+              onClick={() => navigate("/products")}
+            >
               <IconGrid className="tdb-icon-16" />
               <span>View All Products</span>
             </button>

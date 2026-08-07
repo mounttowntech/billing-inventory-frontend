@@ -1,5 +1,8 @@
 import React from "react";
 import "./CashierDashboard.css";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getFullDashboard } from "../../features/Dashboard/GarmentDashboardSlice";
 
 const IconRupee = () => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -230,13 +233,21 @@ const IconDoc = () => (
 
 /* ------------------------------ Sparkline -------------------------------- */
 
-function Sparkline({ points, colorVar }) {
+function Sparkline({ points = [], colorVar }) {
+  if (!Array.isArray(points) || points.length < 2) {
+    return null;
+  }
+
   const width = 220;
   const height = 46;
-  const max = Math.max(...points);
-  const min = Math.min(...points);
+
+  const numericPoints = points.map((p) => Number(p) || 0);
+
+  const max = Math.max(...numericPoints);
+  const min = Math.min(...numericPoints);
   const range = max - min || 1;
-  const step = width / (points.length - 1);
+
+  const step = width / (numericPoints.length - 1);
 
   const coords = points.map((p, i) => {
     const x = i * step;
@@ -462,11 +473,63 @@ const PAYMENT_CLASS = {
 };
 
 export default function CashierDashboard() {
+  const dispatch = useDispatch();
+
+  const { cashierDashboard, loading } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(getFullDashboard());
+  }, [dispatch]);
+
+  const stats = cashierDashboard?.stats || {};
+  const overview = cashierDashboard?.overview || {};
+  const recentSales = cashierDashboard?.recentSales || [];
   return (
     <div className="cshr-dashboard">
       {/* Stat cards row */}
       <div className="cshr-stat-grid">
-        {STAT_CARDS.map((card) => (
+        {[
+          {
+            icon: <IconRupee />,
+            iconBg: "var(--cshr-primary-tint)",
+            iconColor: "var(--cshr-primary-color)",
+            label: "Today's Sales",
+            value: `₹${stats.todaySales || 0}`,
+            change: `${stats.salesGrowth || 0}%`,
+            sparkData: stats.todaySalesGraph || [0],
+            sparkColorVar: "--cshr-primary-color",
+          },
+          {
+            icon: <IconBill />,
+            iconBg: "var(--cshr-secondary-tint)",
+            iconColor: "var(--cshr-secondary-color)",
+            label: "Total Bills",
+            value: stats.totalBills || 0,
+            change: `${stats.billGrowth || 0}%`,
+            sparkData: stats.billGraph || [0],
+            sparkColorVar: "--cshr-secondary-color",
+          },
+          {
+            icon: <IconBag />,
+            iconBg: "var(--cshr-accent-amber-tint)",
+            iconColor: "var(--cshr-accent-amber)",
+            label: "Average Bill",
+            value: `₹${stats.averageBill || 0}`,
+            change: `${stats.averageGrowth || 0}%`,
+            sparkData: stats.averageBillGraph || [0],
+            sparkColorVar: "--cshr-accent-amber",
+          },
+          {
+            icon: <IconShoppingBag />,
+            iconBg: "var(--cshr-accent-violet-tint)",
+            iconColor: "var(--cshr-accent-violet)",
+            label: "Items Sold",
+            value: stats.itemsSold || 0,
+            change: `${stats.itemsGrowth || 0}%`,
+            sparkData: stats.itemsGraph || [0],
+            sparkColorVar: "--cshr-accent-violet",
+          },
+        ].map((card) => (
           <StatCard key={card.label} {...card} />
         ))}
       </div>
@@ -478,14 +541,66 @@ export default function CashierDashboard() {
           <h2 className="cshr-panel-title">Today's Overview</h2>
 
           <div className="cshr-overview-grid">
-            {OVERVIEW_TILES.map((tile) => (
+            {[
+              {
+                icon: <IconReceipt />,
+                iconBg: "var(--cshr-secondary-tint)",
+                iconColor: "var(--cshr-secondary-color)",
+                label: "Total Receipts",
+                value: `₹${overview.totalReceipts || 0}`,
+              },
+              {
+                icon: <IconLayers />,
+                iconBg: "var(--cshr-primary-tint)",
+                iconColor: "var(--cshr-primary-color)",
+                label: "Cash Received",
+                value: `₹${overview.cashReceived || 0}`,
+              },
+              {
+                icon: <IconWallet />,
+                iconBg: "var(--cshr-accent-violet-tint)",
+                iconColor: "var(--cshr-accent-violet)",
+                label: "Card Payments",
+                value: `₹${overview.cardPayments || 0}`,
+              },
+              {
+                icon: <IconQr />,
+                iconBg: "var(--cshr-accent-amber-tint)",
+                iconColor: "var(--cshr-accent-amber)",
+                label: "UPI Payments",
+                value: `₹${overview.upiPayments || 0}`,
+              },
+              {
+                icon: <IconReturn />,
+                iconBg: "var(--cshr-accent-rose-tint)",
+                iconColor: "var(--cshr-accent-rose)",
+                label: "Returns",
+                value: `₹${overview.returns || 0}`,
+              },
+              {
+                icon: <IconDiscount />,
+                iconBg: "var(--cshr-secondary-tint)",
+                iconColor: "var(--cshr-secondary-color)",
+                label: "Discount Given",
+                value: `₹${overview.discount || 0}`,
+              },
+            ].map((tile) => (
               <OverviewTile key={tile.label} {...tile} />
             ))}
           </div>
 
           <div className="cshr-overview-footer">
             <IconRefresh />
-            <span>Last updated: 15 Jul 2025, 10:45 AM</span>
+            <span>
+              Last updated:{" "}
+              {new Date().toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
           </div>
         </section>
 
@@ -511,26 +626,41 @@ export default function CashierDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {RECENT_SALES.map((row) => (
-                  <tr key={row.invoice}>
+                {recentSales.map((row) => (
+                  <tr key={row._id || row.invoiceNo}>
                     <td className="cshr-invoice-cell">
                       <IconDoc />
-                      <span>{row.invoice}</span>
+                      <span>{row.invoiceNo}</span>
                     </td>
-                    <td>{row.customer}</td>
-                    <td className="cshr-muted">{row.time}</td>
-                    <td className="cshr-amount-cell">{row.amount}</td>
+
+                    <td>{row.customerName || "Walk-in Customer"}</td>
+
+                    <td className="cshr-muted">
+                      {new Date(row.date).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </td>
+
+                    <td className="cshr-amount-cell">
+                      ₹{Number(row.totalAmount || 0).toLocaleString()}
+                    </td>
+
                     <td>
                       <span
-                        className={`cshr-badge ${PAYMENT_CLASS[row.payment] || ""}`}
+                        className={`cshr-badge ${
+                          PAYMENT_CLASS[row.paymentMethod] || ""
+                        }`}
                       >
-                        {row.payment}
+                        {row.paymentMethod}
                       </span>
                     </td>
+
                     <td>
                       <span className="cshr-status-paid">
                         <i />
-                        {row.status}
+                        {row.paymentStatus}
                       </span>
                     </td>
                   </tr>

@@ -342,7 +342,6 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--text-muted);
   padding: 0 10px 10px 0;
   border-bottom: 1px solid var(--border-color);
   white-space: nowrap;

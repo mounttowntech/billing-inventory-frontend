@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changePassword } from "../../features/auth/authSlice";
+import { resetPassword } from "../../features/auth/authSlice";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./ChangePassword.css";
+import "./ResetPassword.css";
 
-const ChangePassword = () => {
+const ResetPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,10 +49,11 @@ const ChangePassword = () => {
     }
 
     dispatch(
-      changePassword({
+      resetPassword({
         email,
         otp,
         newPassword: formData.newPassword,
+        confirmPassword: formData.confirmPassword,
       }),
     );
   };
@@ -63,7 +64,7 @@ const ChangePassword = () => {
 
       <div className="rp-card-container">
         <div className="rp-left-content">
-          <h1>Change Password</h1>
+          <h1>Reset Password</h1>
 
           <p>
             Enter your new password below to complete the password reset
@@ -126,7 +127,7 @@ const ChangePassword = () => {
             )}
 
             <button type="submit" className="rp-submit-btn" disabled={loading}>
-              {loading ? "Changing..." : "Change Password"}
+              {loading ? "Resetting..." : "Resetting Password"}
             </button>
           </form>
         </div>
@@ -135,4 +136,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default ResetPassword;

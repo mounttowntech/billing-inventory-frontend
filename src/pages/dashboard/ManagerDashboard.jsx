@@ -1,5 +1,8 @@
 import React from "react";
 import "./ManagerDashboard.css";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getFullDashboard } from "../../features/Dashboard/GarmentDashboardSlice";
 
 const iconBase = (size, color) => ({
   width: size,
@@ -131,179 +134,12 @@ function Shirt({ size = 20, color = "currentColor" }) {
   );
 }
 
-const userName = "Manojkumar";
+const user = JSON.parse(localStorage.getItem("billing_user"));
 
-const statCards = [
-  {
-    id: "sales",
-    label: "Today's Sales",
-    value: "₹82,450",
-    change: "12.4%",
-    icon: ShoppingBag,
-  },
-  {
-    id: "orders",
-    label: "Today's Orders",
-    value: "128",
-    change: "8.7%",
-    icon: ShoppingCart,
-  },
-  {
-    id: "profit",
-    label: "Today's Profit",
-    value: "₹18,650",
-    change: "10.3%",
-    icon: TrendingUp,
-  },
-  {
-    id: "bills",
-    label: "Total Bills",
-    value: "156",
-    change: "9.1%",
-    icon: FileText,
-  },
-];
+const userName = user?.firstName || "Manager";
 
-const salesOverview = {
-  rangeLabel: "This Week",
-  yAxis: ["₹500K", "₹400K", "₹300K", "₹200K", "₹0"],
-  points: [
-    { day: "Mon", value: 190000 },
-    { day: "Tue", value: 166000 },
-    { day: "Wed", value: 44000 },
-    { day: "Thu", value: 55000 },
-    { day: "Fri", value: 179000 },
-    { day: "Sat", value: 47000 },
-    { day: "Sun", value: 188000 },
-  ],
-  maxValue: 1000000,
-};
+/*  CHART HELPERS*/
 
-const quickSummary = [
-  {
-    id: "inventory",
-    label: "Inventory Value",
-    value: "₹18,42,000",
-    icon: Package,
-    tone: "default",
-  },
-  {
-    id: "lowstock",
-    label: "Low Stock Items",
-    value: "18",
-    icon: AlertTriangle,
-    tone: "alert",
-  },
-  {
-    id: "pending",
-    label: "Pending Purchase",
-    value: "6",
-    icon: Truck,
-    tone: "default",
-  },
-  {
-    id: "expenses",
-    label: "Today's Expenses",
-    value: "₹6,840",
-    icon: CreditCard,
-    tone: "default",
-  },
-  {
-    id: "customers",
-    label: "Customers",
-    value: "112",
-    icon: Users,
-    tone: "default",
-  },
-  {
-    id: "staff",
-    label: "Staff Present",
-    value: "15 / 18",
-    icon: UserCheck,
-    tone: "default",
-  },
-];
-
-const recentSales = [
-  {
-    invoice: "INV-1024",
-    customer: "Ramesh Kumar",
-    time: "11:30 AM",
-    amount: "₹1,240",
-    payment: "UPI",
-    cashier: "Kumar",
-    status: "Paid",
-  },
-  {
-    invoice: "INV-1023",
-    customer: "Anitha M",
-    time: "11:15 AM",
-    amount: "₹890",
-    payment: "Cash",
-    cashier: "Priya",
-    status: "Paid",
-  },
-  {
-    invoice: "INV-1022",
-    customer: "Suresh B",
-    time: "10:45 AM",
-    amount: "₹1,560",
-    payment: "Card",
-    cashier: "Arun",
-    status: "Paid",
-  },
-  {
-    invoice: "INV-1021",
-    customer: "Deepak S",
-    time: "10:20 AM",
-    amount: "₹760",
-    payment: "UPI",
-    cashier: "Meena",
-    status: "Paid",
-  },
-  {
-    invoice: "INV-1020",
-    customer: "Kavitha R",
-    time: "10:05 AM",
-    amount: "₹1,120",
-    payment: "Cash",
-    cashier: "Priya",
-    status: "Paid",
-  },
-];
-
-const lowStockItems = [
-  {
-    product: "Shirt XL",
-    category: "Men Wear",
-    stock: "3 Left",
-    swatch: "#CBD5E1",
-  },
-  {
-    product: "Jeans 32",
-    category: "Men Wear",
-    stock: "4 Left",
-    swatch: "#1E3A5F",
-  },
-  {
-    product: "Kurti M",
-    category: "Women Wear",
-    stock: "2 Left",
-    swatch: "#C2703D",
-  },
-  {
-    product: "T-Shirt Black XL",
-    category: "Men Wear",
-    stock: "5 Left",
-    swatch: "#111827",
-  },
-];
-
-/* ------------------------------------------------------------------ */
-/*  CHART HELPERS                                                      */
-/* ------------------------------------------------------------------ */
-
-// Builds a smooth cubic-bezier path through the given points.
 function buildSmoothPath(coords) {
   if (coords.length < 2) return "";
   let path = `M ${coords[0].x} ${coords[0].y}`;
@@ -323,18 +159,24 @@ function SalesChart({ data }) {
   const paddingTop = 10;
   const paddingBottom = 10;
 
-  const step = (width - paddingX * 2) / (data.points.length - 1);
+  const points = data?.points || [];
 
-  const coords = data.points.map((p, i) => {
+  const step =
+    points.length > 1 ? (width - paddingX * 2) / (points.length - 1) : 0;
+
+  const coords = points.map((p, i) => {
     const x = paddingX + step * i;
-    const ratio = p.value / data.maxValue;
+    const ratio = (p.value || 0) / (data?.maxValue || 1);
     const y = paddingTop + (height - paddingTop - paddingBottom) * (1 - ratio);
+
     return { x, y, ...p };
   });
 
   const linePath = buildSmoothPath(coords);
-  const areaPath = `${linePath} L ${coords[coords.length - 1].x} ${height} L ${coords[0].x} ${height} Z`;
-
+  const areaPath =
+    coords.length > 0
+      ? `${linePath} L ${coords[coords.length - 1].x} ${height} L ${coords[0].x} ${height} Z`
+      : "";
   return (
     <div className="mgr-dash-chart-wrap">
       <div className="mgr-dash-chart-yaxis">
@@ -389,7 +231,7 @@ function SalesChart({ data }) {
           ))}
         </svg>
         <div className="mgr-dash-chart-xaxis">
-          {data.points.map((p) => (
+          {points.map((p) => (
             <span key={p.day}>{p.day}</span>
           ))}
         </div>
@@ -403,6 +245,107 @@ function SalesChart({ data }) {
 /* ------------------------------------------------------------------ */
 
 export default function Dashboard() {
+  const dispatch = useDispatch();
+
+  const {
+    summary,
+    salesOverview,
+    quickStats,
+    recentTransactions,
+    lowStockAlerts,
+    isLoading,
+  } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(getFullDashboard());
+  }, [dispatch]);
+
+  const statCards = [
+    {
+      id: "sales",
+      label: "Today's Sales",
+      value: `₹${summary?.todaySales?.amount || 0}`,
+      icon: ShoppingBag,
+    },
+    {
+      id: "orders",
+      label: "Today's Orders",
+      value: summary?.todayOrders?.amount || 0,
+      icon: ShoppingCart,
+    },
+    {
+      id: "profit",
+      label: "Today's Profit",
+      value: `₹${summary?.todayProfit?.amount || 0}`,
+      icon: TrendingUp,
+    },
+    {
+      id: "bills",
+      label: "Total Sales",
+      value: summary?.totalSales?.amount || 0,
+      icon: FileText,
+    },
+  ];
+
+  const chartData = salesOverview
+    ? {
+        rangeLabel: "This Month",
+        yAxis: ["₹100K", "₹75K", "₹50K", "₹25K", "₹0"],
+        points: salesOverview.dailySales,
+        maxValue: salesOverview.maxValue,
+      }
+    : {
+        rangeLabel: "",
+        yAxis: [],
+        points: [],
+        maxValue: 1,
+      };
+
+  const quickSummary = [
+    {
+      id: "inventory",
+      label: "Inventory Value",
+      value: `₹${quickStats?.inventoryValue || 0}`,
+      icon: Package,
+      tone: "default",
+    },
+    {
+      id: "lowstock",
+      label: "Low Stock Items",
+      value: quickStats?.lowStockItems || 0,
+      icon: AlertTriangle,
+      tone: "alert",
+    },
+    {
+      id: "pending",
+      label: "Pending Purchase",
+      value: quickStats?.pendingPurchase || 0,
+      icon: Truck,
+      tone: "default",
+    },
+    {
+      id: "expenses",
+      label: "Today's Expenses",
+      value: `₹${quickStats?.todayExpenses || 0}`,
+      icon: CreditCard,
+      tone: "default",
+    },
+    {
+      id: "customers",
+      label: "Customers",
+      value: quickStats?.customers || 0,
+      icon: Users,
+      tone: "default",
+    },
+    {
+      id: "staff",
+      label: "Staff Present",
+      value: quickStats?.staffPresent || 0,
+      icon: UserCheck,
+      tone: "default",
+    },
+  ];
+
   return (
     <div className="mgr-dash-dashboard">
       <div className="mgr-dash-dashboard__inner">
@@ -440,11 +383,11 @@ export default function Dashboard() {
                 <span className="mgr-dash-panel__subtitle">(This Week)</span>
               </h2>
               <button type="button" className="mgr-dash-range-select">
-                {salesOverview.rangeLabel}
+                {chartData.rangeLabel}
                 <ChevronDown size={16} />
               </button>
             </div>
-            <SalesChart data={salesOverview} />
+            <SalesChart data={chartData} />{" "}
           </div>
 
           <div className="mgr-dash-panel mgr-dash-panel--summary">
@@ -488,19 +431,25 @@ export default function Dashboard() {
                     <th>Customer</th>
                     <th>Time</th>
                     <th>Amount</th>
-                    <th>Payment</th>
+                    <th>Payment Type</th>
                     <th>Cashier</th>
                     <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {recentSales.map((row) => (
-                    <tr key={row.invoice}>
-                      <td className="mgr-dash-cell-link">{row.invoice}</td>
+                  {recentTransactions.map((row) => (
+                    <tr key={row.referenceNo}>
+                      <td className="mgr-dash-cell-link">{row.referenceNo}</td>
                       <td>{row.customer}</td>
-                      <td className="mgr-dash-cell-muted">{row.time}</td>
+                      <td className="mgr-dash-cell-muted">
+                        {new Date(row.date).toLocaleTimeString("en-IN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
+                      </td>
                       <td className="mgr-dash-cell-strong">{row.amount}</td>
-                      <td>{row.payment}</td>
+                      <td>{row.type}</td>
                       <td>{row.cashier}</td>
                       <td>
                         <span className="mgr-dash-status-pill">
@@ -532,7 +481,7 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {lowStockItems.map((row) => (
+                  {lowStockAlerts.map((row) => (
                     <tr key={row.product}>
                       <td>
                         <div className="mgr-dash-product-cell">

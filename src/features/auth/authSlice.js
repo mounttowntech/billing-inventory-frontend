@@ -7,6 +7,7 @@ import {
   deleteUserApi,
   forgotPasswordApi,
   verifyOTPApi,
+  resetPasswordApi,
   changePasswordApi,
 } from "./authService";
 
@@ -97,6 +98,19 @@ export const verifyOTP = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "OTP verification failed",
+      );
+    }
+  },
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (data, thunkAPI) => {
+    try {
+      return await resetPasswordApi(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Password change failed",
       );
     }
   },
@@ -243,6 +257,20 @@ const authSlice = createSlice({
         state.passwordChanged = true;
       })
       .addCase(changePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Reset Password
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loading = false;
+        state.passwordChanged = true;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

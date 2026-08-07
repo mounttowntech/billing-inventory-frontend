@@ -365,7 +365,6 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--invdash-text-soft);
   padding: 10px 20px;
   border-bottom: 1px solid var(--invdash-border);
 }
