@@ -2,7 +2,7 @@ import React from "react";
 import "./CashierDashboard.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getFullDashboard } from "../../features/Dashboard/GarmentDashboardSlice";
+import { getCashierDashboard } from "../../features/Dashboard/CashierDashboardSlice";
 
 const IconRupee = () => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -473,17 +473,25 @@ const PAYMENT_CLASS = {
 };
 
 export default function CashierDashboard() {
+  const {
+    todaySales,
+    totalBills,
+    averageBill,
+    itemsSold,
+    todaysOverview,
+    recentSales,
+    isLoading,
+  } = useSelector((state) => state.cashierDashboard);
   const dispatch = useDispatch();
 
   const { cashierDashboard, loading } = useSelector((state) => state.dashboard);
 
   useEffect(() => {
-    dispatch(getFullDashboard());
+    dispatch(getCashierDashboard());
   }, [dispatch]);
 
   const stats = cashierDashboard?.stats || {};
   const overview = cashierDashboard?.overview || {};
-  const recentSales = cashierDashboard?.recentSales || [];
   return (
     <div className="cshr-dashboard">
       {/* Stat cards row */}

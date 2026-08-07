@@ -1,0 +1,18 @@
+import API from "../../services/api";
+
+const BASE_URL = "/dashboard";
+
+// ================= Manager Dashboard =================
+const getManagerDashboard = async (params) => {
+  const response = await API.get(`${BASE_URL}/manager`, {
+    params,
+  });
+
+  return response.data;
+};
+
+const managerDashboardService = {
+  getManagerDashboard,
+};
+
+export default managerDashboardService;
