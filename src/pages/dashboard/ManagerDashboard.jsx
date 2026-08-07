@@ -3,6 +3,7 @@ import "./ManagerDashboard.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getManagerDashboard } from "../../features/Dashboard/ManagerDashboardSlice";
+import { useNavigate } from "react-router-dom";
 
 const iconBase = (size, color) => ({
   width: size,
@@ -244,8 +245,9 @@ function SalesChart({ data }) {
 /*  MAIN COMPONENT                                                     */
 /* ------------------------------------------------------------------ */
 
-export default function Dashboard() {
+export default function ManagerDashboard() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     today,
@@ -423,9 +425,13 @@ export default function Dashboard() {
           <div className="mgr-dash-panel mgr-dash-panel--table">
             <div className="mgr-dash-panel__header">
               <h2>Recent Sales</h2>
-              <a href="#recent-sales" className="mgr-dash-view-all">
+              <button
+                className="invdash-view-all"
+                type="button"
+                onClick={() => navigate("/invoices")}
+              >
                 View All
-              </a>
+              </button>
             </div>
             <div className="mgr-dash-table-scroll">
               <table className="mgr-dash-data-table">
