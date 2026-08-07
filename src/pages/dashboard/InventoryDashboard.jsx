@@ -2,7 +2,8 @@ import React from "react";
 import "./InventoryDashboard.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getFullDashboard } from "../../features/Dashboard/GarmentDashboardSlice";
+import { getInventoryDashboard } from "../../features/Dashboard/InventoryDashboardSlice";
+import { useNavigate } from "react-router-dom";
 
 const IconBox = () => (
   <svg
@@ -284,49 +285,6 @@ function Sparkline({ color, path }) {
   );
 }
 
-const STOCK_SUMMARY = [
-  {
-    id: "shirts",
-    name: "Shirts",
-    count: 856,
-    percent: 88,
-    icon: <IconShirt />,
-    iconClass: "invdash-summary-icon--teal",
-  },
-  {
-    id: "tshirts",
-    name: "T-Shirts",
-    count: 542,
-    percent: 60,
-    icon: <IconShirt />,
-    iconClass: "invdash-summary-icon--mint",
-  },
-  {
-    id: "jeans",
-    name: "Jeans",
-    count: 412,
-    percent: 48,
-    icon: <IconPants />,
-    iconClass: "invdash-summary-icon--navy",
-  },
-  {
-    id: "pants",
-    name: "Pants",
-    count: 289,
-    percent: 34,
-    icon: <IconPants />,
-    iconClass: "invdash-summary-icon--peach",
-  },
-  {
-    id: "sarees",
-    name: "Sarees",
-    count: 247,
-    percent: 30,
-    icon: <IconDress />,
-    iconClass: "invdash-summary-icon--violet",
-  },
-];
-
 const QUICK_ACTIONS = [
   { id: "stockIn", label: "Stock In", icon: <IconArrowDown /> },
   { id: "stockOut", label: "Stock Out", icon: <IconArrowUp /> },
@@ -346,77 +304,110 @@ const QUICK_ACTIONS = [
 
 export default function InventoryDashboard() {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const {
-    summary,
-    quickStats,
+    totalProducts,
+    inStock,
+    lowStock,
+    stockValue,
+    stockSummary,
+    recentStockActivities,
     lowStockAlerts,
-    recentTransactions,
-    topSellingProducts,
+    inventorySummary,
     isLoading,
-  } = useSelector((state) => state.dashboard);
+  } = useSelector((state) => state.inventoryDashboard);
+
+  const maxStock =
+    Math.max(...(stockSummary?.map((item) => item.totalStock) || [1])) || 1;
+
+  const STOCK_SUMMARY = (stockSummary || []).slice(0, 5).map((item, index) => ({
+    id: index,
+    category: item.category,
+    totalStock: item.totalStock,
+    percent: Math.round((item.totalStock / maxStock) * 100),
+
+    icon: item.category.toLowerCase().includes("shirt") ? (
+      <IconShirt />
+    ) : item.category.toLowerCase().includes("pant") ? (
+      <IconPants />
+    ) : item.category.toLowerCase().includes("jean") ? (
+      <IconPants />
+    ) : item.category.toLowerCase().includes("saree") ? (
+      <IconDress />
+    ) : (
+      <IconBox />
+    ),
+
+    iconClass: [
+      "invdash-summary-icon--teal",
+      "invdash-summary-icon--mint",
+      "invdash-summary-icon--navy",
+      "invdash-summary-icon--peach",
+      "invdash-summary-icon--violet",
+    ][index % 5],
+  }));
 
   useEffect(() => {
-    dispatch(getFullDashboard());
+    dispatch(getInventoryDashboard());
   }, [dispatch]);
 
   const statCards = [
     {
       id: "total",
       label: "Total Products",
-      value: summary?.totalProducts || 0,
+      value: totalProducts || 0,
       icon: <IconBox />,
       iconClass: "invdash-stat-icon--teal",
     },
     {
       id: "instock",
       label: "In Stock",
-      value: summary?.inStockProducts || 0,
+      value: inStock || 0,
       icon: <IconLayers />,
       iconClass: "invdash-stat-icon--green",
     },
     {
       id: "lowstock",
       label: "Low Stock",
-      value: quickStats?.lowStockItems || 0,
+      value: lowStock || 0,
       icon: <IconAlertTriangle />,
       iconClass: "invdash-stat-icon--orange",
     },
     {
       id: "stockvalue",
       label: "Stock Value",
-      value: `₹${quickStats?.inventoryValue || 0}`,
-      icon: <IconArrowDown />,
+      value: `₹${stockValue?.toLocaleString() || 0}`,
+      icon: <IconCoin />,
       iconClass: "invdash-stat-icon--blue",
     },
   ];
 
-  const inventorySummary = [
+  const inventorySummaryData = [
     {
       id: "value",
       label: "Inventory Value",
-      value: `₹${quickStats?.inventoryValue || 0}`,
+      value: `₹${inventorySummary?.inventoryValue?.toLocaleString() || 0}`,
       icon: <IconCoin />,
       iconClass: "invdash-summary-row-icon--teal",
     },
     {
       id: "products",
       label: "Products",
-      value: summary?.totalProducts || 0,
+      value: inventorySummary?.products || 0,
       icon: <IconCubeOutline />,
       iconClass: "invdash-summary-row-icon--navy",
     },
     {
       id: "lowstock",
       label: "Low Stock",
-      value: quickStats?.lowStockItems || 0,
+      value: inventorySummary?.lowStock || 0,
       icon: <IconBan />,
       iconClass: "invdash-summary-row-icon--red",
     },
     {
       id: "suppliers",
       label: "Suppliers",
-      value: quickStats?.totalSuppliers || 0,
+      value: inventorySummary?.suppliers || 0,
       icon: <IconUsers />,
       iconClass: "invdash-summary-row-icon--slate",
     },
@@ -463,19 +454,24 @@ export default function InventoryDashboard() {
           <article className="invdash-card">
             <div className="invdash-card-head">
               <h2 className="invdash-card-title">Stock Summary</h2>
-              <button className="invdash-view-all" type="button">
+              <button
+                className="invdash-view-all"
+                type="button"
+                onClick={() => navigate("/stock-ledger")}
+              >
                 View All
               </button>
             </div>
-
             <ul className="invdash-summary-list">
               {STOCK_SUMMARY.map((row) => (
                 <li className="invdash-summary-item" key={row.id}>
                   <span className={`invdash-summary-icon ${row.iconClass}`}>
                     {row.icon}
                   </span>
+
                   <span className="invdash-summary-info">
-                    <p className="invdash-summary-name">{row.name}</p>
+                    <p className="invdash-summary-name">{row.category}</p>
+
                     <span className="invdash-summary-track">
                       <span
                         className="invdash-summary-fill"
@@ -483,7 +479,11 @@ export default function InventoryDashboard() {
                       />
                     </span>
                   </span>
-                  <span className="invdash-summary-count">{row.count}</span>
+
+                  <span className="invdash-summary-count">
+                    {row.totalStock.toLocaleString()}
+                  </span>
+
                   <span className="invdash-summary-chevron">
                     <IconChevronRight />
                   </span>
@@ -506,7 +506,11 @@ export default function InventoryDashboard() {
           <article className="invdash-card">
             <div className="invdash-card-head">
               <h2 className="invdash-card-title">Recent Stock Activities</h2>
-              <button className="invdash-view-all" type="button">
+              <button
+                className="invdash-view-all"
+                type="button"
+                onClick={() => navigate("/stock-adjustments")}
+              >
                 View All
               </button>
             </div>
@@ -523,13 +527,13 @@ export default function InventoryDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentTransactions.map((row) => (
-                    <tr key={row.id}>
+                  {recentStockActivities.slice(0, 4).map((row) => (
+                    <tr key={row.reference}>
                       <td>
                         <span
                           className={`invdash-ref invdash-ref--${row.type === "Purchase" ? "Stock In" : "Stock Out"}`}
                         >
-                          {row.referenceNo}
+                          {row.reference}
                         </span>
                       </td>
                       <td>
@@ -544,8 +548,8 @@ export default function InventoryDashboard() {
                           {row.type === "Purchase" ? "Stock In" : "Stock Out"}
                         </span>
                       </td>
-                      <td className="invdash-item-name">{row.party}</td>
-                      <td className="invdash-qty">{row.amount}</td>
+                      <td className="invdash-item-name">{row.item}</td>
+                      <td className="invdash-qty">{row.quantity}</td>
                       {new Date(row.date).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -569,7 +573,7 @@ export default function InventoryDashboard() {
             </div>
 
             <ul className="invdash-alert-list">
-              {lowStockAlerts.map((row) => (
+              {lowStockAlerts.slice(0, 4).map((row) => (
                 <li className="invdash-alert-item" key={row._id}>
                   <span
                     className="invdash-alert-thumb"
@@ -599,8 +603,8 @@ export default function InventoryDashboard() {
             </div>
 
             <ul className="invdash-summary-rows">
-              {inventorySummary.map((row) => (
-                <li className="invdash-summary-row" key={row.id}>
+              {inventorySummaryData.map((row) => (
+                <li className="invdash-summary-row" key={row.reference}>
                   <span className={`invdash-summary-row-icon ${row.iconClass}`}>
                     {row.icon}
                   </span>

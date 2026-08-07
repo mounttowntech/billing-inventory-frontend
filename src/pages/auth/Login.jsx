@@ -27,7 +27,7 @@ const Login = () => {
 
     if (loginUser.fulfilled.match(result)) {
       toaster.success("Login successful!");
-
+      console.log("Login successful:", result.payload);
       const role = result.payload.user.role.roleName;
 
       navigate(getDashboardRoute(role), {

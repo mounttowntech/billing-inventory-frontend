@@ -1,0 +1,15 @@
+import API from "../../services/api";
+
+const BASE_URL = "/dashboard";
+
+// ================= Cashier Dashboard =================
+const getCashierDashboard = async () => {
+  const response = await API.get(`${BASE_URL}/cashier`);
+  return response.data;
+};
+
+const cashierDashboardService = {
+  getCashierDashboard,
+};
+
+export default cashierDashboardService;

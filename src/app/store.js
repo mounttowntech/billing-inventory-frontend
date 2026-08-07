@@ -28,6 +28,9 @@ import stockLedgerReducer from "../features/stockLedger/stockLedgerSlice";
 import paymentReducer from "../features/payment/paymentSlice";
 import purchaseReturnReducer from "../features/purchaseReturn/purchaseReturnSlice";
 import reportReducer from "../features/report/reportSlice";
+import cashierDashboardReducer from "../features/Dashboard/CashierDashboardSlice";
+import managerDashboardReducer from "../features/Dashboard/ManagerDashboardSlice";
+import inventoryDashboardReducer from "../features/Dashboard/InventoryDashboardSlice";
 
 export const store = configureStore({
   reducer: {
@@ -60,5 +63,8 @@ export const store = configureStore({
     payment: paymentReducer,
     purchaseReturn: purchaseReturnReducer,
     report: reportReducer,
+    cashierDashboard: cashierDashboardReducer,
+    managerDashboard: managerDashboardReducer,
+    inventoryDashboard: inventoryDashboardReducer,
   },
 });
