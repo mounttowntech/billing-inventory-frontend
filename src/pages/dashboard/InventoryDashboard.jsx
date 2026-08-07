@@ -1,5 +1,8 @@
 import React from "react";
 import "./InventoryDashboard.css";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getFullDashboard } from "../../features/Dashboard/GarmentDashboardSlice";
 
 const IconBox = () => (
   <svg
@@ -280,46 +283,6 @@ function Sparkline({ color, path }) {
     </svg>
   );
 }
-const STAT_CARDS = [
-  {
-    id: "total",
-    label: "Total Products",
-    value: "2,458",
-    delta: "12.4%",
-    direction: "up",
-    icon: <IconBox />,
-    iconClass: "invdash-stat-icon--teal",
-  },
-  {
-    id: "inStock",
-    label: "In Stock",
-    value: "1,986",
-    delta: "8.7%",
-    direction: "up",
-    icon: <IconLayers />,
-    iconClass: "invdash-stat-icon--green",
-  },
-  {
-    id: "lowStock",
-    label: "Low Stock",
-    value: "18",
-    delta: "3",
-    direction: "down",
-    icon: <IconAlertTriangle />,
-    iconClass: "invdash-stat-icon--orange",
-   
-  },
-  {
-    id: "stockInToday",
-    label: "Stock In (Today)",
-    value: "154",
-    delta: "15.2%",
-    direction: "up",
-    icon: <IconArrowDown />,
-    iconClass: "invdash-stat-icon--blue",
-    
-  },
-];
 
 const STOCK_SUMMARY = [
   {
@@ -364,105 +327,6 @@ const STOCK_SUMMARY = [
   },
 ];
 
-const RECENT_ACTIVITIES = [
-  {
-    id: 1,
-    ref: "IN-2024-0482",
-    type: "in",
-    item: "Men's Cotton Shirt (M)",
-    qty: 120,
-    time: "10:30 AM",
-  },
-  {
-    id: 2,
-    ref: "OUT-2024-0341",
-    type: "out",
-    item: "Men's Jeans (32)",
-    qty: 45,
-    time: "09:15 AM",
-  },
-  {
-    id: 3,
-    ref: "IN-2024-0481",
-    type: "in",
-    item: "Ladies Kurti (XL)",
-    qty: 80,
-    time: "11:20 AM",
-  },
-  {
-    id: 4,
-    ref: "OUT-2024-0340",
-    type: "out",
-    item: "Shirt (S)",
-    qty: 30,
-    time: "09:05 AM",
-  },
-  {
-    id: 5,
-    ref: "IN-2024-0479",
-    type: "in",
-    item: "T-Shirt (L)",
-    qty: 60,
-    time: "Yesterday",
-  },
-];
-
-const LOW_STOCK_ALERTS = [
-  {
-    id: 1,
-    name: "Men's Formal Shirt (M)",
-    sku: "SH-M-001",
-    stock: 3,
-    color: "#1E3A8A",
-  },
-  {
-    id: 2,
-    name: "Men's Jeans (34)",
-    sku: "JN-34-002",
-    stock: 5,
-    color: "#0F172A",
-  },
-  {
-    id: 3,
-    name: "Kids T-Shirt (XL)",
-    sku: "KT-XL-112",
-    stock: 4,
-    color: "#D97706",
-  },
-  { id: 4, name: "Cotton Saree", sku: "SR-CT-045", stock: 2, color: "#B91C1C" },
-];
-
-const INVENTORY_SUMMARY = [
-  {
-    id: "value",
-    label: "Total Stock Value",
-    value: "\u20B928,45,230",
-    icon: <IconCoin />,
-    iconClass: "invdash-summary-row-icon--teal",
-  },
-  {
-    id: "active",
-    label: "Active Products",
-    value: "1,289",
-    icon: <IconCubeOutline />,
-    iconClass: "invdash-summary-row-icon--navy",
-  },
-  {
-    id: "inactive",
-    label: "Inactive Products",
-    value: "156",
-    icon: <IconBan />,
-    iconClass: "invdash-summary-row-icon--red",
-  },
-  {
-    id: "suppliers",
-    label: "Suppliers",
-    value: "24",
-    icon: <IconUsers />,
-    iconClass: "invdash-summary-row-icon--slate",
-  },
-];
-
 const QUICK_ACTIONS = [
   { id: "stockIn", label: "Stock In", icon: <IconArrowDown /> },
   { id: "stockOut", label: "Stock Out", icon: <IconArrowUp /> },
@@ -481,12 +345,89 @@ const QUICK_ACTIONS = [
    ========================================================================== */
 
 export default function InventoryDashboard() {
+  const dispatch = useDispatch();
+
+  const {
+    summary,
+    quickStats,
+    lowStockAlerts,
+    recentTransactions,
+    topSellingProducts,
+    isLoading,
+  } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(getFullDashboard());
+  }, [dispatch]);
+
+  const statCards = [
+    {
+      id: "total",
+      label: "Total Products",
+      value: summary?.totalProducts || 0,
+      icon: <IconBox />,
+      iconClass: "invdash-stat-icon--teal",
+    },
+    {
+      id: "instock",
+      label: "In Stock",
+      value: summary?.inStockProducts || 0,
+      icon: <IconLayers />,
+      iconClass: "invdash-stat-icon--green",
+    },
+    {
+      id: "lowstock",
+      label: "Low Stock",
+      value: quickStats?.lowStockItems || 0,
+      icon: <IconAlertTriangle />,
+      iconClass: "invdash-stat-icon--orange",
+    },
+    {
+      id: "stockvalue",
+      label: "Stock Value",
+      value: `₹${quickStats?.inventoryValue || 0}`,
+      icon: <IconArrowDown />,
+      iconClass: "invdash-stat-icon--blue",
+    },
+  ];
+
+  const inventorySummary = [
+    {
+      id: "value",
+      label: "Inventory Value",
+      value: `₹${quickStats?.inventoryValue || 0}`,
+      icon: <IconCoin />,
+      iconClass: "invdash-summary-row-icon--teal",
+    },
+    {
+      id: "products",
+      label: "Products",
+      value: summary?.totalProducts || 0,
+      icon: <IconCubeOutline />,
+      iconClass: "invdash-summary-row-icon--navy",
+    },
+    {
+      id: "lowstock",
+      label: "Low Stock",
+      value: quickStats?.lowStockItems || 0,
+      icon: <IconBan />,
+      iconClass: "invdash-summary-row-icon--red",
+    },
+    {
+      id: "suppliers",
+      label: "Suppliers",
+      value: quickStats?.totalSuppliers || 0,
+      icon: <IconUsers />,
+      iconClass: "invdash-summary-row-icon--slate",
+    },
+  ];
+
   return (
     <div className="invdash-root">
       <div className="invdash-container">
         {/* Row 1 — headline stats */}
         <section className="invdash-stats-row">
-          {STAT_CARDS.map((stat) => (
+          {statCards.map((stat) => (
             <article className="invdash-card invdash-stat-card" key={stat.id}>
               <div className="invdash-stat-top">
                 <div className={`invdash-stat-icon ${stat.iconClass}`}>
@@ -582,30 +523,33 @@ export default function InventoryDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {RECENT_ACTIVITIES.map((row) => (
+                  {recentTransactions.map((row) => (
                     <tr key={row.id}>
                       <td>
                         <span
-                          className={`invdash-ref invdash-ref--${row.type}`}
+                          className={`invdash-ref invdash-ref--${row.type === "Purchase" ? "Stock In" : "Stock Out"}`}
                         >
-                          {row.ref}
+                          {row.referenceNo}
                         </span>
                       </td>
                       <td>
                         <span
-                          className={`invdash-type-pill invdash-type-pill--${row.type}`}
+                          className={`invdash-type-pill invdash-type-pill--${row.type === "Purchase" ? "Stock In" : "Stock Out"}`}
                         >
-                          {row.type === "in" ? (
+                          {row.type === "Purchase" ? (
                             <IconArrowDown />
                           ) : (
                             <IconArrowUp />
                           )}
-                          {row.type === "in" ? "Stock In" : "Stock Out"}
+                          {row.type === "Purchase" ? "Stock In" : "Stock Out"}
                         </span>
                       </td>
-                      <td className="invdash-item-name">{row.item}</td>
-                      <td className="invdash-qty">{row.qty}</td>
-                      <td className="invdash-time">{row.time}</td>
+                      <td className="invdash-item-name">{row.party}</td>
+                      <td className="invdash-qty">{row.amount}</td>
+                      {new Date(row.date).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </tr>
                   ))}
                 </tbody>
@@ -625,19 +569,23 @@ export default function InventoryDashboard() {
             </div>
 
             <ul className="invdash-alert-list">
-              {LOW_STOCK_ALERTS.map((row) => (
-                <li className="invdash-alert-item" key={row.id}>
+              {lowStockAlerts.map((row) => (
+                <li className="invdash-alert-item" key={row._id}>
                   <span
                     className="invdash-alert-thumb"
                     style={{ background: row.color }}
                     aria-hidden="true"
                   />
                   <span className="invdash-alert-info">
-                    <p className="invdash-alert-name">{row.name}</p>
-                    <span className="invdash-alert-sku">SKU: {row.sku}</span>
+                    <p className="invdash-alert-name">{row.productName}</p>
+                    <span className="invdash-alert-sku">
+                      SKU: {row.sku || "-"}
+                    </span>
                   </span>
                   <span className="invdash-alert-stock">
-                    <span className="invdash-alert-count">{row.stock}</span>
+                    <span className="invdash-alert-count">
+                      {row.stockQuantity}
+                    </span>
                     <span className="invdash-alert-status">In Stock</span>
                   </span>
                 </li>
@@ -651,7 +599,7 @@ export default function InventoryDashboard() {
             </div>
 
             <ul className="invdash-summary-rows">
-              {INVENTORY_SUMMARY.map((row) => (
+              {inventorySummary.map((row) => (
                 <li className="invdash-summary-row" key={row.id}>
                   <span className={`invdash-summary-row-icon ${row.iconClass}`}>
                     {row.icon}

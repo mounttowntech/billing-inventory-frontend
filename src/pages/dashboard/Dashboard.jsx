@@ -19,9 +19,7 @@ import {
 
 import { dashboardFilterValidation } from "../../validations/Dashboardvalidation";
 
-/* ==========================================
-   Helpers
-========================================== */
+/* Helpers */
 
 const formatINR = (amount = 0) =>
   `\u20B9${Number(amount || 0).toLocaleString("en-IN", {

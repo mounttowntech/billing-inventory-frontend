@@ -4,6 +4,8 @@ import { logout } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./Header.css";
+import ChangePasswordForm from "../../pages/ChangePassword/ChangePasswordForm";
+import Modal from "../../components/Common/Modal";
 
 // Placeholder user — replace with data from your auth/user slice
 const CURRENT_USER = {
@@ -124,10 +126,12 @@ const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  // Set login user details in the header component. The CURRENT_USER object is a placeholder and should be replaced with actual user data from your authentication or user slice in your Redux store.
+
+  const [openChangePassword, setOpenChangePassword] = useState(false);
+
   const login_user = useSelector((state) => state.auth.user);
   console.log("Current user in Header:", login_user);
-  if(login_user) {
+  if (login_user) {
     CURRENT_USER.name = login_user?.firstName + " " + login_user?.lastName;
     CURRENT_USER.role = login_user?.role?.roleName || "User";
     CURRENT_USER.avatarUrl = login_user?.avatarUrl || "";
@@ -225,7 +229,7 @@ const Header = () => {
                 role="menuitem"
                 onClick={() => {
                   setMenuOpen(false);
-                  navigate("/change-password");
+                  setOpenChangePassword(true);
                 }}
               >
                 <span className="bh-dropdown-icon">
@@ -258,6 +262,16 @@ const Header = () => {
           )}
         </div>
       </div>
+      <Modal
+        open={openChangePassword}
+        title="Change Password"
+        onClose={() => setOpenChangePassword(false)}
+      >
+        <ChangePasswordForm
+          onClose={() => setOpenChangePassword(false)}
+          onSuccess={() => setOpenChangePassword(false)}
+        />
+      </Modal>
     </header>
   );
 };

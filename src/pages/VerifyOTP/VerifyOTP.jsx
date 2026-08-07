@@ -19,7 +19,7 @@ const VerifyOTP = () => {
     if (otpVerified) {
       alert("OTP Verified Successfully");
 
-      navigate("/change-password", {
+      navigate("/reset-password", {
         state: {
           email,
           otp,

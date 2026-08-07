@@ -62,7 +62,14 @@ const Login = () => {
         <div className="login-actions">
           <button type="submit">Login</button>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px",
+              alignItems: "center",
+            }}
+          >
             <Link to="/forget-password" className="register-link">
               Forgot Password?
             </Link>

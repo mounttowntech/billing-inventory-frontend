@@ -27,6 +27,7 @@ import taxReducer from "../features/tax/taxSlice";
 import stockLedgerReducer from "../features/stockLedger/stockLedgerSlice";
 import paymentReducer from "../features/payment/paymentSlice";
 import purchaseReturnReducer from "../features/purchaseReturn/purchaseReturnSlice";
+import reportReducer from "../features/report/reportSlice";
 
 export const store = configureStore({
   reducer: {
@@ -58,5 +59,6 @@ export const store = configureStore({
     stockLedger: stockLedgerReducer,
     payment: paymentReducer,
     purchaseReturn: purchaseReturnReducer,
+    report: reportReducer,
   },
 });

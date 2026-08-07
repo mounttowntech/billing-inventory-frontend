@@ -35,7 +35,7 @@ const Register = () => {
         // set role name in the state
         setRoles(
           res.map((role) => ({
-            id: role._id,
+            _id: role._id,
             label: role.roleName,
             value: role.roleName,
           })),
