@@ -132,138 +132,142 @@ export default function PaymentList() {
           />
         </div>
 
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Payment No</th>
-              <th>Payment Type</th>
-              <th>Customer/Supplier</th>
-              <th>Amount</th>
-              <th>Payment Method</th>
-              <th>Payment Date</th>
-              <th>Payment Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {currentPayments.length === 0 ? (
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
               <tr>
-                <td colSpan={7} style={{ textAlign: "center" }}>
-                  No payments found.
-                </td>
+                <th>#</th>
+                <th>Payment No</th>
+                <th>Payment Type</th>
+                <th>Customer/Supplier</th>
+                <th>Amount</th>
+                <th>Payment Method</th>
+                <th>Payment Date</th>
+                <th>Payment Status</th>
+                <th>Action</th>
               </tr>
-            ) : (
-              currentPayments?.map((payment, index) => (
-                <tr key={payment?._id ?? index}>
-                  <td>{indexOfFirstPayment + index + 1}</td>
+            </thead>
 
-                  <td>{payment?.paymentNo}</td>
-
-                  <td>{payment?.type}</td>
-
-                  <td>
-                    {payment?.supplier?.supplierName
-                      ? payment.supplier.supplierName
-                      : payment?.customer?.customerName
-                        ? payment.customer.customerName
-                        : payment?.customerName
-                          ? payment.customerName
-                          : "-"}
-                  </td>
-
-                  <td>{payment?.amount}</td>
-
-                  <td>{payment?.paymentMethod}</td>
-
-                  <td>{convertDate(payment?.paymentDate)}</td>
-
-                  <td>
-                    {payment?.paymentStatus === "pending" ? (
-                      <span className="status pending">Pending</span>
-                    ) : payment?.paymentStatus === "completed" ? (
-                      <span className="status active">
-                        {payment?.paymentStatus ? "Completed" : "-"}
-                      </span>
-                    ) : null}
-                  </td>
-
-                  <td>
-                    <div className="action-column">
-                      <button
-                        className="btn-edit"
-                        onClick={() => {
-                          setMode("edit");
-                          setSelectedPayment(payment);
-                          setOpenModal(true);
-                        }}
-                        disabled={payment?.paymentMethod === "cashfree"}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => handleDelete(payment)}
-                        disabled={payment?.paymentMethod === "cashfree"}
-                      >
-                        Delete
-                      </button>
-                    </div>
+            <tbody>
+              {currentPayments.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: "center" }}>
+                    No payments found.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div className="user-pagination">
-        <p>
-          Showing {filteredPayments.length === 0 ? 0 : indexOfFirstPayment + 1}
-          to {Math.min(indexOfLastPayment, filteredPayments.length)}
-          of {filteredPayments.length} entries
-        </p>
+              ) : (
+                currentPayments?.map((payment, index) => (
+                  <tr key={payment?._id ?? index}>
+                    <td>{indexOfFirstPayment + index + 1}</td>
 
-        <div className="page-buttons">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(1)}
-          >
-            &laquo;
-          </button>
+                    <td>{payment?.paymentNo}</td>
 
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            &lsaquo;
-          </button>
+                    <td>{payment?.type}</td>
 
-          {Array.from({ length: totalPages }, (_, i) => (
+                    <td>
+                      {payment?.supplier?.supplierName
+                        ? payment.supplier.supplierName
+                        : payment?.customer?.customerName
+                          ? payment.customer.customerName
+                          : payment?.customerName
+                            ? payment.customerName
+                            : "-"}
+                    </td>
+
+                    <td>{payment?.amount}</td>
+
+                    <td>{payment?.paymentMethod}</td>
+
+                    <td>{convertDate(payment?.paymentDate)}</td>
+
+                    <td>
+                      {payment?.paymentStatus === "pending" ? (
+                        <span className="status pending">Pending</span>
+                      ) : payment?.paymentStatus === "completed" ? (
+                        <span className="status active">
+                          {payment?.paymentStatus ? "Completed" : "-"}
+                        </span>
+                      ) : null}
+                    </td>
+
+                    <td>
+                      <div className="action-column">
+                        <button
+                          className="btn-edit"
+                          onClick={() => {
+                            setMode("edit");
+                            setSelectedPayment(payment);
+                            setOpenModal(true);
+                          }}
+                          disabled={payment?.paymentMethod === "cashfree"}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleDelete(payment)}
+                          disabled={payment?.paymentMethod === "cashfree"}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="user-pagination">
+          <p>
+            Showing{" "}
+            {filteredPayments.length === 0 ? 0 : indexOfFirstPayment + 1}
+            to {Math.min(indexOfLastPayment, filteredPayments.length)}
+            of {filteredPayments.length} entries
+          </p>
+
+          <div className="page-buttons">
             <button
-              key={i}
-              className={currentPage === i + 1 ? "active-page" : ""}
-              onClick={() => setCurrentPage(i + 1)}
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
             >
-              {i + 1}
+              &laquo;
             </button>
-          ))}
 
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            &rsaquo;
-          </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              &lsaquo;
+            </button>
 
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(totalPages)}
-          >
-            &raquo;
-          </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={currentPage === i + 1 ? "active-page" : ""}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              &rsaquo;
+            </button>
+
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+            >
+              &raquo;
+            </button>
+          </div>
         </div>
       </div>
+
       <Modal
         open={openModal}
         title={mode === "add" ? "Add Payment" : "Edit Payment"}

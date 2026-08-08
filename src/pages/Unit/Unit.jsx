@@ -132,41 +132,44 @@ const Unit = () => {
             />
           </div>
         </div>
-        <table className="unit-table">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Unit Name</th>
-              <th>Short Name</th>
-              <th>Allow Decimal</th>
-              <th>Description</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
 
-          <tbody>
-            {currentUnits?.length > 0 ? (
-              currentUnits.map((unit, index) => (
-                <tr key={unit._id}>
-                  <td>{index + 1}</td>
-                  <td>{unit.name}</td>
-                  <td>{unit.shortName}</td>
-                  <td>{unit.allowDecimal ? "Yes" : "No"}</td>
-                  <td>{unit.description}</td>
-
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(unit)} />
-                    <DeleteButton onClick={() => handleDelete(unit._id)} />
-                  </td>
-                </tr>
-              ))
-            ) : (
+        <div className="table-wrapper">
+          <table className="unit-table">
+            <thead>
               <tr>
-                <td colSpan="6">No Units Found</td>
+                <th>S.No</th>
+                <th>Unit Name</th>
+                <th>Short Name</th>
+                <th>Allow Decimal</th>
+                <th>Description</th>
+                <th>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {currentUnits?.length > 0 ? (
+                currentUnits.map((unit, index) => (
+                  <tr key={unit._id}>
+                    <td>{index + 1}</td>
+                    <td>{unit.name}</td>
+                    <td>{unit.shortName}</td>
+                    <td>{unit.allowDecimal ? "Yes" : "No"}</td>
+                    <td>{unit.description}</td>
+
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(unit)} />
+                      <DeleteButton onClick={() => handleDelete(unit._id)} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">No Units Found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
         <Modal
           open={showForm}

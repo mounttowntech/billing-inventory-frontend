@@ -178,36 +178,38 @@ const Fabric = () => {
           {fabrics.length === 0 ? (
             <h3>No Fabrics Found</h3>
           ) : (
-            <table className="fabric-table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
-                  <th>Fabric Name</th>
-                  <th>Fabric Code</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {filteredFabrics.map((fabric, index) => (
-                  <tr key={fabric._id}>
-                    <td>{indexOfFirst + index + 1}</td>
-                    <td>{fabric.fabricName}</td>
-                    <td>{fabric.fabricCode}</td>
-
-                    <td className="action-buttons">
-                      <EditButton onClick={() => handleEdit(fabric)}>
-                        Edit
-                      </EditButton>
-
-                      <DeleteButton onClick={() => handleDelete(fabric._id)}>
-                        Delete
-                      </DeleteButton>
-                    </td>
+            <div className="table-wrapper">
+              <table className="fabric-table">
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Fabric Name</th>
+                    <th>Fabric Code</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody>
+                  {filteredFabrics.map((fabric, index) => (
+                    <tr key={fabric._id}>
+                      <td>{indexOfFirst + index + 1}</td>
+                      <td>{fabric.fabricName}</td>
+                      <td>{fabric.fabricCode}</td>
+
+                      <td className="action-buttons">
+                        <EditButton onClick={() => handleEdit(fabric)}>
+                          Edit
+                        </EditButton>
+
+                        <DeleteButton onClick={() => handleDelete(fabric._id)}>
+                          Delete
+                        </DeleteButton>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
 

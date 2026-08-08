@@ -35,3 +35,19 @@ export const getManagerDashboardApi = async () => {
   const res = await API.get("/reports/manager-dashboard");
   return res.data;
 };
+
+export const exportReportPdfApi = async (fromDate, toDate) => {
+  const token = localStorage.getItem("token");
+
+  const res = await API.get(
+    `/reports/export-pdf?from=${encodeURIComponent(fromDate)}&to=${encodeURIComponent(toDate)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      responseType: "blob",
+    },
+  );
+
+  return res.data;
+};

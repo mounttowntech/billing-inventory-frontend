@@ -156,46 +156,47 @@ const Sizes = () => {
             onCancel={handleCancel}
           />
         </Modal>
-
-        <table className="size-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Order</th>
-              <th>Chest</th>
-              <th>Waist</th>
-              <th>Hip</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredSizes.length ? (
-              filteredSizes.map((s, i) => (
-                <tr key={s._id}>
-                  <td>{i + 1}</td>
-                  <td>{s.sizeCode}</td>
-                  <td>{s.sizeName}</td>
-                  <td>{s.displayOrder}</td>
-                  <td>{s.chest}</td>
-                  <td>{s.waist}</td>
-                  <td>{s.hip}</td>
-                  <td>{s.status ? "Active" : "Inactive"}</td>
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(s)} />
-                    <DeleteButton onClick={() => handleDelete(s._id)} />
-                  </td>
-                </tr>
-              ))
-            ) : (
+        <div className="table-wrapper">
+          <table className="size-table">
+            <thead>
               <tr>
-                <td colSpan="9">No Sizes Found</td>
+                <th>#</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Order</th>
+                <th>Chest</th>
+                <th>Waist</th>
+                <th>Hip</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredSizes.length ? (
+                filteredSizes.map((s, i) => (
+                  <tr key={s._id}>
+                    <td>{i + 1}</td>
+                    <td>{s.sizeCode}</td>
+                    <td>{s.sizeName}</td>
+                    <td>{s.displayOrder}</td>
+                    <td>{s.chest}</td>
+                    <td>{s.waist}</td>
+                    <td>{s.hip}</td>
+                    <td>{s.status ? "Active" : "Inactive"}</td>
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(s)} />
+                      <DeleteButton onClick={() => handleDelete(s._id)} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="9">No Sizes Found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>

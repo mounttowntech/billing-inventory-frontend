@@ -157,6 +157,7 @@ body {
 
 table {
   width: 100%;
+  border: none !important;
   border-collapse: collapse;
   min-width: 600px;
 }

@@ -173,69 +173,71 @@ const Colors = () => {
           />
         </div>
 
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Color Code</th>
-              <th>Color Name</th>
-              <th>Hex Code</th>
-              <th>Status</th>
-              <th>Preview</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Color Code</th>
+                <th>Color Name</th>
+                <th>Hex Code</th>
+                <th>Status</th>
+                <th>Preview</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {filteredColors.length > 0 ? (
-              filteredColors.map((color) => (
-                <tr key={color._id}>
-                  <td>{colors.indexOf(color) + 1}</td>
-                  <td>{color.colorCode}</td>
-                  <td>{color.colorName}</td>
-                  <td>{color.hexCode}</td>
+            <tbody>
+              {filteredColors.length > 0 ? (
+                filteredColors.map((color) => (
+                  <tr key={color._id}>
+                    <td>{colors.indexOf(color) + 1}</td>
+                    <td>{color.colorCode}</td>
+                    <td>{color.colorName}</td>
+                    <td>{color.hexCode}</td>
 
-                  <td>
-                    <span
-                      className={
-                        color.status ? "status-active" : "status-inactive"
-                      }
-                    >
-                      {color.status ? "Active" : "Inactive"}
-                    </span>
-                  </td>
+                    <td>
+                      <span
+                        className={
+                          color.status ? "status-active" : "status-inactive"
+                        }
+                      >
+                        {color.status ? "Active" : "Inactive"}
+                      </span>
+                    </td>
 
-                  <td>
-                    <div
-                      className="color-preview"
-                      style={{
-                        backgroundColor: color.hexCode,
-                      }}
-                    ></div>
-                  </td>
+                    <td>
+                      <div
+                        className="color-preview"
+                        style={{
+                          backgroundColor: color.hexCode,
+                        }}
+                      ></div>
+                    </td>
 
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(color)} />
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(color)} />
 
-                    <DeleteButton onClick={() => handleDelete(color._id)} />
+                      <DeleteButton onClick={() => handleDelete(color._id)} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="6"
+                    style={{
+                      textAlign: "center",
+                      padding: "20px",
+                    }}
+                  >
+                    No Colors Found
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="6"
-                  style={{
-                    textAlign: "center",
-                    padding: "20px",
-                  }}
-                >
-                  No Colors Found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>

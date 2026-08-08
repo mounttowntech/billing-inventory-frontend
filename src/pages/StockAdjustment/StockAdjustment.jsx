@@ -290,7 +290,7 @@ const StockAdjustment = () => {
           />
         </Modal>
 
-        <div className="stock-adjustment-table-wrapper">
+        <div className="table-wrapper">
           <table className="stock-adjustment-table">
             <thead>
               <tr>

@@ -13,7 +13,7 @@ const iconBase = (size, color) => ({
   stroke: color,
   strokeWidth: 2,
   strokeLinecap: "round",
-  strokeLinejoin: "round",
+  strokeLinejoin: "round",  
 });
 
 function ShoppingBag({ size = 20, color = "currentColor" }) {

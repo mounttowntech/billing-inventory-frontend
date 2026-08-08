@@ -99,70 +99,72 @@ export default function TaxList() {
           />
         </div>
 
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Tax Code</th>
-              <th>Tax Name</th>
-              <th>Tax Percentage</th>
-              <th>Tax Type</th>
-              <th>Is Active</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {currentTaxes.length === 0 ? (
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
               <tr>
-                <td colSpan={7} style={{ textAlign: "center" }}>
-                  No taxes found.
-                </td>
+                <th>#</th>
+                <th>Tax Code</th>
+                <th>Tax Name</th>
+                <th>Tax Percentage</th>
+                <th>Tax Type</th>
+                <th>Is Active</th>
+                <th>Action</th>
               </tr>
-            ) : (
-              currentTaxes?.map((tax, index) => (
-                <tr key={tax?._id ?? index}>
-                  <td>{indexOfFirstTax + index + 1}</td>
+            </thead>
 
-                  <td>{tax?.taxCode}</td>
-
-                  <td>{tax?.taxName}</td>
-
-                  <td>{tax?.taxPercentage}</td>
-
-                  <td>{tax?.taxType}</td>
-
-                  <td>
-                    <span className="status active">
-                      {tax?.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-
-                  <td>
-                    <div className="action-column">
-                      <button
-                        className="btn-edit"
-                        onClick={() => {
-                          setMode("edit");
-                          setSelectedTax(tax);
-                          setOpenModal(true);
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => handleDelete(tax)}
-                      >
-                        Delete
-                      </button>
-                    </div>
+            <tbody>
+              {currentTaxes.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: "center" }}>
+                    No taxes found.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                currentTaxes?.map((tax, index) => (
+                  <tr key={tax?._id ?? index}>
+                    <td>{indexOfFirstTax + index + 1}</td>
+
+                    <td>{tax?.taxCode}</td>
+
+                    <td>{tax?.taxName}</td>
+
+                    <td>{tax?.taxPercentage}</td>
+
+                    <td>{tax?.taxType}</td>
+
+                    <td>
+                      <span className="status active">
+                        {tax?.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+
+                    <td>
+                      <div className="action-column">
+                        <button
+                          className="btn-edit"
+                          onClick={() => {
+                            setMode("edit");
+                            setSelectedTax(tax);
+                            setOpenModal(true);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleDelete(tax)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>

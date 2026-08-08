@@ -101,65 +101,67 @@ export default function UserLists() {
           />
         </div>
 
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Employee ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {currentUsers?.map((user, index) => (
-              <tr key={user?._id ?? index}>
-                <td>{indexOfFirstUser + index + 1}</td>
-
-                <td>{user?.employeeCode}</td>
-
-                <td>
-                  {user?.firstName} {user?.lastName}
-                </td>
-
-                <td>{user?.email}</td>
-
-                <td>{user?.phone}</td>
-
-                <td>{user?.role?.roleName}</td>
-
-                <td>
-                  <span className="status active">{user?.status}</span>
-                </td>
-
-                <td>
-                  <div className="action-column">
-                    <button
-                      className="btn-edit"
-                      onClick={() => {
-                        setMode("edit");
-                        setSelectedUser(user);
-                        setOpenModal(true);
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn-delete"
-                      onClick={() => handleDelete(user)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {currentUsers?.map((user, index) => (
+                <tr key={user?._id ?? index}>
+                  <td>{indexOfFirstUser + index + 1}</td>
+
+                  <td>{user?.employeeCode}</td>
+
+                  <td>
+                    {user?.firstName} {user?.lastName}
+                  </td>
+
+                  <td>{user?.email}</td>
+
+                  <td>{user?.phone}</td>
+
+                  <td>{user?.role?.roleName}</td>
+
+                  <td>
+                    <span className="status active">{user?.status}</span>
+                  </td>
+
+                  <td>
+                    <div className="action-column">
+                      <button
+                        className="btn-edit"
+                        onClick={() => {
+                          setMode("edit");
+                          setSelectedUser(user);
+                          setOpenModal(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleDelete(user)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>
