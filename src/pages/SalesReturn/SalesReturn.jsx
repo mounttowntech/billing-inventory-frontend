@@ -213,50 +213,52 @@ const SalesReturn = () => {
           />
         </div>
 
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Product</th>
-              <th>SKU Code</th>
-              <th>Quantity</th>
-              <th>Refund Amount</th>
-              <th>Reason</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredSalesReturn?.length > 0 ? (
-              filteredSalesReturn.map((item) => (
-                <tr key={item._id}>
-                  <td>
-                    {indexOfFirst + filteredSalesReturn.indexOf(item) + 1}
-                  </td>
-                  <td>{item.product?.productName || item.product || "-"}</td>
-
-                  <td>{item.skuCode || "-"}</td>
-
-                  <td>{item.quantity || "-"}</td>
-
-                  <td>₹{item.refundAmount}</td>
-
-                  <td>{item.reason}</td>
-
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(item)} />
-
-                    <DeleteButton onClick={() => handleDelete(item._id)} />
-                  </td>
-                </tr>
-              ))
-            ) : (
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
               <tr>
-                <td colSpan="6">No Sales Returns Found</td>
+                <th>#</th>
+                <th>Product</th>
+                <th>SKU Code</th>
+                <th>Quantity</th>
+                <th>Refund Amount</th>
+                <th>Reason</th>
+                <th>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {filteredSalesReturn?.length > 0 ? (
+                filteredSalesReturn.map((item) => (
+                  <tr key={item._id}>
+                    <td>
+                      {indexOfFirst + filteredSalesReturn.indexOf(item) + 1}
+                    </td>
+                    <td>{item.product?.productName || item.product || "-"}</td>
+
+                    <td>{item.skuCode || "-"}</td>
+
+                    <td>{item.quantity || "-"}</td>
+
+                    <td>₹{item.refundAmount}</td>
+
+                    <td>{item.reason}</td>
+
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(item)} />
+
+                      <DeleteButton onClick={() => handleDelete(item._id)} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">No Sales Returns Found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>

@@ -160,44 +160,46 @@ const Season = () => {
           />
         </Modal>
 
-        <table border="1" cellPadding="10" className="season-table">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Season Name</th>
-              <th>Season Code</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        <div className="table-wrapper">
+          <table border="1" cellPadding="10" className="season-table">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Season Name</th>
+                <th>Season Code</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {filteredSeasons.length > 0 ? (
-              filteredSeasons.map((season, index) => (
-                <tr key={season._id}>
-                  <td>{indexOfFirst + index + 1}</td>
-                  <td>{season.seasonName}</td>
-                  <td>{season.seasonCode}</td>
+            <tbody>
+              {filteredSeasons.length > 0 ? (
+                filteredSeasons.map((season, index) => (
+                  <tr key={season._id}>
+                    <td>{indexOfFirst + index + 1}</td>
+                    <td>{season.seasonName}</td>
+                    <td>{season.seasonCode}</td>
 
-                  <td className="modal-buttons">
-                    <EditButton onClick={() => handleEdit(season)}>
-                      Edit
-                    </EditButton>
+                    <td className="modal-buttons">
+                      <EditButton onClick={() => handleEdit(season)}>
+                        Edit
+                      </EditButton>
 
-                    <DeleteButton onClick={() => handleDelete(season._id)}>
-                      Delete
-                    </DeleteButton>
+                      <DeleteButton onClick={() => handleDelete(season._id)}>
+                        Delete
+                      </DeleteButton>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: "center" }}>
+                    No Seasons Found
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" style={{ textAlign: "center" }}>
-                  No Seasons Found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>

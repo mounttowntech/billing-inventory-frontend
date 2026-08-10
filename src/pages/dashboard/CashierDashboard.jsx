@@ -3,6 +3,7 @@ import "./CashierDashboard.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getCashierDashboard } from "../../features/Dashboard/CashierDashboardSlice";
+import { useNavigate } from "react-router-dom";
 
 const IconRupee = () => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -473,6 +474,7 @@ const PAYMENT_CLASS = {
 };
 
 export default function CashierDashboard() {
+  const navigate = useNavigate();
   const {
     todaySales,
     totalBills,
@@ -616,9 +618,13 @@ export default function CashierDashboard() {
         <section className="cshr-panel cshr-sales-panel">
           <div className="cshr-panel-header">
             <h2 className="cshr-panel-title">Recent Sales</h2>
-            <a className="cshr-view-all" href="#recent-sales">
-              View All <IconArrowRight />
-            </a>
+            <button
+              className="invdash-view-all"
+              type="button"
+              onClick={() => navigate("/invoices")}
+            >
+              View All
+            </button>
           </div>
 
           <div className="cshr-table-scroll">
@@ -677,10 +683,10 @@ export default function CashierDashboard() {
             </table>
           </div>
 
-          <button type="button" className="cshr-view-all-btn">
+          {/* <button type="button" className="cshr-view-all-btn">
             <IconDoc />
             View All Sales
-          </button>
+          </button> */}
         </section>
       </div>
     </div>

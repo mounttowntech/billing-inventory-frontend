@@ -122,45 +122,47 @@ const Customer = () => {
           />
         </Modal>
 
-        <table border="1" className="customer-table">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredCustomers.map((customer, index) => (
-              <tr key={customer._id}>
-                <td>{indexOfFirst + index + 1}</td>
-                <td>{customer.customerCode}</td>
-
-                <td>{customer.customerName}</td>
-
-                <td>{customer.phone}</td>
-
-                <td>{customer.email}</td>
-
-                <td className="action-buttons">
-                  <EditButton onClick={() => handleEdit(customer)}>
-                    Edit
-                  </EditButton>
-
-                  <DeleteButton
-                    onClick={() => dispatch(deleteCustomer(customer._id))}
-                  >
-                    Delete
-                  </DeleteButton>
-                </td>
+        <div className="table-wrapper">
+          <table border="1" className="customer-table">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {filteredCustomers.map((customer, index) => (
+                <tr key={customer._id}>
+                  <td>{indexOfFirst + index + 1}</td>
+                  <td>{customer.customerCode}</td>
+
+                  <td>{customer.customerName}</td>
+
+                  <td>{customer.phone}</td>
+
+                  <td>{customer.email}</td>
+
+                  <td className="action-buttons">
+                    <EditButton onClick={() => handleEdit(customer)}>
+                      Edit
+                    </EditButton>
+
+                    <DeleteButton
+                      onClick={() => dispatch(deleteCustomer(customer._id))}
+                    >
+                      Delete
+                    </DeleteButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>

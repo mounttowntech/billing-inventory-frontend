@@ -7,6 +7,7 @@ import {
   getSalesSummaryApi,
   getTopProductsApi,
   getManagerDashboardApi,
+  exportReportPdfApi,
 } from "./reportService";
 
 // ====================== ANALYTICS ======================
@@ -99,6 +100,20 @@ export const getManagerDashboard = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       return await getManagerDashboardApi();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message,
+      );
+    }
+  },
+);
+
+//  EXPORT PDF
+export const exportReportPdf = createAsyncThunk(
+  "report/exportReportPdf",
+  async ({ fromDate, toDate }, thunkAPI) => {
+    try {
+      return await exportReportPdfApi(fromDate, toDate);
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || error.message,
@@ -218,6 +233,19 @@ const reportSlice = createSlice({
         state.managerDashboard = action.payload.data || action.payload;
       })
       .addCase(getManagerDashboard.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // ====================== EXPORT PDF ======================
+      .addCase(exportReportPdf.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(exportReportPdf.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(exportReportPdf.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -277,9 +277,10 @@
 }
 
 .tdb-btn-primary {
-  background: var(--tdb-dark);
+  background: #0F766E;
   color: #ffffff;
 }
+
 .tdb-btn-primary:hover {
   opacity: 0.9;
 }

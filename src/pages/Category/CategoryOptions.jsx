@@ -188,29 +188,31 @@ const CategoryOptions = ({ value, onChange }) => {
           />
         </div>
 
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Category</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredCategories.map((category, index) => (
-              <tr key={category._id}>
-                <td>{indexOfFirst + index + 1}</td>
-                <td>{category.categoryName}</td>
-
-                <td className="action-buttons">
-                  <EditButton onClick={() => handleEdit(category)} />
-                  <DeleteButton onClick={() => handleDelete(category._id)} />
-                </td>
+        <div className="table-wrapper">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Category</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {filteredCategories.map((category, index) => (
+                <tr key={category._id}>
+                  <td>{indexOfFirst + index + 1}</td>
+                  <td>{category.categoryName}</td>
+
+                  <td className="action-buttons">
+                    <EditButton onClick={() => handleEdit(category)} />
+                    <DeleteButton onClick={() => handleDelete(category._id)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>

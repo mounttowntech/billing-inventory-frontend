@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./Report.css";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   getSummary,
   getAnalytics,
@@ -8,6 +11,7 @@ import {
   getSalesSummary,
   getTopProducts,
   getManagerDashboard,
+  exportReportPdf,
 } from "../../features/report/reportSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -365,7 +369,15 @@ function buildLinePoints(values, width, height, max) {
 
 function pointsToPath(points) {
   return points
-    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`)
+    .filter(
+      ([x, y]) => Number.isFinite(Number(x)) && Number.isFinite(Number(y)),
+    )
+    .map(([x, y], i) => {
+      const safeX = Number(x);
+      const safeY = Number(y);
+
+      return `${i === 0 ? "M" : "L"}${safeX.toFixed(2)},${safeY.toFixed(2)}`;
+    })
     .join(" ");
 }
 
@@ -394,12 +406,71 @@ function buildSparkPath(values, width, height) {
   return pointsToPath(points);
 }
 
-/* --------------------------------- PAGE ------------------------------------ */
-
 export default function ReportDashboard() {
   const [secondsLeft, setSecondsLeft] = useState(AUTO_REFRESH_SECONDS);
+  const today = new Date().toISOString().split("T")[0];
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const getToday = () => {
+    return new Date().toISOString().split("T")[0];
+  };
+
+  const getLast30Days = () => {
+    const date = new Date();
+    date.setDate(date.getDate() - 29);
+
+    return date.toISOString().split("T")[0];
+  };
+
+  const handleExportPDF = async () => {
+    try {
+      if (!fromDate || !toDate) {
+        alert("Please select From Date and To Date");
+        return;
+      }
+
+      if (fromDate > toDate) {
+        alert("From Date cannot be greater than To Date");
+        return;
+      }
+
+      const blob = await dispatch(
+        exportReportPdf({
+          fromDate,
+          toDate,
+        }),
+      ).unwrap();
+
+      if (!blob || blob.size === 0) {
+        throw new Error("PDF file is empty");
+      }
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = downloadUrl;
+
+      link.download = `Sales_Report_${fromDate}_to_${toDate}.pdf`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(downloadUrl);
+
+      console.log("PDF exported successfully");
+    } catch (error) {
+      console.error("PDF export failed:", error);
+
+      alert(error || "Failed to download PDF");
+    }
+  };
 
   const {
     summary,
@@ -423,7 +494,7 @@ export default function ReportDashboard() {
   const topSellingProducts = topProducts?.products || [];
   const recentTransactions = salesSummary?.rows || [];
 
-  const dashboard = managerDashboard.dashboard || {};
+  const dashboard = managerDashboard?.dashboard || {};
   const topCustomers = analytics?.topCustomers || [];
   const lowStockAlerts = analytics?.lowStockAlerts || [];
 
@@ -432,6 +503,173 @@ export default function ReportDashboard() {
   const currentTrend = salesTrend?.current || [];
   const previousTrend = salesTrend?.previous || [];
 
+  const handleExportExcel = () => {
+    const workbook = XLSX.utils.book_new();
+
+    // =========================
+    // 1. OVERVIEW
+    // =========================
+
+    const overviewData = [
+      ["REPORT", "Reports Dashboard"],
+      ["Generated At", REPORT_GENERATED_AT],
+      ["Date Range", DATE_RANGE_LABEL],
+      [],
+
+      ["STATISTICS", "VALUE"],
+      ["Today's Sales", dashboard?.todaySales || 0],
+      ["Today's Orders", dashboard?.todayOrders || 0],
+      ["Today's Customers", dashboard?.todayCustomers || 0],
+      ["Low Stock Items", dashboard?.lowStockProducts || 0],
+      ["Pending Invoices", dashboard?.pendingInvoices || 0],
+      ["Total Paid", dashboard?.totalPaid || 0],
+      ["Total Due", dashboard?.totalDue || 0],
+    ];
+
+    const overviewSheet = XLSX.utils.aoa_to_sheet(overviewData);
+
+    XLSX.utils.book_append_sheet(workbook, overviewSheet, "Overview");
+
+    // =========================
+    // 2. SALES TREND
+    // =========================
+
+    const salesTrendData = [["Date", "Current Period", "Previous Period"]];
+
+    SALES_TREND.labels.forEach((label, index) => {
+      salesTrendData.push([
+        label,
+        SALES_TREND.current[index] || 0,
+        SALES_TREND.previous[index] || 0,
+      ]);
+    });
+
+    const salesTrendSheet = XLSX.utils.aoa_to_sheet(salesTrendData);
+
+    XLSX.utils.book_append_sheet(workbook, salesTrendSheet, "Sales Trend");
+
+    // =========================
+    // 3. SALES BY CATEGORY
+    // =========================
+
+    // Get category data from the same data
+    // that is displayed on your report page.
+    const categoryBreakdown =
+      salesByCategory?.breakdown || salesByCategory?.categories || [];
+
+    const categoryData = [
+      ["SALES BY CATEGORY"],
+      [],
+      ["Category", "Percentage", "Total Sales"],
+    ];
+
+    categoryBreakdown.forEach((item) => {
+      categoryData.push([
+        item.category || item.label || "",
+        Number(item.percentage || 0),
+        Number(item.total || item.totalSales || 0),
+      ]);
+    });
+
+    // Add total row
+    if (categoryBreakdown.length > 0) {
+      const totalPercentage = categoryBreakdown.reduce(
+        (sum, item) => sum + Number(item.percentage || 0),
+        0,
+      );
+
+      const totalSales = categoryBreakdown.reduce(
+        (sum, item) => sum + Number(item.total || item.totalSales || 0),
+        0,
+      );
+
+      categoryData.push([]);
+
+      categoryData.push(["Total", totalPercentage, totalSales]);
+    }
+
+    const categorySheet = XLSX.utils.aoa_to_sheet(categoryData);
+
+    // Category sheet column widths
+    categorySheet["!cols"] = [{ wch: 30 }, { wch: 18 }, { wch: 20 }];
+
+    XLSX.utils.book_append_sheet(workbook, categorySheet, "Sales by Category");
+
+    // =========================
+    // 4. SALES SUMMARY
+    // =========================
+
+    const salesSummaryData = [
+      ["Type", "Reference No", "Date", "Party", "Net Amount"],
+    ];
+
+    recentTransactions?.forEach((item) => {
+      salesSummaryData.push([
+        item.type || "",
+        item.referenceNo || "",
+        item.date ? new Date(item.date).toLocaleDateString("en-IN") : "",
+        item.party || "",
+        Number(item.netAmount || 0),
+      ]);
+    });
+
+    // Summary totals
+    salesSummaryData.push([]);
+
+    salesSummaryData.push(["Total Records", salesSummary?.totalRecords || 0]);
+
+    salesSummaryData.push([
+      "Total Credit",
+      salesSummary?.summary?.totalCredit || 0,
+    ]);
+
+    salesSummaryData.push([
+      "Total Debit",
+      salesSummary?.summary?.totalDebit || 0,
+    ]);
+
+    salesSummaryData.push([
+      "Net Amount",
+      salesSummary?.summary?.netAmount || 0,
+    ]);
+
+    const salesSummarySheet = XLSX.utils.aoa_to_sheet(salesSummaryData);
+
+    XLSX.utils.book_append_sheet(workbook, salesSummarySheet, "Sales Summary");
+
+    const productsData = [["Product", "Quantity Sold", "Total Sales"]];
+
+    topSellingProducts?.forEach((product) => {
+      productsData.push([
+        product.productName || "",
+        Number(product.quantitySold || 0),
+        Number(product.totalSales || 0),
+      ]);
+    });
+
+    const productsSheet = XLSX.utils.aoa_to_sheet(productsData);
+
+    XLSX.utils.book_append_sheet(workbook, productsSheet, "Top Products");
+
+    Object.values(workbook.Sheets).forEach((sheet) => {
+      if (!sheet["!cols"]) {
+        sheet["!cols"] = [
+          { wch: 25 },
+          { wch: 20 },
+          { wch: 20 },
+          { wch: 25 },
+          { wch: 20 },
+        ];
+      }
+    });
+
+    XLSX.writeFile(
+      workbook,
+      `Report_${new Date().toISOString().split("T")[0]}.xlsx`,
+    );
+  };
+
+  //SALES_TREND
   const SALES_TREND = {
     labels: currentTrend.map((x) => x._id),
     current: currentTrend.map((x) => x.totalSales),
@@ -514,17 +752,21 @@ export default function ReportDashboard() {
 
   const donutSegments =
     salesByCategory?.categories?.map((c) => {
-      const dash = (c.percentage / 100) * circumference;
+      const percentage = Number(c.percentage) || 0;
+
+      const dash = (percentage / 100) * circumference;
 
       const seg = {
         ...c,
-        label: c.category,
+        label: c.category || "",
         color: c.color || "primary",
+
         dashArray: `${dash} ${circumference - dash}`,
-        dashOffset: -((cumulative / 100) * circumference),
+
+        dashOffset: -((Number(cumulative) || 0) / 100) * circumference,
       };
 
-      cumulative += c.percentage;
+      cumulative += percentage;
 
       return seg;
     }) || [];
@@ -535,22 +777,54 @@ export default function ReportDashboard() {
       <div className="tdb-dashboard">
         <header className="tdb-header tdb-panel">
           <div className="tdb-header-left">
-            <h2>Reports</h2>
-            {/* <span className="tdb-field-label">Date Range</span> */}
-            {/* <button type="button" className="tdb-date-select">
-              <IconCalendar className="tdb-icon-16" />
-              <span>{DATE_RANGE_LABEL}</span>
-              <IconChevronDown className="tdb-icon-16 tdb-date-select-chevron" />
-            </button> */}
+            {/* <h2>Reports</h2> */}
+            <div className="tdb-date-range">
+              <span className="tdb-field-label">Date Range</span>
+
+              <div className="tdb-date-select">
+                <IconCalendar className="tdb-icon-16" />
+
+                <input
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  className="tdb-date-input"
+                />
+
+                <span className="tdb-date-separator">to</span>
+
+                <input
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  className="tdb-date-input"
+                />
+
+                <IconChevronDown className="tdb-icon-16 tdb-date-select-chevron" />
+              </div>
+            </div>
           </div>
           <div className="tdb-header-right">
-            {/* <button type="button" className="tdb-btn tdb-btn-ghost">
+            <button type="button" className="tdb-btn tdb-btn-ghost">
               <IconReset className="tdb-icon-16" />
               <span>Reset</span>
-            </button> */}
-            <button type="button" className="tdb-btn tdb-btn-primary">
+            </button>
+            <button
+              type="button"
+              className="tdb-btn tdb-btn-primary"
+              onClick={handleExportPDF}
+            >
               <IconDownload className="tdb-icon-16" />
-              <span>Export Report</span>
+              <span>Export PDF</span>
+            </button>
+
+            <button
+              type="button"
+              className="tdb-btn tdb-btn-primary"
+              onClick={handleExportExcel}
+            >
+              <IconDownload className="tdb-icon-16" />
+              <span>Export Excel</span>
             </button>
           </div>
         </header>
@@ -696,14 +970,10 @@ export default function ReportDashboard() {
                     >
                       <stop
                         offset="0%"
-                        stopColor="var(--tdb-primary)"
+                        stopColor="#4f46e5"
                         stopOpacity="0.28"
                       />
-                      <stop
-                        offset="100%"
-                        stopColor="var(--tdb-primary)"
-                        stopOpacity="0"
-                      />
+                      <stop offset="100%" stopColor="#4f46e5" stopOpacity="0" />
                     </linearGradient>
                   </defs>
 
@@ -776,9 +1046,9 @@ export default function ReportDashboard() {
                   <g
                     transform={`rotate(-90 ${DONUT_SIZE / 2} ${DONUT_SIZE / 2})`}
                   >
-                    {donutSegments.map((seg) => (
+                    {donutSegments.map((seg, index) => (
                       <circle
-                        key={seg.label}
+                        key={`${seg.label}-${index}`}
                         cx={DONUT_SIZE / 2}
                         cy={DONUT_SIZE / 2}
                         r={DONUT_R}

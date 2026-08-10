@@ -184,7 +184,7 @@ const PurchaseReturn = () => {
             onCancel={handleCancel}
           />
         </Modal>
-        <div className="table-responsive">
+        <div className="table-wrapper">
           <table className="purchase-return-table">
             <thead>
               <tr>

@@ -200,24 +200,26 @@ const RolesPermission = () => {
             />
           </div>
         </div>
-        <table className="roles-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Role Name</th>
-              {/* <th>Permissions</th> */}
-              <th>Created At</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
 
-          <tbody>
-            {currentRoles?.length > 0 ? (
-              currentRoles.map((role, index) => (
-                <tr key={role._id}>
-                  <td>{indexOfFirst + index + 1}</td>
-                  <td>{role.roleName}</td>
-                  {/* <td>
+        <div className="table-wrapper">
+          <table className="roles-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Role Name</th>
+                {/* <th>Permissions</th> */}
+                <th>Created At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {currentRoles?.length > 0 ? (
+                currentRoles.map((role, index) => (
+                  <tr key={role._id}>
+                    <td>{indexOfFirst + index + 1}</td>
+                    <td>{role.roleName}</td>
+                    {/* <td>
                   {role.permissions?.map((permission, index) => (
                     <div key={index} className="permission-row">
                       <strong>{permission.module}</strong> :{" "}
@@ -232,21 +234,23 @@ const RolesPermission = () => {
                     </div>
                   ))}
                 </td> */}
-                  <td>{new Date(role.createdAt).toLocaleString("en-IN")}</td>
-                  <td className="action-buttons">
-                    <EditButton onClick={() => handleEdit(role)} />
+                    <td>{new Date(role.createdAt).toLocaleString("en-IN")}</td>
+                    <td className="action-buttons">
+                      <EditButton onClick={() => handleEdit(role)} />
 
-                    <DeleteButton onClick={() => handleDelete(role._id)} />
-                  </td>
+                      <DeleteButton onClick={() => handleDelete(role._id)} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4">No Roles Found</td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4">No Roles Found</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
+
         <Modal
           open={showForm}
           title={editId === "add" ? "Add Role" : "Edit Role"}

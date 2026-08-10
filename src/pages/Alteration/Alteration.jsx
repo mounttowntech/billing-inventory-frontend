@@ -182,41 +182,43 @@ const Alteration = () => {
             onCancel={handleCancel}
           />
         </Modal>
-        <table className="alteration-table">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Customer</th>
-              <th>Invoice</th>
-              <th>Product</th>
-              <th>Type</th>
-              <th>Charge</th>
-              <th>Delivery</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {(currentAlterations || []).map((item, index) => (
-              <tr key={item._id}>
-                <td>{indexOfFirst + index + 1}</td>
-                <td>{item.customer?.customerName}</td>
-                <td>{item.invoice?.invoiceNo}</td>
-                <td>{item.productName}</td>
-                <td>{item.alterationType}</td>
-                <td>{item.alterationCharge}</td>
-                <td>{item.expectedDeliveryDate?.substring(0, 10)}</td>
-                <td>{item.status}</td>
-
-                <td className="action-buttons">
-                  <EditButton onClick={() => handleEdit(item)} />
-                  <DeleteButton onClick={() => handleDelete(item._id)} />
-                </td>
+        <div className="table-wrapper">
+          <table className="alteration-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Customer</th>
+                <th>Invoice</th>
+                <th>Product</th>
+                <th>Type</th>
+                <th>Charge</th>
+                <th>Delivery</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {(currentAlterations || []).map((item, index) => (
+                <tr key={item._id}>
+                  <td>{indexOfFirst + index + 1}</td>
+                  <td>{item.customer?.customerName}</td>
+                  <td>{item.invoice?.invoiceNo}</td>
+                  <td>{item.productName}</td>
+                  <td>{item.alterationType}</td>
+                  <td>{item.alterationCharge}</td>
+                  <td>{item.expectedDeliveryDate?.substring(0, 10)}</td>
+                  <td>{item.status}</td>
+
+                  <td className="action-buttons">
+                    <EditButton onClick={() => handleEdit(item)} />
+                    <DeleteButton onClick={() => handleDelete(item._id)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <div className="user-pagination">
           <p>
