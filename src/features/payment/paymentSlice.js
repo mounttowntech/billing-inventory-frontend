@@ -54,8 +54,9 @@ export const createPayment = createAsyncThunk(
     try {
       return await createPaymentApi(data);
     } catch (error) {
+      console.log("createPayment error:", error);
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message,
+        error.response?.data?.message || error,
       );
     }
   },
@@ -180,6 +181,10 @@ const paymentSlice = createSlice({
       .addCase(createPayment.fulfilled, (state, action) => {
         state.loading = false;
         state.payment = action.payload.data;
+      }).addCase(createPayment.rejected, (state, action) => {
+        console.log("createPayment.rejected action:", action);
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to create payment";
       })
 
       // ============================

@@ -52,3 +52,1002 @@
   padding: 24px;
   overflow-y: auto;
 }
+
+/* pos bill model css */
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(15, 25, 28, 0.52);
+
+  box-sizing: border-box;
+
+  overflow-y: auto;
+}
+
+
+/* =========================================================
+   MODAL CONTAINER
+========================================================= */
+
+.modal-container {
+  width: 100%;
+
+  max-width: 600px;
+
+  max-height: calc(100vh - 40px);
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.20);
+
+  box-sizing: border-box;
+}
+
+
+/* Medium */
+
+.modal-container.md {
+  max-width: 600px;
+}
+
+
+/* Small */
+
+.modal-container.sm {
+  max-width: 450px;
+}
+
+
+/* Large */
+
+.modal-container.lg {
+  max-width: 850px;
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.modal-header {
+  min-height: 62px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px;
+
+  border-bottom: 1px solid #e3e8e9;
+
+  background: #ffffff;
+
+  box-sizing: border-box;
+
+  flex-shrink: 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+
+  color: #14282d;
+
+  font-size: 17px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   CLOSE
+========================================================= */
+
+.modal-close {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #f1f5f6;
+
+  color: #416067;
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #e3ebec;
+
+  color: #173f43;
+}
+
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.modal-body {
+  width: 100%;
+
+  padding: 20px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  box-sizing: border-box;
+
+  min-width: 0;
+}
+
+
+/* Scrollbar */
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #f5f7f7;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #c5d0d2;
+
+  border-radius: 10px;
+}
+
+
+/* ================================
+   MODAL CONTAINER
+================================ */
+
+.modal-container {
+  width: 100%;
+  max-height: calc(100vh - 40px);
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.18),
+    0 5px 15px rgba(0, 0, 0, 0.08);
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+.modal-container.sm {
+  max-width: 420px;
+}
+
+.modal-container.md {
+  max-width: 600px;
+}
+
+.modal-container.lg {
+  max-width: 820px;
+}
+
+.modal-container.xl {
+  max-width: 1050px;
+}
+
+
+/* ================================
+   MODAL HEADER
+================================ */
+
+.modal-header {
+  min-height: 62px;
+
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  background: #ffffff;
+}
+
+.modal-header h3 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #172033;
+}
+
+
+/* ================================
+   CLOSE BUTTON
+================================ */
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #f1f5f9;
+
+  color: #475569;
+
+  font-size: 20px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+
+/* ================================
+   MODAL BODY
+================================ */
+
+.modal-body {
+  padding: 24px;
+
+  overflow-y: auto;
+
+  color: #172033;
+}
+
+
+/* ================================
+   PAYMENT MODAL
+================================ */
+
+.payment-modal {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+
+/* ================================
+   CUSTOMER
+================================ */
+
+.payment-customer {
+  padding: 14px 16px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.payment-customer span {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.payment-customer strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+
+/* ================================
+   BILL DETAILS
+================================ */
+
+.payment-products {
+  width: 100%;
+}
+
+.payment-products h4 {
+  margin: 0 0 12px;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  color: #172033;
+}
+
+.payment-product-row {
+  min-height: 58px;
+
+  padding: 12px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #edf0f3;
+}
+
+.payment-product-row:last-child {
+  border-bottom: none;
+}
+
+.payment-product-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.payment-product-row strong {
+  font-size: 14px;
+  color: #172033;
+}
+
+.payment-product-row span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+
+/* ================================
+   PAYMENT SUMMARY
+================================ */
+
+.payment-summary {
+  padding: 16px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.payment-summary > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.payment-summary span {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.payment-summary strong {
+  font-size: 14px;
+  color: #172033;
+}
+
+.payment-grand-total {
+  margin-top: 6px;
+  padding-top: 14px;
+
+  border-top: 1px solid #d9dee5;
+}
+
+.payment-grand-total span {
+  font-size: 16px;
+  font-weight: 700;
+  color: #172033;
+}
+
+.payment-grand-total strong {
+  font-size: 20px;
+  font-weight: 800;
+
+  color: #006b65;
+}
+
+
+/* =========================================
+   PAYMENT OPTIONS
+========================================= */
+
+.payment-options {
+  width: 100% !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+
+  align-items: stretch !important;
+
+  justify-content: center !important;
+
+  gap: 16px !important;
+
+  margin-top: 20px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   PAYMENT BUTTON
+========================================= */
+
+.payment-options .cash-payment-btn,
+.payment-options .online-payment-btn {
+  width: 50% !important;
+
+  min-width: 0 !important;
+
+  max-width: none !important;
+
+  height: 64px !important;
+
+  min-height: 64px !important;
+
+  padding: 10px 20px !important;
+
+  margin: 0 !important;
+
+  box-sizing: border-box !important;
+
+  border-radius: 10px !important;
+
+  display: flex !important;
+
+  flex-direction: row !important;
+
+  align-items: center !important;
+
+  justify-content: center !important;
+
+  gap: 10px !important;
+
+  flex: 1 1 0 !important;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+
+/* =========================================
+   CASH
+========================================= */
+
+.payment-options .cash-payment-btn {
+  background: #00766f !important;
+
+  color: #ffffff !important;
+
+  border: 1px solid #00766f !important;
+}
+
+.payment-options .cash-payment-btn:hover {
+  background: #00635d !important;
+
+  border-color: #00635d !important;
+}
+
+
+/* =========================================
+   ONLINE
+========================================= */
+
+.payment-options .online-payment-btn {
+  background: #ffffff !important;
+
+  color: #00766f !important;
+
+  border: 1px solid #8fd4cf !important;
+}
+
+.payment-options .online-payment-btn:hover {
+  background: #effaf9 !important;
+
+  border-color: #00766f !important;
+}
+
+
+/* =========================================
+   BUTTON CONTENT
+========================================= */
+
+.payment-options .payment-btn-content {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  justify-content: center;
+
+  gap: 3px;
+
+  white-space: nowrap;
+}
+
+.payment-options .payment-btn-title {
+  font-size: 15px;
+
+  font-weight: 700;
+}
+
+.payment-options .payment-btn-subtitle {
+  font-size: 12px;
+
+  font-weight: 500;
+
+  opacity: 0.85;
+}
+
+
+/* =========================================
+   ICON
+========================================= */
+
+.payment-options .payment-btn-icon {
+  width: 30px;
+
+  height: 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-size: 18px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .payment-options {
+    flex-direction: column !important;
+
+    gap: 10px !important;
+  }
+
+  .payment-options .cash-payment-btn,
+  .payment-options .online-payment-btn {
+    width: 100% !important;
+
+    flex: none !important;
+  }
+}
+
+
+/* ================================
+   CASH BUTTON
+================================ */
+
+.cash-payment-btn {
+  background: #006b65;
+  color: #ffffff;
+}
+
+.cash-payment-btn:hover {
+  background: #005b56;
+}
+
+
+/* ================================
+   ONLINE BUTTON
+================================ */
+
+.online-payment-btn {
+  background: #eef8f7;
+
+  color: #006b65;
+
+  border: 1px solid #b9dedb !important;
+}
+
+.online-payment-btn:hover {
+  background: #e1f3f1;
+}
+
+
+/* ================================
+   CASH PAYMENT MODAL
+================================ */
+
+.cash-payment-modal {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+
+/* ================================
+   CASH TOTAL
+================================ */
+
+.cash-total {
+  padding: 18px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cash-total span {
+  font-size: 15px;
+  color: #64748b;
+}
+
+.cash-total strong {
+  font-size: 24px;
+  font-weight: 800;
+  color: #172033;
+}
+
+
+/* ================================
+   CASH INPUT
+================================ */
+
+.cash-input-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.cash-input-group label {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #334155;
+}
+
+.cash-input-group input {
+  width: 100%;
+
+  height: 48px;
+
+  padding: 0 14px;
+
+  border: 1px solid #cbd5e1;
+
+  border-radius: 8px;
+
+  outline: none;
+
+  font-size: 16px;
+
+  font-family: inherit;
+
+  box-sizing: border-box;
+
+  transition: border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cash-input-group input:focus {
+  border-color: #006b65;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 107, 101, 0.1);
+}
+
+
+/* ================================
+   CHANGE
+================================ */
+
+.cash-change {
+  padding: 16px;
+
+  border-radius: 10px;
+
+  background: #ecfdf5;
+
+  border: 1px solid #a7f3d0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cash-change span {
+  font-size: 14px;
+  color: #047857;
+}
+
+.cash-change strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: #047857;
+}
+
+
+/* ================================
+   DUE
+================================ */
+
+.cash-due {
+  padding: 16px;
+
+  border-radius: 10px;
+
+  background: #fff7ed;
+
+  border: 1px solid #fed7aa;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cash-due span {
+  font-size: 14px;
+  color: #c2410c;
+}
+
+.cash-due strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: #c2410c;
+}
+
+
+/* ================================
+   COMPLETE CASH PAYMENT
+================================ */
+
+.complete-cash-btn {
+  width: 100%;
+
+  min-height: 48px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #006b65;
+
+  color: #ffffff;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.complete-cash-btn:hover {
+  background: #005b56;
+}
+
+
+/* ================================
+   ONLINE PAYMENT
+================================ */
+
+.online-payment-modal {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.online-payment-amount {
+  padding: 20px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.online-payment-amount span {
+  font-size: 15px;
+  color: #64748b;
+}
+
+.online-payment-amount strong {
+  font-size: 26px;
+  font-weight: 800;
+
+  color: #006b65;
+}
+
+.online-payment-info {
+  padding: 18px;
+
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+}
+
+.online-payment-info h4 {
+  margin: 0 0 6px;
+
+  font-size: 16px;
+}
+
+.online-payment-info p {
+  margin: 0;
+
+  font-size: 14px;
+
+  color: #64748b;
+}
+
+
+/* ================================
+   CASHFREE BUTTON
+================================ */
+
+.cashfree-btn {
+  width: 100%;
+
+  min-height: 50px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #006b65;
+
+  color: #ffffff;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.cashfree-btn:hover {
+  background: #005b56;
+}
+
+
+/* ================================
+   ANIMATION
+================================ */
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 700px) {
+  .modal-overlay {
+    padding: 12px;
+  }
+
+  .modal-container {
+    max-height: calc(100vh - 24px);
+  }
+
+  .modal-header {
+    min-height: 56px;
+
+    padding: 0 16px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .payment-options {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-customer {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 5px;
+  }
+
+  .payment-product-row {
+    gap: 12px;
+  }
+
+  .payment-product-row strong {
+    font-size: 13px;
+  }
+}

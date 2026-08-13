@@ -335,7 +335,7 @@ const Dashboard = () => {
 
   // Only show "Sale" type rows in the Recent Sales table
   const recentSales = useMemo(
-    () => (recentTransactions || []).filter((item) => item.type === "Sale"),
+    () => (recentTransactions || []).filter((item) => item.type === "sale"),
     [recentTransactions],
   );
 
@@ -392,7 +392,8 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {recentSales.map((sale) => (
+              {/* show only 5 entries in the table */}
+              {recentSales.slice(0, 5).map((sale) => (
                 <tr key={sale.referenceNo}>
                   <td>
                     <div className="invoice-cell">

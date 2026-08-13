@@ -23,8 +23,13 @@ export const getPaymentByIdApi = async (id) => {
 // ==========================================
 
 export const createPaymentApi = async (data) => {
+    try {
   const response = await API.post("/payments/create", data);
   return response.data;
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      throw error?.response?.data?.message; // Rethrow the error to be handled by the caller
+    }
 };
 
 // ==========================================
@@ -32,8 +37,14 @@ export const createPaymentApi = async (data) => {
 // ==========================================
 
 export const verifyPaymentApi = async (orderId) => {
-  const response = await API.post(`/payments/verify/${orderId}`);
-  return response.data;
+    try {
+      const response = await API.post(`/payments/verify/${orderId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error verifying payment:", error);
+      throw error?.response?.data?.message; // Rethrow the error to be handled by the caller
+    }
+  
 };
 
 // ==========================================
@@ -41,11 +52,16 @@ export const verifyPaymentApi = async (orderId) => {
 // ==========================================
 
 export const refundPaymentApi = async (paymentId, refundAmount) => {
+  try {
   const response = await API.post(`/payments/refund/${paymentId}`, {
     refundAmount,
   });
 
   return response.data;
+  } catch (error) {
+    console.error("Error refunding payment:", error);
+    throw error?.response?.data?.message; // Rethrow the error to be handled by the caller
+  }
 };
 
 // ==========================================
@@ -53,9 +69,14 @@ export const refundPaymentApi = async (paymentId, refundAmount) => {
 // ==========================================
 
 export const updatePaymentApi = async (id, data) => {
+  try {
   const response = await API.put(`/payments/${id}`, data);
 
   return response.data;
+  } catch (error) {
+    console.error("Error updating payment:", error);
+    throw error?.response?.data?.message; // Rethrow the error to be handled by the caller
+  }
 };
 
 // ==========================================
@@ -63,7 +84,12 @@ export const updatePaymentApi = async (id, data) => {
 // ==========================================
 
 export const deletePaymentApi = async (id) => {
+  try {
   const response = await API.delete(`/payments/${id}`);
 
   return response.data;
+  } catch (error) {
+    console.error("Error deleting payment:", error);
+    throw error?.response?.data?.message; // Rethrow the error to be handled by the caller
+  }
 };
