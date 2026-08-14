@@ -188,6 +188,239 @@
   transform: translateY(-2px);
 }
 
+.product-card--has-variants {
+  cursor: pointer;
+}
+
+.variant-label {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: #e6f7f5;
+  color: #00796f;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.variant-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.variant-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 12px;
+
+  border: 1px solid #e1e7eb;
+  border-radius: 10px;
+
+  background: #fff;
+
+  cursor: pointer;
+  text-align: left;
+
+  transition: all 0.2s ease;
+}
+
+.variant-item:hover {
+  border-color: #00796f;
+  background: #f5fbfa;
+}
+
+.variant-item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.variant-item-image {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+
+  border-radius: 8px;
+  overflow: hidden;
+
+  background: #f5f7f8;
+}
+
+.variant-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.variant-item-info {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.variant-item-info strong {
+  font-size: 14px;
+  color: #17202a;
+}
+
+.variant-item-info span {
+  font-size: 12px;
+  color: #718096;
+}
+
+.variant-item-price {
+  min-width: 80px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.variant-item-price strong {
+  font-size: 15px;
+  color: #00796f;
+}
+
+.variant-item-price small {
+  font-size: 11px;
+  color: #718096;
+}
+
+/* =========================================
+   VARIANT SELECTOR
+========================================= */
+
+.variant-selector {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   VARIANT OPTION
+========================================= */
+
+.variant-option {
+  width: 100%;
+  min-width: 0;
+
+  min-height: 90px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #dfe5e7;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #263746;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* =========================================
+   VARIANT HOVER
+========================================= */
+
+.variant-option:hover {
+  border-color: #00877d;
+  background: #f4fbfa;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   VARIANT NAME + PRICE
+========================================= */
+
+.variant-option-main {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+
+.variant-option-main strong {
+  min-width: 0;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #263746;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.variant-option-main span {
+  flex-shrink: 0;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #00877d;
+}
+
+
+/* =========================================
+   STOCK
+========================================= */
+
+.variant-option small {
+  display: block;
+
+  margin-top: 8px;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  color: #718096;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 500px) {
+  .variant-selector {
+    grid-template-columns: 1fr;
+  }
+}
+
 .product-image {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -379,6 +612,205 @@
   font-size: 24px;
   font-weight: 800;
   color: var(--heading-text);
+}
+
+.bill-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef1f4;
+}
+
+.bill-item-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.bill-item-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #24313f;
+  line-height: 1.4;
+}
+
+.bill-item-variant {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 3px;
+  font-size: 12px;
+  color: #718096;
+}
+
+.variant-separator {
+  color: #a0aec0;
+}
+
+.bill-item-price {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #24313f;
+  white-space: nowrap;
+}
+
+/* =========================================
+   BILL ITEMS
+========================================= */
+
+.bill-items {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* =========================================
+   SINGLE BILL ITEM
+========================================= */
+
+.bill-row--product {
+  width: 100%;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+
+/* =========================================
+   PRODUCT INFO
+========================================= */
+
+.bill-item-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* =========================================
+   PRODUCT NAME + PRICE
+========================================= */
+
+.bill-item-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+
+.bill-product-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #526579;
+
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.bill-product-price {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #263746;
+}
+
+
+/* =========================================
+   VARIANT DETAILS
+========================================= */
+
+.bill-variant {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  margin-top: 4px;
+
+  font-size: 13px;
+  color: #173b3d;
+
+  gap: 5px;
+}
+
+
+.bill-variant-separator {
+  color: #8a9a9a;
+}
+
+
+/* =========================================
+   QUANTITY ACTIONS
+========================================= */
+
+.bill-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  margin-top: 7px;
+}
+
+
+/* =========================================
+   QUANTITY BUTTON
+========================================= */
+
+.bill-qty-btn {
+  width: 28px;
+  height: 28px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: #00877d;
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+
+.bill-qty-btn:hover {
+  background: #006f68;
+}
+
+
+.bill-qty-btn:active {
+  transform: scale(0.95);
+}
+
+
+/* =========================================
+   QUANTITY NUMBER
+========================================= */
+
+.bill-qty-value {
+  min-width: 24px;
+
+  text-align: center;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #263746;
 }
 
 .customer-select-btn  {

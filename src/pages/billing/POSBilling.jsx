@@ -9,6 +9,7 @@ import img7 from "../../assets/kurta.jpg";
 import img8 from "../../assets/cargo.jpg";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getProducts } from "../../features/product/productSlice";
 import { fetchCategories } from "../../features/category/categorySlice";
 import noImage from "../../assets/no-image.png";
@@ -22,12 +23,7 @@ import Modal from "../../components/common/Modal";
 import toast from "../../utils/toaster";
 import { getCustomers, createCustomer } from "../../features/customer/customerSlice";
 
-const QUICK_ACTIONS = [
-  { id: "hold", label: "Hold Bills", icon: "pause", variant: "blue" },
-  { id: "recent", label: "Recent Bills", icon: "history", variant: "green" },
-  { id: "discount", label: "Discount", icon: "percent", variant: "orange" },
-  { id: "clear", label: "Clear Cart", icon: "trash", variant: "red" },
-];
+
 
 const Icon = ({ name, className = "" }) => {
   const paths = {
@@ -98,6 +94,7 @@ const Icon = ({ name, className = "" }) => {
 };
 
 export default function POSPage() {
+  const navigate = useNavigate();
   const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
   const [activeCategory, setActiveCategory] = useState("All Items");
   const [searchTerm, setSearchTerm] = useState("");
@@ -134,6 +131,9 @@ const [customerForm, setCustomerForm] = useState({
   address: "",
 });
 
+const [variantModalOpen, setVariantModalOpen] = useState(false);
+const [selectedProduct, setSelectedProduct] = useState(null);
+
   // const subTotal = cart.reduce(
   //   (sum, item) => sum + item.price * item.quantity,
   //   0,
@@ -152,6 +152,13 @@ const [customerForm, setCustomerForm] = useState({
 
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.product);
+
+  const QUICK_ACTIONS = [
+  { id: "hold", label: "Hold Bills", icon: "pause", variant: "blue" },
+  { id: "recent", label: "Recent Bills", icon: "history", variant: "green", onClick: () => navigate("/payments") },
+  { id: "discount", label: "Discount", icon: "percent", variant: "orange" },
+  { id: "clear", label: "Clear Cart", icon: "trash", variant: "red", onClick: () => setCart([]) },
+];
 
   useEffect(() => {
     dispatch(getProducts());
@@ -174,58 +181,158 @@ console.log("Fetched customers:", response);
   }
 };
 
-  const addToCart = (product) => {
-    console.log("Adding to cart:", product);
-    const price =
-      product.variants?.[0]?.sellingPrice || product.variants?.[0]?.mrp || 0;
+  // const addToCart = (product) => {
+  //   console.log("Adding to cart:", product);
+  //   const price =
+  //     product.variants?.[0]?.sellingPrice || product.variants?.[0]?.mrp || 0;
 
-    setCart((prev) => {
-      const existing = prev.find((item) => item._id === product._id);
+  //   setCart((prev) => {
+  //     const existing = prev.find((item) => item._id === product._id);
 
-      if (existing) {
-        return prev.map((item) =>
-          item._id === product._id
-            ? {
-                ...item,
-                quantity: item.quantity + 1,
-              }
-            : item,
-        );
-      }
+  //     if (existing) {
+  //       return prev.map((item) =>
+  //         item._id === product._id
+  //           ? {
+  //               ...item,
+  //               quantity: item.quantity + 1,
+  //             }
+  //           : item,
+  //       );
+  //     }
 
-      return [
-        ...prev,
-        {
-          _id: product._id,
-          name: product.productName,
-          price,
-          quantity: 1,
+  //     return [
+  //       ...prev,
+  //       {
+  //         _id: product._id,
+  //         name: product.productName,
+  //         price,
+  //         quantity: 1,
           
-        },
-      ];
-    });
-  };
+  //       },
+  //     ];
+  //   });
+  // };
 
-  const removeFromCart = (product) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item._id === product._id);
+const getCartKey = (product, variant = null) => {
+  console.log("Generating cart key for:", product, variant);
+  return variant
+    ? `${product._id}_${variant.variantCode}`
+    : `${product._id}_normal`;
+};
 
-      if (!existing) return prev;
 
-      if (existing.quantity === 1) {
-        return prev.filter((item) => item._id !== product._id);
-      }
+const addToCart = (product, variant = null) => {
+  console.log("Adding to cart:", product, variant);
+  setCart((prev) => {
+    const cartKey = getCartKey(product, variant);
+console.log("cartKey", cartKey);
+    const existing = prev.find(
+      (item) => item.cartKey === cartKey
+    );
+ console.log("Adding existing", existing);
+    // ==========================================
+    // EXISTING PRODUCT / VARIANT
+    // ==========================================
 
+    if (existing) {
       return prev.map((item) =>
-        item._id === product._id
+        item.cartKey === cartKey
           ? {
               ...item,
-              quantity: item.quantity - 1,
+              quantity: item.quantity + 1,
             }
-          : item,
+          : item
       );
-    });
-  };
+    }
+
+    // ==========================================
+    // NEW PRODUCT / VARIANT
+    // ==========================================
+
+    const price = variant
+      ? Number(
+          variant.sellingPrice ??
+          variant.mrp ??
+          0
+        )
+      : Number(product.sellingPrice ?? product.price ?? 0);
+
+    return [
+      ...prev,
+      {
+        cartKey,
+
+        product: product._id,
+
+        // IMPORTANT
+        variant: variant?.variantCode || null,
+
+        productName: product.productName,
+
+        color: variant?.color || null,
+        size: variant?.size || null,
+
+        price,
+
+        quantity: 1,
+
+        amount: price,
+      },
+    ];
+  });
+};
+
+
+const removeFromCart = (itemToRemove) => {
+  console.log("Removing from cart:", itemToRemove);
+  setCart((prev) => {
+    const existing = prev.find(
+      (item) => item.cartKey === itemToRemove.cartKey
+    );
+
+    if (!existing) {
+      return prev;
+    }
+
+    // Remove entire cart item
+    if (existing.quantity <= 1) {
+      return prev.filter(
+        (item) => item.cartKey !== itemToRemove.cartKey
+      );
+    }
+
+    // Reduce only this variant
+    return prev.map((item) =>
+      item.cartKey === itemToRemove.cartKey
+        ? {
+            ...item,
+            quantity: item.quantity - 1,
+          }
+        : item
+    );
+  });
+};
+
+  // const removeFromCart = (product) => {
+  //   setCart((prev) => {
+  //     const existing = prev.find((item) => item._id === product._id);
+
+  //     if (!existing) return prev;
+
+  //     if (existing.quantity === 1) {
+  //       return prev.filter((item) => item._id !== product._id);
+  //     }
+
+  //     return prev.map((item) =>
+  //       item._id === product._id
+  //         ? {
+  //             ...item,
+  //             quantity: item.quantity - 1,
+  //           }
+  //         : item,
+  //     );
+  //   });
+  // };
 
   // const handlePayment = async () => {
   //   try {
@@ -317,7 +424,8 @@ const handleCashPayment = async () => {
     customerEmail: selectedCustomer?.email || "customer@gmail.com",
     customerPhone: selectedCustomer?.phone || "9999999999",
     items: cart.map((item) => ({
-      product: item._id,
+      variant: item.variant || null,
+      product: item.product,
       quantity: item.quantity,
       price: item.price,
       amount: item.price * item.quantity,
@@ -383,7 +491,8 @@ const handleOnlinePayment = async () => {
       customerEmail: selectedCustomer?.email || "customer@gmail.com",
       customerPhone: selectedCustomer?.phone || "9999999999",
       items: cart.map((item) => ({
-        product: item._id,
+        variant: item.variant || null,
+        product: item.product,
         quantity: item.quantity,
         price: item.price,
         amount: item.price * item.quantity,
@@ -515,12 +624,142 @@ const handleCreateCustomer = async (e) => {
   }
 };
 
+const handleProductClick = (product) => {
+  // No variants
+  if (!product.variants || product.variants.length === 0) {
+    addToCart(product);
+    return;
+  }
+
+  // Product has variants
+  setSelectedProduct(product);
+  setVariantModalOpen(true);
+};
+
+// const handleVariantSelect = (variant) => {
+//   if (!selectedProduct) return;
+
+//   const cartItem = {
+//     ...selectedProduct,
+
+//     // Important
+//     variant: variant,
+
+//     variantId: variant._id,
+
+//     price:
+//       Number(variant.sellingPrice) ||
+//       Number(variant.mrp) ||
+//       0,
+
+//     skuCode: variant.skuCode,
+//     barcode: variant.barcode,
+
+//     size: variant.size,
+//     color: variant.color,
+
+//     stockQuantity: variant.currentStock,
+//   };
+
+//   addToCart(cartItem);
+
+//   setVariantModalOpen(false);
+//   setSelectedProduct(null);
+// };
+
+const handleVariantSelect = (variant) => {
+  console.log("Selected variant:", variant);
+  if (!selectedProduct) return;
+
+  const cartItem = {
+    ...selectedProduct,
+
+    // Store only ID
+    variant: variant?.variantCode,
+
+    variantId: variant?.variantCode,
+
+    price:
+      Number(variant.sellingPrice) ||
+      Number(variant.mrp) ||
+      0,
+
+    skuCode: variant.skuCode,
+    barcode: variant.barcode,
+
+    size: variant.size,
+    color: variant.color,
+
+    stockQuantity: variant.currentStock,
+  };
+
+  addToCart(cartItem);
+
+  setVariantModalOpen(false);
+  setSelectedProduct(null);
+};
+
+
+console.log("Selected_cart:", cart);
+
+const handleAddProduct = (product) => {
+  if (product.variants?.length > 1) {
+    setSelectedProduct(product);
+    setVariantModalOpen(true);
+    return;
+  }
+
+  addToCart(product, null);
+};
+
+console.log("Selected_cart:", cart);
+
+const handleAddVariant = (product, variant) => {
+  console.log("Adding variant to cart:", product, variant);
+  const cartKey = `${product._id}_${variant.variantCode}`;
+
+  setCart((prev) => {
+    const existing = prev.find(
+      (item) => item.cartKey === cartKey
+    );
+
+    if (existing) {
+      return prev.map((item) =>
+        item.cartKey === cartKey
+          ? {
+              ...item,
+              quantity: item.quantity + 1,
+            }
+          : item
+      );
+    }
+
+    return [
+      ...prev,
+      {
+        cartKey,
+        product: product._id,
+        productName: product.productName,
+
+        variant: variant.variantCode,
+
+        color: variant.color,
+        size: variant.size,
+
+        price: variant.sellingPrice,
+        quantity: 1,
+      },
+    ];
+  });
+};
+
   return (
     <div className="pos-page">
       <section className="products-panel">
         <div className="products-card">
+
+          {/* SEARCH */}
           <div className="search-bar">
-            {/* <Icon name="search" className="search-icon" /> */}
             <input
               type="text"
               className="search-input"
@@ -530,180 +769,423 @@ const handleCreateCustomer = async (e) => {
             />
           </div>
 
+
+          {/* CATEGORY */}
           <div className="category-list">
+
             {categories?.map((category) => (
               <button
                 key={category._id}
-                className={`category-pill ${
-                  activeCategory === category.categoryName
+                type="button"
+                className={`category-pill ${activeCategory === category.categoryName
                     ? "category-pill--active"
                     : ""
-                }`}
-                onClick={() => setActiveCategory(category.categoryName)}
+                  }`}
+                onClick={() =>
+                  setActiveCategory(category.categoryName)
+                }
               >
                 {category.categoryName}
               </button>
             ))}
+
           </div>
 
+          {/* PRODUCTS */}
           <div className="product-grid">
+
             {products
               ?.filter((product) => {
-                const search = searchTerm.toLowerCase();
+
+                const search = searchTerm
+                  .toLowerCase()
+                  .trim();
 
                 const matchesSearch =
-                  product.productName?.toLowerCase().includes(search) ||
-                  product.productCode?.toLowerCase().includes(search) ||
+                  !search ||
+                  product.productName
+                    ?.toLowerCase()
+                    .includes(search) ||
+
+                  product.productCode
+                    ?.toLowerCase()
+                    .includes(search) ||
+
                   product.variants?.some(
                     (variant) =>
-                      variant.skuCode?.toLowerCase().includes(search) ||
-                      variant.barcode?.toLowerCase().includes(search),
+                      variant.skuCode
+                        ?.toLowerCase()
+                        .includes(search) ||
+
+                      variant.barcode
+                        ?.toLowerCase()
+                        .includes(search)
                   );
 
                 const matchesCategory =
                   activeCategory === "All Items" ||
-                  product.category?.categoryName?.trim().toLowerCase() ===
-                    activeCategory.trim().toLowerCase();
+                  product.category?.categoryName
+                    ?.trim()
+                    .toLowerCase() ===
+                  activeCategory
+                    .trim()
+                    .toLowerCase();
 
                 return matchesSearch && matchesCategory;
               })
-              .map((product) => (
-                <div key={product._id} className="product-card">
-                  <div className="qty-overlay">
-                    <button
-                      className="qty-btn"
-                      onClick={() => removeFromCart(product)}
-                    >
-                      -
-                    </button>
 
-                    <button
-                      className="qty-btn"
-                      onClick={() => addToCart(product)}
-                    >
-                      +
-                    </button>
-                  </div>
+              .map((product) => {
 
-                  <div className="product-image">
-                    {product.image ? (
-                      <img
-                        src={`${IMAGE_BASE_URL}/${product.image}`}
-                        alt={product.productName}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = noImage;
+                const hasVariants =
+                  product.variants &&
+                  product.variants.length > 0;
+
+                const firstVariant =
+                  product.variants?.[0];
+
+                const displayPrice =
+                  firstVariant?.sellingPrice ??
+                  firstVariant?.mrp ??
+                  product.sellingPrice ??
+                  product.mrp ??
+                  0;
+
+                return (
+                  <div
+                    key={product._id}
+                    className={`product-card ${hasVariants
+                        ? "product-card--has-variants"
+                        : ""
+                      }`}
+                    onClick={() =>
+                      handleProductClick(product)
+                    }
+                  >
+
+                    {/* QUANTITY BUTTONS */}
+                    <div className="qty-overlay">
+
+                      {/* <button
+                        type="button"
+                        className="qty-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFromCart(product, variant?.variantCode || null);
                         }}
-                      />
+                      >
+                        -
+                      </button>
+
+                      <button
+                        type="button"
+                        className="qty-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddProduct(product, variant || null);
+                        }}
+                      >
+                        +
+                      </button> */}
+
+                    </div>
+
+                    {/* IMAGE */}
+                    <div className="product-image">
+
+                      {product.image ? (
+                        <img
+                          src={`${IMAGE_BASE_URL}/${product.image}`}
+                          alt={product.productName}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = noImage;
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={noImage}
+                          alt="No Image"
+                        />
+                      )}
+
+                    </div>
+
+                    {/* PRODUCT NAME */}
+                    <p className="product-name">
+                      {product.productName}
+                    </p>
+
+                    {/* PRICE */}
+                    <p className="product-price">
+                      ₹{Number(displayPrice).toFixed(2)}
+                    </p>
+
+                    {/* VARIANT LABEL */}
+                    {/* {hasVariants && (
+                      <span className="variant-label">
+                        {product.variants.length} Variants
+                      </span>
+                    )} */}
+
+                    {/* {hasVariants ? (
+                      <button
+                        type="button"
+                        className="qty-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddProduct(product, variant || null);
+                        }}
+                      >
+                        +
+                      </button>
                     ) : (
-                      <img src={noImage} alt="No Image" />
-                    )}
+                      <>
+                        <button
+                          type="button"
+                          className="qty-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeFromCart(product, variant?.variantCode || null);
+                          }}
+                        >
+                          -
+                        </button>
+
+                        <button
+                          type="button"
+                          className="qty-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddProduct(product, variant || null);
+                          }}
+                        >
+                          +
+                        </button>
+                      </>
+                    )} */}
+
                   </div>
+                );
+              })}
 
-                  <p className="product-name">{product.productName}</p>
-
-                  <p className="product-price">
-                    ₹
-                    {product.variants?.[0]?.sellingPrice ??
-                      product.variants?.[0]?.mrp ??
-                      0}
-                  </p>
-                </div>
-              ))}
           </div>
         </div>
 
+        {/* QUICK ACTIONS */}
         <div className="quick-actions-card">
-          <h3 className="quick-actions-title">Quick Actions</h3>
+
+          <h3 className="quick-actions-title">
+            Quick Actions
+          </h3>
+
           <div className="quick-actions-grid">
+
             {QUICK_ACTIONS.map((action) => (
               <button
                 key={action.id}
                 className="quick-action-btn"
                 type="button"
+                onClick={action.onClick}
               >
                 <span
                   className={`quick-action-icon quick-action-icon--${action.variant}`}
                 >
                   <Icon name={action.icon} />
                 </span>
-                <span className="quick-action-label">{action.label}</span>
+
+                <span className="quick-action-label">
+                  {action.label}
+                </span>
               </button>
             ))}
+
           </div>
         </div>
       </section>
 
+      
+
       <aside className="bill-panel">
         <div className="bill-card">
+
+          {/* HEADER */}
           <div className="bill-header">
             <h2 className="bill-title">Current Bill</h2>
           </div>
 
+          {/* CUSTOMER */}
           <div className="bill-row bill-row--customer">
-            {/* <span className="bill-label">Customer</span> */}
-            {/* <span className="customer-badge">Walk-in</span> */}
-            {/* <div className="bill-row bill-row--customer"> */}
-              <span className="bill-label">Customer</span>
+            <span className="bill-label">
+              Customer
+            </span>
 
-              <button
-                type="button"
-                className="customer-select-btn"
-                onClick={() => setCustomerModalOpen(true)}
-              >
-                {selectedCustomer
-                  ? selectedCustomer.customerName
-                  : "Walk-in Customer"}
+            <button
+              type="button"
+              className="customer-select-btn"
+              onClick={() => setCustomerModalOpen(true)}
+            >
+              {selectedCustomer
+                ? selectedCustomer.customerName
+                : "Walk-in Customer"}
 
-                <span>⌄</span>
-              </button>
-            {/* </div> */}
+              <span>⌄</span>
+            </button>
           </div>
+
           <hr className="bill-divider" />
 
+          {/* CART */}
           {cart.length === 0 ? (
-            <p className="empty-cart">No Products Added</p>
+            <p className="empty-cart">
+              No Products Added
+            </p>
           ) : (
-            cart.map((item) => (
-              <div className="bill-row" key={item._id}>
-                <span className="bill-label">
-                  {item.name} × {item.quantity}
-                </span>
+            <div className="bill-items">
+              {cart.map((item) => (
+                <div
+                  className="bill-row bill-row--product"
+                  key={item.cartKey}
+                >
+                  {/* ================================
+            PRODUCT DETAILS
+        ================================= */}
 
-                <span className="bill-value">
-                  ₹{(item.price * item.quantity).toFixed(2)}
-                </span>
-              </div>
-            ))
+                  <div className="bill-item-info">
+
+                    <div className="bill-item-top">
+                      <span className="bill-label bill-product-name">
+                        {item.productName}
+                      </span>
+
+                      <span className="bill-value bill-product-price">
+                        ₹
+                        {(
+                          Number(item.price || 0) *
+                          Number(item.quantity || 0)
+                        ).toFixed(2)}
+                      </span>
+                    </div>
+
+                    {/* Variant details */}
+                    {item.variant && (
+                      <div className="bill-variant">
+                        {item.color && (
+                          <span>
+                            Color: {item.color}
+                          </span>
+                        )}
+
+                        {item.color && item.size && (
+                          <span className="bill-variant-separator">
+                            •
+                          </span>
+                        )}
+
+                        {item.size && (
+                          <span>
+                            Size: {item.size}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* ================================
+              QUANTITY CONTROLS
+          ================================= */}
+
+                    <div className="bill-item-actions">
+
+                      <button
+                        type="button"
+                        className="bill-qty-btn"
+                        onClick={() => removeFromCart(item)}
+                      >
+                        −
+                      </button>
+
+                      <span className="bill-qty-value">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        type="button"
+                        className="bill-qty-btn"
+                        onClick={() => {
+                          const product = products.find(
+                            (p) => p._id === item.product
+                          );
+
+                          const variant = product?.variants?.find(
+                            (v) =>
+                              v.variantCode === item.variant
+                          );
+
+                          if (product) {
+                            addToCart(product, variant);
+                          }
+                        }}
+                      >
+                        +
+                      </button>
+
+                    </div>
+
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
+
+          {/* GST */}
           <div className="bill-row">
-            <span className="bill-label">GST (5%)</span>
-            <span className="bill-value">₹{gstAmount.toFixed(2)}</span>
+            <span className="bill-label">
+              GST (5%)
+            </span>
+
+            <span className="bill-value">
+              ₹{gstAmount.toFixed(2)}
+            </span>
           </div>
+
+          {/* DISCOUNT */}
           <div className="bill-row">
-            {/* <span className="bill-label">Customer</span>
-            <span className="bill-value bill-value--discount">
-              -₹{discount}
-            </span> */}
-            <span className="bill-label">Discount</span>
+            <span className="bill-label">
+              Discount
+            </span>
 
             <span className="bill-value bill-value--discount">
               -₹{Number(discount || 0).toFixed(2)}
             </span>
           </div>
+
           <hr className="bill-divider" />
 
+          {/* GRAND TOTAL */}
           <div className="bill-row bill-row--total">
-            <span className="bill-label bill-label--total">Grand Total</span>
+
+            <span className="bill-label bill-label--total">
+              Grand Total
+            </span>
+
             <span className="bill-value bill-value--total">
               ₹{grandTotal.toFixed(2)}
             </span>
+
           </div>
 
-          <button className="pay-btn" type="button" onClick={handlePayment}>
+          {/* PAYMENT */}
+          <button
+            className="pay-btn"
+            type="button"
+            onClick={handlePayment}
+          >
             <Icon name="printer" />
-            <span>Pay &amp; Print Bill</span>
+
+            <span>
+              Pay &amp; Print Bill
+            </span>
           </button>
+
         </div>
       </aside>
 
@@ -732,6 +1214,11 @@ const handleCreateCustomer = async (e) => {
               >
                 <div>
                   <strong>{item.name}</strong>
+                  {item?.variantCode && (
+                    <span>
+                      ({item.color} - {item.size})
+                    </span>
+                  )}
 
                   <span>
                     {item.quantity} × ₹{Number(item.price).toFixed(2)}
@@ -1193,6 +1680,144 @@ const handleCreateCustomer = async (e) => {
     </div>
 
   </form>
+</Modal>
+
+      {/* <Modal
+        open={variantModalOpen}
+        title={
+          selectedProduct
+            ? `Select Variant - ${selectedProduct.productName}`
+            : "Select Variant"
+        }
+        onClose={() => {
+          setVariantModalOpen(false);
+          setSelectedProduct(null);
+        }}
+        size="md"
+      >
+        <div className="variant-selector">
+
+          {selectedProduct?.variants?.map((variant, index) => {
+
+            const outOfStock =
+              Number(variant.currentStock || 0) <= 0;
+
+            return (
+              <button
+                key={variant._id || index}
+                type="button"
+                className={`variant-item ${outOfStock
+                    ? "variant-item--disabled"
+                    : ""
+                  }`}
+                disabled={outOfStock}
+                onClick={() =>
+                  handleVariantSelect(variant)
+                }
+              >
+
+                <div className="variant-item-image">
+
+                  {variant.image ? (
+                    <img
+                      src={`${IMAGE_BASE_URL}/${variant.image}`}
+                      alt={`${variant.color} ${variant.size}`}
+                    />
+                  ) : (
+                    <img
+                      src={noImage}
+                      alt="No Image"
+                    />
+                  )}
+
+                </div>
+
+                <div className="variant-item-info">
+
+                  <strong>
+                    {variant.color || "Default Color"}
+                    {variant.size
+                      ? ` / ${variant.size}`
+                      : ""}
+                  </strong>
+
+                  <span>
+                    SKU: {variant.skuCode || "-"}
+                  </span>
+
+                  {variant.barcode && (
+                    <span>
+                      Barcode: {variant.barcode}
+                    </span>
+                  )}
+
+                  <span>
+                    Stock: {variant.currentStock ?? 0}
+                  </span>
+
+                </div>
+
+                <div className="variant-item-price">
+
+                  <strong>
+                    ₹
+                    {Number(
+                      variant.sellingPrice ??
+                      variant.mrp ??
+                      0
+                    ).toFixed(2)}
+                  </strong>
+
+                  <small>
+                    {outOfStock
+                      ? "Out of Stock"
+                      : "Select"}
+                  </small>
+
+                </div>
+
+              </button>
+            );
+          })}
+
+        </div>
+      </Modal> */}
+
+     <Modal
+  open={variantModalOpen}
+  title={`Select Variant - ${selectedProduct?.productName}`}
+  onClose={() => setVariantModalOpen(false)}
+  size="sm"
+>
+  <div className="variant-selector">
+    {selectedProduct?.variants
+      ?.filter((variant) => variant.isActive !== false)
+      .map((variant) => (
+        <button
+          key={variant.variantCode}
+          type="button"
+          className="variant-option"
+          onClick={() => {
+            handleAddVariant(selectedProduct, variant);
+            setVariantModalOpen(false);
+          }}
+        >
+          <div className="variant-option-main">
+            <strong>
+              {variant.color} / {variant.size}
+            </strong>
+
+            <span>
+              ₹{Number(variant.sellingPrice || 0).toFixed(2)}
+            </span>
+          </div>
+
+          <small>
+            Stock: {variant.currentStock}
+          </small>
+        </button>
+      ))}
+  </div>
 </Modal>
     </div>
   );

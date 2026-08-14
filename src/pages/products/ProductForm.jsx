@@ -439,7 +439,7 @@ const handleClose = () => {
 
               <div className="form-group">
                 <label>Size</label>
-                <select
+                {/* <select
                   value={variant.size}
                   onChange={(e) =>
                     updateVariant(index, "size", e.target.value)
@@ -452,7 +452,16 @@ const handleClose = () => {
                       {s}
                     </option>
                   ))}
-                </select>
+                </select> */}
+                {/* size is input field now, not select */}
+                <input
+                  type="text"
+                  placeholder="e.g. Small, Medium, Large"
+                  value={variant.size}
+                  onChange={(e) =>
+                    updateVariant(index, "size", e.target.value)
+                  }
+                />
               </div>
 
               <div className="form-group">

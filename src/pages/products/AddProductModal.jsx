@@ -149,7 +149,8 @@ const AddProductModal = ({
         style: product.style?._id || "",
         gender: product.gender || "",
         description: product.description || "",
-        variants: product.variants?.map((v) => ({
+        variants: product.variants?.map((v,index) => ({
+          variantCode: v.variantCode || `VAR-${index + 1}`,
           color: v.color || "",
           size: v.size || "",
           price: v.price || "",
@@ -255,6 +256,7 @@ const AddProductModal = ({
   };
 
   console.log("Brands in AddProductModal are the :", brands);
+  console.log("product_form_error :", errors);
 
   return (
     <div className="modal-overlay" onClick={handleClose}>
@@ -530,7 +532,7 @@ const AddProductModal = ({
 
                   <div className="form-group">
                     <label>Size</label>
-                    <select
+                    {/* <select
                       value={variant.size}
                       onChange={(e) =>
                         updateVariant(index, "size", e.target.value)
@@ -542,7 +544,16 @@ const AddProductModal = ({
                           {s}
                         </option>
                       ))}
-                    </select>
+                    </select> */}
+                    {/* size is input field now, not select */}
+                    <input
+                      type="text"
+                      placeholder="e.g. Small, Medium, Large"
+                      value={variant.size}
+                      onChange={(e) =>
+                        updateVariant(index, "size", e.target.value)
+                      }
+                    />
                   </div>
 
                   <div className="form-group">

@@ -12,8 +12,8 @@ export const productValidation = (mode) => yup.object({
       mrp: yup.number().required("MRP is required"),
       sellingPrice: yup.number().required("Selling price is required"),
       currentStock: yup.number().min(0, "Stock cannot be negative").required("Stock is required"),
-      skuCode: yup.string().required("SKU code is required"),
-      barcode: yup.string().required("Barcode is required"),
+      skuCode: yup.string().optional("SKU code is required"),
+      barcode: yup.string().optional("Barcode is required"),
     })
   ),
 });
