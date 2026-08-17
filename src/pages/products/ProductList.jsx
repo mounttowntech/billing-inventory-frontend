@@ -138,17 +138,27 @@ const ProductList = () => {
                   <th>Image</th>
                   <th>Product Name</th>
                   <th>Category</th>
-                  <th>Season</th>
+                  <th>Offer</th>
                   <th>Style</th>
                   <th>Gender</th>
-                  <th>Description</th>
+                  {/* <th>Description</th> */}
                   <th>View Type</th>
                   <th>Actions</th>
                 </tr>
               </thead>
 
               <tbody>
-                {filteredProducts.map((product, index) => (
+                {filteredProducts.map((product, index) => {
+                  let productOffer = false;
+                  if (product.variants && product.variants.length > 0) {
+                    productOffer = product.variants.some((variant) => {
+                      return (
+                        (variant.discountType === "percentage" && variant.discountValue  > 0) ||
+                        (variant.discountType === "amount" && variant.discountValue > 0)
+                      );
+                    });
+                  }
+                  return (
                   <>
                     <tr key={product?._id ?? index}>
                       <td>{indexOfFirst + index + 1}</td>
@@ -171,10 +181,10 @@ const ProductList = () => {
                       </td>
                       <td>{product.productName}</td>
                       <td>{product.category?.categoryName}</td>
-                      <td>{product.season?.seasonName}</td>
+                      <td>{productOffer ? "Yes" : "No"}</td>
                       <td>{product.style?.styleName}</td>
                       <td>{product.gender}</td>
-                      <td>{product.description}</td>
+                      {/* <td>{product.description}</td> */}
 
                       <td>
                         <button
@@ -217,6 +227,7 @@ const ProductList = () => {
                                 <th>MRP</th>
                                 <th>Selling Price</th>
                                 <th>Stock</th>
+                                <th>Discount</th>
                                 <th>SKU</th>
                                 <th>Barcode</th>
                               </tr>
@@ -232,6 +243,7 @@ const ProductList = () => {
                                   <td>₹{variant.mrp}</td>
                                   <td>₹{variant.sellingPrice}</td>
                                   <td>{variant.currentStock}</td>
+                                  <td>{variant.discountValue ? (variant.discountType === "percentage" ? `${variant.discountValue}%` : `₹${variant.discountValue}`) : "No Discount"}</td>
                                   <td>{variant.skuCode}</td>
                                   <td>{variant.barcode}</td>
                                 </tr>
@@ -242,7 +254,8 @@ const ProductList = () => {
                       </tr>
                     )}
                   </>
-                ))}
+                  )
+})}
               </tbody>
             </table>
           </div>

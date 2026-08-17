@@ -14,6 +14,9 @@ export const productValidation = (mode) => yup.object({
       currentStock: yup.number().min(0, "Stock cannot be negative").required("Stock is required"),
       skuCode: yup.string().optional("SKU code is required"),
       barcode: yup.string().optional("Barcode is required"),
+      discountType: yup.string().oneOf(["percentage", "amount"]).required("Discount type is required"),
+      discountPercentage: yup.number().min(0).max(100).optional(),
+      discountAmount: yup.number().min(0).optional(),
     })
   ),
 });

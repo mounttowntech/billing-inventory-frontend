@@ -31,6 +31,9 @@ const emptyVariant = () => ({
   mrp: "",
   sellingPrice: "",
   currentStock: "",
+  discountType: "percentage",
+  discountPercentage: "",
+  discountAmount: "",
   skuCode: "",
   barcode: "",
 });
@@ -176,6 +179,9 @@ export default function ProductForm({ mode = "add", product = null, onClose, onS
           mrp: v.mrp || 0,
           sellingPrice: v.sellingPrice || 0,
           currentStock: v.currentStock || 0,
+          discountType: v.discountType || "percentage",
+          discountPercentage: v.discountValue || 0,
+          discountAmount: v.discountValue || 0,
           skuCode: v.skuCode || "",
           barcode: v.barcode || "",
         })) || [emptyVariant()],
@@ -203,6 +209,9 @@ const onSubmit = async (data) => {
           mrp: Number(v.mrp),
           sellingPrice: Number(v.sellingPrice),
           currentStock: Number(v.currentStock),
+          discountType: v.discountType,
+          discountPercentage: v.discountPercentage ? Number(v.discountPercentage) : 0,
+          discountAmount: v.discountAmount ? Number(v.discountAmount) : 0,
         })),
       };
 
@@ -517,6 +526,53 @@ const handleClose = () => {
                   // {...register(`variants[${index}].currentStock`)}
                 />
               </div>
+
+              {/* show fild for discount percentage and discount amount, and calculate selling price based on mrp and discount percentage or discount amount. If both are provided, use discount amount to calculate selling price.
+               */}
+
+               <div className="form-group">
+                <label>Discount Type</label>
+                <select
+                  value={variant.discountType}
+                  onChange={(e) =>
+                    updateVariant(index, "discountType", e.target.value)
+                  }
+                >
+                  <option value="percentage">Percentage</option>
+                  <option value="amount">Amount</option>
+                </select>
+              </div>
+
+              {variant.discountType === "percentage" && (
+                <div className="form-group">
+                  <label>Discount %</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="0"
+                    value={variant.discountPercentage}
+                    onChange={(e) =>
+                      updateVariant(index, "discountPercentage", e.target.value)
+                    }
+                  />
+                </div>
+              )}
+
+              {variant.discountType === "amount" && (
+                <div className="form-group">
+                  <label>Discount Amount (₹)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={variant.discountAmount}
+                    onChange={(e) =>
+                      updateVariant(index, "discountAmount", e.target.value)
+                    }
+                  />
+                </div>
+              )}
 
               <div className="form-group">
                 <label>SKU Code</label>

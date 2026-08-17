@@ -143,9 +143,15 @@ const [selectedProduct, setSelectedProduct] = useState(null);
     total + Number(item.price) * Number(item.quantity),
   0
 );
+
+const totalItemDiscount = cart.reduce(
+  (total, item) =>
+    total + Number(item.discountAmount || 0),
+  0
+);
   const gstRate = 0.05;
   const gstAmount = subTotal * gstRate;
-  const discount = 0;
+  const discount = totalItemDiscount;
   const grandTotal = subTotal + gstAmount - discount;
   const received = parseFloat(receivedAmount) || 0;
   const returnAmount = received - grandTotal;
@@ -748,6 +754,9 @@ const handleAddVariant = (product, variant) => {
 
         price: variant.sellingPrice,
         quantity: 1,
+        discountType: variant.discountType || "percentage",
+        discountValue: variant?.discountValue || 0,
+        discountAmount: variant.discountType === "percentage" ? (variant.sellingPrice * variant?.discountValue || 0) / 100 : variant?.discountValue || 0,
       },
     ];
   });
@@ -850,6 +859,47 @@ const handleAddVariant = (product, variant) => {
                   product.mrp ??
                   0;
 
+                let offerText = "";
+
+                // ========================================
+                // PRODUCT LEVEL DISCOUNT
+                // ========================================
+                if (
+                  (product.discountType === "percentage" ||
+                    product.discountType === "amount") &&
+                  Number(product.discountValue) > 0
+                ) {
+                  if (product.discountType === "percentage") {
+                    offerText = `${Number(product.discountValue)}% OFF`;
+                  } else {
+                    offerText = `₹${Number(product.discountValue).toFixed(0)} OFF`;
+                  }
+                }
+
+                // ========================================
+                // VARIANT LEVEL DISCOUNT
+                // ========================================
+                else {
+                  const discountedVariant = product.variants?.find(
+                    (variant) =>
+                      (variant.discountType === "percentage" ||
+                        variant.discountType === "amount") &&
+                      Number(variant.discountValue) > 0
+                  );
+
+                  if (discountedVariant) {
+                    if (discountedVariant.discountType === "percentage") {
+                      offerText = `${Number(
+                        discountedVariant.discountValue
+                      )}% OFF`;
+                    } else {
+                      offerText = `₹${Number(
+                        discountedVariant.discountValue
+                      ).toFixed(0)} OFF`;
+                    }
+                  }
+                }
+
                 return (
                   <div
                     key={product._id}
@@ -908,6 +958,13 @@ const handleAddVariant = (product, variant) => {
                         />
                       )}
 
+                      {/* OFFER BADGE */}
+                      {offerText && (
+                        <span className="product-offer-badge">
+                          {offerText}
+                        </span>
+                      )}
+
                     </div>
 
                     {/* PRODUCT NAME */}
@@ -916,9 +973,9 @@ const handleAddVariant = (product, variant) => {
                     </p>
 
                     {/* PRICE */}
-                    <p className="product-price">
+                    {/* <p className="product-price">
                       ₹{Number(displayPrice).toFixed(2)}
-                    </p>
+                    </p> */}
 
                     {/* VARIANT LABEL */}
                     {/* {hasVariants && (
@@ -1035,104 +1092,128 @@ const handleAddVariant = (product, variant) => {
           <hr className="bill-divider" />
 
           {/* CART */}
+         {/* CART */}
           {cart.length === 0 ? (
             <p className="empty-cart">
               No Products Added
             </p>
           ) : (
             <div className="bill-items">
-              {cart.map((item) => (
-                <div
-                  className="bill-row bill-row--product"
-                  key={item.cartKey}
-                >
-                  {/* ================================
-            PRODUCT DETAILS
-        ================================= */}
 
-                  <div className="bill-item-info">
+              {cart.map((item) => {
+                const itemSubtotal =
+                  Number(item.price || 0) *
+                  Number(item.quantity || 0);
 
-                    <div className="bill-item-top">
-                      <span className="bill-label bill-product-name">
-                        {item.productName}
-                      </span>
+                const itemDiscount =
+                  Number(item.discountAmount || 0);
 
-                      <span className="bill-value bill-product-price">
-                        ₹
-                        {(
-                          Number(item.price || 0) *
-                          Number(item.quantity || 0)
-                        ).toFixed(2)}
-                      </span>
-                    </div>
+                const itemTotal =
+                  itemSubtotal - itemDiscount;
 
-                    {/* Variant details */}
-                    {item.variant && (
-                      <div className="bill-variant">
-                        {item.color && (
-                          <span>
-                            Color: {item.color}
-                          </span>
-                        )}
+                return (
+                  <div
+                    className="bill-row bill-row--product"
+                    key={item.cartKey}
+                  >
+                    <div className="bill-item-info">
 
-                        {item.color && item.size && (
-                          <span className="bill-variant-separator">
-                            •
-                          </span>
-                        )}
+                      {/* PRODUCT NAME + TOTAL */}
+                      <div className="bill-item-top">
+                        <span className="bill-label bill-product-name">
+                          {item.productName}
+                        </span>
 
-                        {item.size && (
-                          <span>
-                            Size: {item.size}
-                          </span>
-                        )}
+                        <span className="bill-value bill-product-price">
+                          ₹{itemTotal.toFixed(2)}
+                        </span>
                       </div>
-                    )}
 
-                    {/* ================================
-              QUANTITY CONTROLS
-          ================================= */}
+                      {/* VARIANT */}
+                      {item.variant && (
+                        <div className="bill-variant">
 
-                    <div className="bill-item-actions">
+                          {item.color && (
+                            <span>
+                              Color: {item.color}
+                            </span>
+                          )}
 
-                      <button
-                        type="button"
-                        className="bill-qty-btn"
-                        onClick={() => removeFromCart(item)}
-                      >
-                        −
-                      </button>
+                          {item.color && item.size && (
+                            <span className="bill-variant-separator">
+                              •
+                            </span>
+                          )}
 
-                      <span className="bill-qty-value">
-                        {item.quantity}
-                      </span>
+                          {item.size && (
+                            <span>
+                              Size: {item.size}
+                            </span>
+                          )}
 
-                      <button
-                        type="button"
-                        className="bill-qty-btn"
-                        onClick={() => {
-                          const product = products.find(
-                            (p) => p._id === item.product
-                          );
+                        </div>
+                      )}
 
-                          const variant = product?.variants?.find(
-                            (v) =>
-                              v.variantCode === item.variant
-                          );
+                      {/* QUANTITY */}
+                      <div className="bill-item-actions">
 
-                          if (product) {
-                            addToCart(product, variant);
-                          }
-                        }}
-                      >
-                        +
-                      </button>
+                        <button
+                          type="button"
+                          className="bill-qty-btn"
+                          onClick={() => removeFromCart(item)}
+                        >
+                          −
+                        </button>
+
+                        <span className="bill-qty-value">
+                          {item.quantity}
+                        </span>
+
+                        <button
+                          type="button"
+                          className="bill-qty-btn"
+                          onClick={() => {
+                            const product = products.find(
+                              (p) => p._id === item.product
+                            );
+
+                            const variant = product?.variants?.find(
+                              (v) =>
+                                v.variantCode === item.variant
+                            );
+
+                            if (product) {
+                              addToCart(product, variant);
+                            }
+                          }}
+                        >
+                          +
+                        </button>
+
+                      </div>
+
+                      {/* DISCOUNT */}
+                      {itemDiscount > 0 && (
+                        <div className="bill-item-discount">
+
+                          <span>
+                            <strong>Discount</strong>
+                            {item.discountType === "percentage" &&
+                              ` (${item.discountValue}%)`}
+                          </span>
+
+                          <span>
+                            -₹{itemDiscount.toFixed(2)}
+                          </span>
+
+                        </div>
+                      )}
 
                     </div>
-
                   </div>
-                </div>
-              ))}
+                );
+              })}
+
             </div>
           )}
 
@@ -1150,11 +1231,11 @@ const handleAddVariant = (product, variant) => {
           {/* DISCOUNT */}
           <div className="bill-row">
             <span className="bill-label">
-              Discount
+              Total Discount
             </span>
 
             <span className="bill-value bill-value--discount">
-              -₹{Number(discount || 0).toFixed(2)}
+              -₹{totalItemDiscount.toFixed(2)}
             </span>
           </div>
 
@@ -1207,29 +1288,59 @@ const handleAddVariant = (product, variant) => {
           <div className="payment-products">
             <h4>Bill Details</h4>
 
-            {cart.map((item) => (
-              <div
-                className="payment-product-row"
-                key={item._id}
-              >
-                <div>
-                  <strong>{item.name}</strong>
-                  {item?.variantCode && (
+            {cart.map((item) => {
+              const price = Number(item.price || 0);
+              const quantity = Number(item.quantity || 0);
+
+              let discountAmount = 0;
+
+              if (item.discountType === "percentage") {
+                discountAmount =
+                  price * (Number(item.discountValue || 0) / 100);
+              } else if (item.discountType === "amount") {
+                discountAmount = Number(item.discountAmount || 0);
+              }
+
+              // Discounted price for ONE quantity
+              const discountedUnitPrice =
+                Math.max(0, price - discountAmount);
+
+              // Final amount for ALL quantities
+              const totalAmount =
+                (price * quantity) - discountAmount;
+
+              return (
+                <div
+                  className="payment-product-row"
+                  key={item.cartKey || item._id}
+                >
+                  <div>
+                    <strong>
+                      {item.productName || item.name}
+                    </strong>
+
+                    {item.variant && (
+                      <span>
+                        ({item.color} - {item.size})
+                      </span>
+                    )}
+
                     <span>
-                      ({item.color} - {item.size})
+                      {quantity} × ₹{item?.price.toFixed(2)}
                     </span>
-                  )}
+                    {discountAmount > 0 && (
+                      <small className="text-muted">
+                        (Discount: -₹{discountAmount.toFixed(2)})
+                      </small>
+                    )}
+                  </div>
 
-                  <span>
-                    {item.quantity} × ₹{Number(item.price).toFixed(2)}
-                  </span>
+                  <strong>
+                    ₹{totalAmount.toFixed(2)}
+                  </strong>
                 </div>
-
-                <strong>
-                  ₹{(item.price * item.quantity).toFixed(2)}
-                </strong>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* SUMMARY */}
@@ -1250,9 +1361,9 @@ const handleAddVariant = (product, variant) => {
             </div>
 
             <div>
-              <span>Discount</span>
+              <span>Total Discount</span>
               <strong>
-                -₹{Number(discount || 0).toFixed(2)}
+                -₹{totalItemDiscount.toFixed(2)}
               </strong>
             </div>
 
@@ -1815,6 +1926,11 @@ const handleAddVariant = (product, variant) => {
           <small>
             Stock: {variant.currentStock}
           </small>
+
+          <strong>
+              Discount: {variant.discountType === "percentage" ? `${variant.discountValue}%` : `₹${variant.discountValue}`}
+            </strong>
+
         </button>
       ))}
   </div>
