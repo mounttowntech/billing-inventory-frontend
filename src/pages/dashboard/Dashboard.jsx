@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getPurchases } from "../../features/purchase/purchaseSlice";
+import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import {
   AddButton,
@@ -190,8 +191,8 @@ const Sparkline = ({ data, accent, width = 240, height = 64 }) => {
   );
 };
 
-const StatCard = ({ card }) => (
-  <div className="card stat-card">
+const StatCard = ({ card, navigate }) => (
+  <div className="card stat-card" onClick={() => card.navigateTo && (navigate(card.navigateTo))}>
     <div className="stat-head">
       <span className={`stat-icon icon-${card.accent}`}>
         {ICONS[card.icon]}
@@ -231,6 +232,7 @@ const buildStatCards = (summary, quickStats, salesOverview) => {
       accent: "blue",
       icon: "bag",
       spark: salesSpark,
+      navigateTo: "/invoices",
     },
     {
       key: "purchase",
@@ -242,6 +244,7 @@ const buildStatCards = (summary, quickStats, salesOverview) => {
       accent: "green",
       icon: "cart",
       spark: null,
+      navigateTo: "/purchases",
     },
     {
       key: "lowstock",
@@ -253,6 +256,7 @@ const buildStatCards = (summary, quickStats, salesOverview) => {
       accent: "orange",
       icon: "stack",
       spark: null,
+      navigateTo: "/stock-ledger",
     },
     {
       key: "pnl",
@@ -279,6 +283,7 @@ const STATUS_CLASS_MAP = {
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     summary,
@@ -361,7 +366,7 @@ const Dashboard = () => {
       {/* ===== Stat cards ===== */}
       <div className="stat-grid">
         {statCards.map((card) => (
-          <StatCard card={card} key={card.key} />
+          <StatCard card={card} key={card.key} navigate={navigate} />
         ))}
       </div>
 

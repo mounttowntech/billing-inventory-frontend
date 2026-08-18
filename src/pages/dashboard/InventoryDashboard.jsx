@@ -358,6 +358,7 @@ export default function InventoryDashboard() {
       value: totalProducts || 0,
       icon: <IconBox />,
       iconClass: "invdash-stat-icon--teal",
+      navigateTo: "/products",
     },
     {
       id: "instock",
@@ -365,6 +366,7 @@ export default function InventoryDashboard() {
       value: inStock || 0,
       icon: <IconLayers />,
       iconClass: "invdash-stat-icon--green",
+      navigateTo: "/stock-ledger",
     },
     {
       id: "lowstock",
@@ -372,6 +374,7 @@ export default function InventoryDashboard() {
       value: lowStock || 0,
       icon: <IconAlertTriangle />,
       iconClass: "invdash-stat-icon--orange",
+      navigateTo: "/stock-ledger",
     },
     {
       id: "stockvalue",
@@ -379,6 +382,7 @@ export default function InventoryDashboard() {
       value: `₹${stockValue?.toLocaleString() || 0}`,
       icon: <IconCoin />,
       iconClass: "invdash-stat-icon--blue",
+      navigateTo: "/stock-ledger",
     },
   ];
 
@@ -420,7 +424,7 @@ export default function InventoryDashboard() {
         <section className="invdash-stats-row">
           {statCards.map((stat) => (
             <article className="invdash-card invdash-stat-card" key={stat.id}>
-              <div className="invdash-stat-top">
+              <div className="invdash-stat-top" onClick={() => navigate(stat.navigateTo)}>
                 <div className={`invdash-stat-icon ${stat.iconClass}`}>
                   {stat.icon}
                 </div>
@@ -430,7 +434,7 @@ export default function InventoryDashboard() {
                 </div>
               </div>
 
-              <div className="invdash-stat-bottom">
+              <div className="invdash-stat-bottom" onClick={() => navigate(stat.navigateTo)}>
                 <span
                   className={`invdash-stat-delta invdash-stat-delta--${stat.direction}`}
                 >
