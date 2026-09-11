@@ -25,6 +25,8 @@ import { hasPermission } from "../../utils/permission";
 import { useSelector } from "react-redux";
 import { getDashboardRoute } from "../../utils/getDashboardRoute";
 
+import wonderbillLogo from "../../assets/logo.png";
+
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
 
@@ -50,13 +52,13 @@ const Sidebar = () => {
       <aside className={`sidebar ${open ? "open" : ""}`}>
         <div className="sidebar-brand">
           <span className="sidebar-brand-logo">
-            <BrandLogoIcon />
+            <img src={wonderbillLogo} alt="WonderBill Logo" />
           </span>
 
-          <div className="sidebar-brand-text">
+          {/* <div className="sidebar-brand-text">
             <h2>WonderBill</h2>
             <span>Enterprise Edition</span>
-          </div>
+          </div> */}
 
           {open && (
             <button
